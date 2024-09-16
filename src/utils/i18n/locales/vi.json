@@ -1,0 +1,497 @@
+{
+  "add": "Thêm mới",
+  "index": "STT",
+  "fullName": "Họ và tên",
+  "accountName": "Tên tài khoản",
+  "email": "Email",
+  "phoneNumber": "Số điện thoại",
+  "title": "Chức danh",
+  "unit": "Đơn vị",
+  "role": "Vai trò",
+  "operation": "Thao tác",
+  "import": "Nhập dữ liệu",
+  "export": "Xuất file Excel",
+  "search": "Tìm kiếm",
+  "resolution": "Độ phân giải",
+  "display": "Hiển thị",
+  "remove": "Loại bỏ",
+  "time": "Thời gian",
+  "expanded": "MỞ RỘNG",
+  "collapse": "THU NHỎ",
+  "noData": "Không có dữ liệu",
+  "ratio": "Tỉ lệ",
+  "description": "Mô tả",
+  "cancel": "Hủy bỏ",
+  "update": "Cập nhật",
+  "selectAll": "Chọn tất cả",
+  "startDate": "Ngày bắt đầu",
+  "endDate": "Ngày kết thúc",
+  "save": "Lưu lại",
+  "form": {
+    "inputDescription": "Vui lòng nhập mô tả",
+    "placeholderDescription": "Nhập mô tả"
+  },
+  "home": {
+    "title": "NỀN TẢNG QUẢN LÝ VÀ GIÁM SÁT KHÔNG GIAN V-SPACE",
+    "aiResult": "BÁO CÁO KẾT QUẢ AI",
+    "startDate": "Thời gian bắt đầu",
+    "endDate": "Thời gian kết thúc",
+    "referenceLayer": "Lớp bản đồ tham chiếu",
+    "opacityLayers": "ĐIỀU CHỈNH ĐỘ MỜ LỚP BẢN ĐỒ",
+    "layersDisplayed": "Các lớp bản đồ hiển thị",
+    "mapTool": {
+      "field": "Lĩnh vực",
+      "layerMapInField": "LỚP BẢN ĐỒ LĨNH VỰC",
+      "layerMap": "Lớp bản đồ",
+      "savedAddress": "Địa chỉ đã lưu",
+      "caringArea": "Khu vực quan tâm",
+      "measureLength": "Đo chiều dài",
+      "measureArea": "Đo diện tích"
+    },
+    "bottom": {
+      "home": "TRANG CHỦ",
+      "searchImages": "TÌM KIẾM ẢNH",
+      "detectChange": "GIÁM SÁT THAY ĐỔI",
+      "detectObject": "GIÁM SÁT ĐỐI TƯỢNG",
+      "monitorCurrentStatus": "GIÁM SÁT HIỆN TRẠNG",
+      "satelliteBaseMap": "Bản đồ nền Vệ tinh",
+      "defaultMap": "Bản đồ mặc định",
+      "satelliteImages": "Hình ảnh vệ tinh",
+      "aiResult": "Kết quả AI"
+    },
+    "chart": {
+      "AiResultChart": "BÁO CÁO KẾT QUẢ AI",
+      "numberOfChanges": "Số điểm thay đổi"
+    },
+    "infoBox": {
+      "changeType": "Loại thay đổi",
+      "address": "Vị trí",
+      "changeArea": "Diện tích thay đổi",
+      "discoveryTime": "Thời điểm phát hiện",
+      "coordinate": "Tọa độ",
+      "location": "Vị trí",
+      "locationInfo": "THÔNG TIN ĐỊA ĐIỂM THAY ĐỔI",
+      "objectInfo": "THÔNG TIN ĐỐI TƯỢNG"
+    },
+    "roi": {
+      "name": "Tên khu vực quan tâm",
+      "create": "Thêm mới khu vực quan tâm",
+      "update": "Cập nhật khu vực quan tâm",
+      "form": {
+        "inputName": "Vui lòng nhập tên khu vực quan tâm",
+        "placeholderName": "Nhập tên khu vực quan tâm"
+      }
+    },
+    "savedPlaceList": {
+      "create": "Thêm mới danh sách"
+    }
+  },
+  "admin": {
+    "menus": {
+      "categoryManagement" : " Quản lý danh mục",
+      "deviceCategory" : "Quản lý danh mục thiết bị",
+      "poleCategory": "Quản lý loại cột",
+      "deviceManager": "Quản lý thiết bị",
+      "PoleManager": "Quản lý cột",
+      "StationManager": "Quản lý trạm",
+      "windyAreaManager": "Quản lý vùng gió",
+      "vendorManager": "Danh sách nhà cung cấp",
+
+      "systemManagement": "Quản trị hệ thống",
+      "user": "Quản lý người dùng",
+      "unit": "Quản lý đơn vị",
+      "title": "Quản lý chức vụ",
+      "permission": "Quản lý chức năng",
+      "right": "Phân quyền",
+      "role": "Quản lý vai trò",
+      "log": "Quản lý nhật ký người dùng",
+      "indexManagement": "Quản lý danh mục",
+      "field": "Quản lý lĩnh vực",
+      "dataSpec": "Quản lý loại dữ liệu chuyên đề",
+      "administrative": "Quản lý đơn vị hành chính",
+      "dataManagement": "Quản lý dữ liệu",
+      "layer": "Quản lý bản đồ nền",
+      "satelliteLayer": "Quản lý bản đồ nền vệ tinh",
+      "defaultLayer": "Quản lý bản đồ bên thứ ba",
+      "layerSpec": "Quản lý bản đồ vector",
+      "privateLayer": "Quản lý bản đồ mặc định",
+      "image": "Quản lý ảnh viễn thám",
+      "config": "Cấu hình hệ thống",
+      "rasterStore": "Quản lý store Raster"
+    },
+    "users": {
+      "userList": "Danh sách người dùng",
+      "update": "Cập nhật tài khoản",
+      "updateRole": "Phân quyền người dùng",
+      "resetPassword": "Đặt lại mật khẩu",
+      "delete": "Xóa tài khoản",
+      "importUserSuccessfully": "Thêm người dùng từ file thành công!"
+    },
+    "field": {
+      "title": "Danh sách lĩnh vực",
+      "name": "Tên lĩnh vực",
+      "confirmDelete": "Xác nhận xóa lĩnh vực?",
+      "previewImage": "Ảnh xem trước",
+      "form": {
+        "inputName": "Vui lòng nhập tên lĩnh vực",
+        "placeholderName": "Nhập tên lĩnh vực"
+      },
+      "updateField": "Cập nhật lĩnh vực",
+      "createField": "Thêm mới lĩnh vực"
+    },
+    "unit": {
+      "add": "Thêm mới đơn vị",
+      "name": "Tên đơn vị",
+      "parentUnit": "Đơn vị cấp trên",
+      "department": "Phòng ban",
+      "list": "Danh sách đơn vị",
+      "form": {
+        "inputName": "Vui lòng nhập tên đơn vị",
+        "placeholderName": "Nhập tên đơn vị",
+        "placeholderParentId": "Chọn đơn vị cấp trên"
+      },
+      "confirmDelete": "Xác nhận xóa đơn vị:",
+      "users": "Danh sách cán bộ/nhân viên"
+    },
+    "permissionGroups": {
+      "title": "Danh sách chức năng",
+      "update": "Cập nhật thông tin",
+      "permissionGroupName": "Tên nhóm chức năng",
+      "permissionName": "Tên chức năng",
+      "module": "Module hệ thống",
+      "is_public": "Public cho người dùng",
+      "form": {
+        "inputPermissionGroupName": "Vui lòng nhập tên nhóm chức năng",
+        "placeholderPermissionGroupName": "Nhập tên nhóm chức năng",
+        "inputPermissionName": "Vui lòng nhập tên chức năng",
+        "placeholderPermissionName": "Nhập tên chức năng",
+        "inputModule": "Vui lòng nhập module",
+        "placeholderModule" : "Nhập module"
+      }
+    },
+    "role": {
+      "title": "Danh sách vai trò",
+      "right": "Quyền",
+      "function": "Chức năng",
+      "create": "Thêm mới vai trò",
+      "update": "Cập nhật vai trò",
+      "form": {
+        "name": "Tên vai trò",
+        "inputName": "Vui lòng nhập tên vai trò",
+        "placeholderName": "Nhập tên vai trò"
+      }
+    },
+    "spec": {
+      "title": "Danh sách bản đồ vector",
+      "name": "Tên lớp bản đồ",
+      "field": "Lĩnh vực",
+      "dataType": "Loại dữ liệu",
+      "sharing": "Chế độ chia sẻ",
+      "source": "Đơn vị xây dựng bản đồ",
+      "createdDate": "Ngày tạo",
+      "expiredDate": "Hiệu lực",
+      "previewImage": "Ảnh xem trước",
+      "confirmDelete": "Xác nhận xóa lớp bản đồ?",
+      "form": {
+        "inputName": "Vui lòng nhập tên đơn vị",
+        "placeholderName": "Nhập tên đơn vị",
+        "webService": "Dịch vụ web",
+        "selectWebService": "Chọn dịch vụ web",
+        "selectDataType": "Vui lòng chọn loại dữ liệu",
+        "placeHolderDataType": "Chọn loại dữ liệu",
+        "selectSource": "Vui lòng nhập đơn vị xây dựng bản đồ",
+        "placeHolderSource": "Nhập đơn vị xây dựng",
+        "expire": "Hiệu lực bản đồ",
+        "selectExpire": "Vui lòng chọn thời gian lập bản đồ"
+      }
+    },
+    "authorization": {
+      "permissionGroup": "Nhóm chức năng",
+      "permission": "Chức năng"
+    },
+    "imagery": {
+      "name": "Tên ảnh",
+      "satellite": "Vệ tinh",
+      "takePhotoDate": "Ngày chụp",
+      "form": {
+        "inputName": "Vui lòng nhập tên ảnh",
+        "placeholderName": "Nhập tên ảnh",
+        "placeholderSatellite": "Nhập tên vệ tinh"
+      }
+    },
+    "raster-store": {
+      "title": "Danh sách các store raster",
+      "name": "Tên raster store",
+      "geo-store-type": "Kiểu store",
+      "storage-folder": "Đường dẫn folder MINIO",
+      "geo-data-path": "Đường dẫn dữ liệu GEO",
+      "status": "Trạng thái",
+      "form": {
+        "updateLabel": "Chỉnh sửa store data",
+        "createLabel": "Thêm mới store data",
+        "inputName": "Nhập tên store raster",
+        "inputStorageFolder": "Nhập đường dẫn folder MINIO",
+        "inputGeoDataPath": "Nhập đường dẫn dữ liệu GEO"
+      },
+      "confirmDelete": "Xác nhận xóa store"
+    },
+    "defaultLayer": {
+      "url": "Đường dẫn",
+      "subDomains": "Sub Domains",
+      "form": {
+        "inputUrl": "Vui lòng nhập đường dẫn",
+        "placeholderUrl": "Nhập đường dẫn",
+        "placeholderSubDomains": "Nhập Sub Domains"
+      }
+    },
+    "ai-module": {
+      "label-category":{
+        "title": "Danh mục bài toán AI",
+        "name": "Tên bài toán",
+        "resolution": "Độ phân giải",
+        "slug": "Slug"
+      },
+      "label": {
+        "title": "Danh sách nhãn AI",
+        "name": "Tên nhãn",
+        "ai-class": "Lớp AI",
+        "color": "Màu sắc",
+        "confirmDelete": "Xác nhận xóa nhãn",
+        "form": {
+          "updateLabel": "Chỉnh sửa nhãn",
+          "createLabel": "Thêm mới nhãn",
+          "inputName": "Nhập tên nhãn",
+          "inputAIClass": "Nhập ID của lớp AI",
+          "inputColor": "Nhập mã màu của lớp AI: #FFFFFF"
+        },
+        "export-style": "Xuất Style"
+      }
+    },
+
+    "category": {
+      "device": {
+        "title": "Danh mục thiết bị",
+        "name": "Tên danh mục",
+        "description": "Mô tả",
+        "confirmDelete": "Xác nhận xóa danh mục thiết bị?"
+      },
+      "pole": {
+        "title": "Danh mục loại cột",
+        "name": "Tên loại cột",
+        "code": "Ký hiệu",
+        "description": "Mô tả",
+        "confirmDelete": "Xác nhận xóa danh mục cột?"
+      },
+      "vendor": {
+        "title": "Danh sách nhà cung cấp thiết bị",
+        "name": "Tên nhà cung cấp",
+        "logo": "Logo",
+        "website": "Website URL",
+        "description": "Mô tả",
+        "confirmDelete": "Xác nhận xóa nhà cung cấp",
+        "form": {
+          "inputName": "Vui lòng nhập tên nhà cung cấp",
+          "inputLogo": "Vui lòng nhập đường dẫn ảnh logo",
+          "inputWebsite": "Vui lòng nhập đường dẫn website",
+          "inputDescription": "Vui lòng nhập tên mô tả",
+          "placeholderName": "Nhập tên nhà cung cấp",
+          "placeholderLogo": "Nhập đường dẫn logo của nhà cung cấp",
+          "placeholderWebsite": "Nhập đường dẫn website của nhà cung cấp",
+          "placeholderDescription": "Nhập mô tả cho nhà cung cấp"
+        }
+
+      },
+      "windyArea": {
+        "title": "Danh sách vùng gió",
+        "name": "Tên vùng gió",
+        "wo": "Wo (daN/m2) 3s, 20 năm",
+        "v3s50": "V3s50 (m/s) 3s, 50 năm",
+        "v10m50": "V10m50 (m/s) 10 phút, 50 năm",
+        "description": "Mô tả",
+        "confirmDelete": "Xác nhận xóa vùng gió",
+        "form": {
+          "inputName": "Vui lòng nhập tên vùng gió",
+          "inputWo": "Vui lòng nhập giá trị Wo",
+          "inputV3s50": "Vui lòng nhập giá trị V3s50",
+          "inputV10m50": "Vui lòng nhập giá trị V10m50",
+          "inputDescription": "Vui lòng nhập mô tả",
+          "placeholderName": "Nhập tên vùng gió",
+          "placeholderWo": "Nhập giá trị Wo",
+          "placeholderV3s50": "Nhập giá trị V3s50",
+          "placeholderV10m50": "Nhập giá trị V10m50",
+          "placeholderDescription": "Nhập mô tả"
+        }
+      }
+    },
+    "device": {
+      "title": "Danh sách loại thiết bị",
+      "name": "Tên/Model",
+      "length": "Chiều dài(mm)",
+      "width": "Chiều rộng(mm)",
+      "depth": "Chiều cao(mm)",
+      "weight": "Trọng lượng(Kg)",
+      "diameter": "Đường kính(mm)",
+      "category": "Danh mục",
+      "vendor": "Nhà cung cấp",
+      "description": "Mô tả",
+      "confirmDelete": "Xác nhận xóa thiết bị",
+      "image": "Hình ảnh",
+      "params": {
+        "title": "Thông số kỹ thuật",
+        "key": "Thông số",
+        "value": "Giá trị"
+      },
+      "form": {
+        "inputName": "Vui lòng nhập tên/model thiết bị",
+        "inputCategory": "Vui lòng chọn danh mục thiết bị",
+        "inputVendor": "Vui lòng chọn nhà cung cấp thiết bị",
+        "inputLength": "Vui lòng nhập chiều dài(mm) thiết bị",
+        "inputWidth": "Vui lòng nhập chiều rộng(mm) thiết bị",
+        "inputDepth": "Vui lòng nhập chiều cao(mm) thiết bị",
+        "inputWeight": "Vui lòng nhập trọng lượng(Kg) thiết bị",
+        "inputDiameter": "Vui lòng nhập đường kính(mm) thiết bị",
+        "inputDescription": "Vui lòng nhập thông tin mô tả",
+        "placeholderDiameter": "Nhập đường kính thiết bị",
+        "placeholderWeight": "Nhập trọng lượng thiết bị",
+        "placeholderDepth": "Nhập chiều cao thiết bị",
+        "placeholderWidth": "Nhập chiều rộng thiết bị",
+        "placeholderLength": "Nhập chiều dài thiết bị",
+        "placeholderCategory": "Chọn danh mục thiết bị",
+        "placeholderVendor": "Chọn nhà cung cấp thiết bị",
+        "placeholderName": "Nhập tên/model thiết bị",
+        "placeholderDescription": "Nhập thông tin mô tả thiết bị"
+      }
+    },
+    "pole" : {
+      "title": "Danh sách cột",
+      "name": "Tên cột",
+      "category": "Loại cột",
+      "height": "Chiều cao cột(m)",
+      "is_roof": "Trên mái?",
+      "house_height": "Chiều cao nhà (m)",
+      "diameter_body_tube": "ĐK ống cột (mm)",
+      "diameter_strut_tube": "ĐK ống thanh chống (mm)",
+      "diameter_top_tube": "ĐK ống thân mép trên (mm)",
+      "diameter_bottom_tube": "ĐK ống thân mép dưới (mm)",
+      "foot_size": "Kích thước chân (mm)",
+      "top_size": "Kích thước đỉnh (mm)",
+      "structure": "Cấu trúc cột",
+      "description": "Mô tả",
+      "confirmDelete": "Xác nhận xóa cột ",
+      "params": {
+        "title": "Thông số kỹ thuật",
+        "key": "Thông số",
+        "value": "Giá trị"
+      },
+      "form": {
+        "inputName": "Vui lòng nhập tên cột",
+        "inputCategory": "Vui lòng chọn loại cột",
+        "inputHeight": "Vui lòng nhập chiều cao cột (m)",
+        "inputIsRoof": "Vui lòng chọn trên mái",
+        "inputHouseHeight": "Vui lòng nhập chiều cao nhà (m)",
+        "inputDiameterBodyTube": "Vui lòng nhập đường kính ống cột (mm)",
+        "inputDiameterStrutTube": "Vui lòng nhập đường kính ống thanh chống (mm)",
+        "inputDiameterTopTube": "Vui lòng nhập đường kính ống thân mép trên (mm)",
+        "inputDiameterBottomTube": "Vui lòng nhập đường kính ống thân mép dưới (mm)",
+        "inputFootSize": "Vui lòng nhập kích thước chân (mm)",
+        "inputTopSize": "Vui lòng nhập kích thước đỉnh (mm)",
+        "inputStructure": "Vui lòng nhập cấu trúc",
+        "inputDescription": "Vui lòng nhập thông tin mô tả",
+        "placeholderCategory": "Chọn loại cột",
+        "placeholderName": "Nhập tên cột",
+        "placeholderDescription": "Nhập thông tin mô tả cột",
+        "placeholderStructure": "Nhập cấu trúc cột",
+        "placeholderTopSize": "Nhập kích thước đỉnh cột",
+        "placeholderFootSize": "Nhập kích thước chân cột",
+        "placeholderDiameterBottomTube": "Nhập đường kính ống thân mép dưới",
+        "placeholderDiameterTopTube": "Nhập đường kính ống thân mép trên",
+        "placeholderDiameterStrutTube": "Nhập đường kính ống thanh chống",
+        "placeholderDiameterBodyTube": "Nhập đường kính ống cột",
+        "placeholderHouseHeight": "Nhập chiều cao nhà",
+        "placeholderIsRoof": "Chọn trên mái",
+        "placeholderHeight": "Nhập chiều cao cột"
+      }
+    },
+    "form": {
+      "submit-button": {
+        "update": "Cập nhật",
+        "create": "Thêm mới"
+      },
+      "title": {
+        "update": "Cập nhật thông tin",
+        "create": "Thêm mới thông tin :name"
+      }
+
+
+    },
+    "station": {
+      "title": "Danh sách trạm",
+      "name": "Tên trạm",
+      "code": "Mã trạm",
+      "pole": "Cột",
+      "owner": "Người quản lý",
+      "address": "Địa chỉ",
+      "location": "Tọa độ",
+      "latitude": "Vĩ độ",
+      "longitude": "Kinh độ",
+
+      "description": "Mô tả",
+      "confirmDelete": "Xác nhận xóa trạm",
+      "form": {
+        "inputName": "Vui lòng nhập tên trạm",
+        "inputCode": "Vui lòng nhập mã trạm",
+        "inputAddress": "Vui lòng nhập địa chỉ trạm",
+        "inputDescription": "Vui lòng nhập thông tin mô tả",
+        "inputLocationLatitude": "Vui lòng nhập vĩ độ",
+        "inputLocationLongitude": "Vui lòng nhập kinh độ",
+        "placeholderLocationLatitude": "Nhập vĩ độ",
+        "placeholderLocationLongitude": "Nhập kinh độ",
+        "placeholderName": "Nhập tên trạm",
+        "placeholderCode": "Nhập mã trạm",
+        "placeholderAddress": "Nhập địa chỉ trạm",
+        "placeholderDescription": "Nhập thông tin mô tả trạm"
+      }
+    }
+  },
+  "address": {
+    "country": {
+      "title": "Danh sách quốc gia",
+      "name": "Tên quốc gia",
+      "code": "Mã quốc gia",
+      "description": "Mô tả",
+      "form": {
+        "selectName": "Vui lòng chọn quốc gia",
+        "placeholderName": "Chọn quốc gia"
+      }
+    },
+    "province": {
+      "name": "Tên tỉnh/thành phố",
+      "form": {
+        "selectName": "Vui lòng chọn tỉnh/thành phố",
+        "placeholderName": "Chọn tỉnh/thành phố"
+      }
+    },
+    "district": {
+      "name": "Tên quận/huyện",
+      "form": {
+        "selectName": "Vui lòng chọn quận/huyện",
+        "placeholderName": "Chọn quận/huyện"
+      }
+    },
+    "commune": {
+      "name": "Tên xã/phường",
+      "form": {
+        "selectName": "Vui lòng chọn xã/phường",
+        "placeholderName": "Chọn xã/phường"
+      }
+    },
+    "street": {
+      "name": "Tên đường, thôn",
+      "form": {
+        "inputStreet": "Vui lòng nhập thông tin chi tiết",
+        "placeholderStreet": "Nhập thông tin chi tiết"
+      }
+    }
+
+  }
+}
