@@ -1,0 +1,44 @@
+interface Window {
+  potreeViewer?: any; // Hoặc thay thế `any` bằng kiểu dữ liệu cụ thể nếu bạn biết loại của `potreeViewer`
+}
+
+declare namespace Potree {
+  class Viewer {
+    constructor(element: HTMLElement);
+    setEDLEnabled(enabled: boolean): void;
+    setFOV(fov: number): void;
+    loadSettingsFromURL(): void;
+    setBackground(color: string): void;
+    setPointBudget(budget: number): void;
+    useHQ: boolean;
+    compass: { setVisible(visible: boolean): void };
+    scene: {
+      addEventListener(event: string, callback: Function): void;
+    };
+  }
+
+  namespace ClipTask {
+    const SHOW_OUTSIDE: number;
+  }
+
+  namespace Utils {
+    function moveTo(a, b, c): any;
+    function getMeasurementIcon(e): string;
+  }
+
+  class BoxVolume {
+    position: any;
+    scale: any;
+    visible: any;
+  }
+
+  function loadPointCloud(a, b, c): any;
+
+  namespace PointSizeType {
+    const ADAPTIVE: any;
+  }
+
+  namespace PointShape {
+    const SQUARE: any;
+  }
+}

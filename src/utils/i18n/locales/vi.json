@@ -336,6 +336,7 @@
       "description": "Mô tả",
       "confirmDelete": "Xác nhận xóa thiết bị",
       "image": "Hình ảnh",
+      "quantity": "Số lượng",
       "params": {
         "title": "Thông số kỹ thuật",
         "key": "Thông số",
@@ -373,8 +374,8 @@
       "diameter_strut_tube": "ĐK ống thanh chống (mm)",
       "diameter_top_tube": "ĐK ống thân mép trên (mm)",
       "diameter_bottom_tube": "ĐK ống thân mép dưới (mm)",
-      "foot_size": "Kích thước chân (mm)",
-      "top_size": "Kích thước đỉnh (mm)",
+      "foot_size": "Kích thước chân",
+      "top_size": "Kích thước đỉnh",
       "structure": "Cấu trúc cột",
       "description": "Mô tả",
       "confirmDelete": "Xác nhận xóa cột ",
@@ -393,12 +394,13 @@
         "inputDiameterStrutTube": "Vui lòng nhập đường kính ống thanh chống (mm)",
         "inputDiameterTopTube": "Vui lòng nhập đường kính ống thân mép trên (mm)",
         "inputDiameterBottomTube": "Vui lòng nhập đường kính ống thân mép dưới (mm)",
-        "inputFootSize": "Vui lòng nhập kích thước chân (mm)",
-        "inputTopSize": "Vui lòng nhập kích thước đỉnh (mm)",
+        "inputFootSize": "Vui lòng nhập kích thước chân",
+        "inputTopSize": "Vui lòng nhập kích thước đỉnh",
         "inputStructure": "Vui lòng nhập cấu trúc",
         "inputDescription": "Vui lòng nhập thông tin mô tả",
         "placeholderCategory": "Chọn loại cột",
         "placeholderName": "Nhập tên cột",
+        "placeholderSelectName": "Chọn cột",
         "placeholderDescription": "Nhập thông tin mô tả cột",
         "placeholderStructure": "Nhập cấu trúc cột",
         "placeholderTopSize": "Nhập kích thước đỉnh cột",
@@ -410,6 +412,32 @@
         "placeholderHouseHeight": "Nhập chiều cao nhà",
         "placeholderIsRoof": "Chọn trên mái",
         "placeholderHeight": "Nhập chiều cao cột"
+      }
+    },
+    "pole-device": {
+      "x": "Tọa độ X",
+      "y": "Tọa độ Y",
+      "z": "Tọa độ Z",
+      "alpha": "Góc alpha",
+      "beta": "Góc beta",
+      "gama": "Góc gama",
+      "attached_at": "Ngày gắn thiết bị",
+        "confirmDelete": "Xác nhận xóa thiết bị khỏi cột",
+      "form": {
+        "inputX": "Vui lòng nhập tọa độ X",
+        "placeholderX": "Nhập tọa độ X",
+        "inputY": "Vui lòng nhập tọa độ Y",
+        "placeholderY": "Nhập tọa độ Y",
+        "inputZ": "Vui lòng nhập tọa độ Z",
+        "placeholderZ": "Nhập tọa độ Z",
+        "inputAlpha": "Vui lòng nhập góc alpha",
+        "placeholderAlpha": "Nhập góc alpha",
+        "inputBeta": "Vui lòng nhập góc beta",
+        "placeholderBeta": "Nhập góc beta",
+        "inputGama": "Vui lòng nhập góc gama",
+        "placeholderGama": "Nhập góc gama",
+        "inputAttachedAt": "Vui lòng nhập ngày gắn thiết bị",
+        "placeholderAttachedAt": "Nhập ngày gắn thiết bị"
       }
     },
     "form": {
@@ -434,7 +462,6 @@
       "location": "Tọa độ",
       "latitude": "Vĩ độ",
       "longitude": "Kinh độ",
-
       "description": "Mô tả",
       "confirmDelete": "Xác nhận xóa trạm",
       "form": {

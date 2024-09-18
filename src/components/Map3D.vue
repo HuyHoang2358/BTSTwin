@@ -12,7 +12,7 @@ import 'cesium/Build/Cesium/Widgets/widgets.css';
 
 onMounted(async () => {
   Cesium.Ion.defaultAccessToken =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZDIzMjBlNi05MTE1LTQ5NDgtYjI0OC0zNDViYTI0ZmI3MDQiLCJpZCI6MTgxOTA4LCJpYXQiOjE3MDE0MTU1NDF9.DtW0mm1U-qaC0uXMGeWY9lwEL-4whtaBAqVr5bfAiz4';
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZGE1ZjFkMi1lODkzLTQ1NDgtYWRjZi04OTA2Y2Y5MTRlNTciLCJpZCI6MjM5NDgyLCJpYXQiOjE3MjU1ODc3NjZ9.imrKQey9J0KQ5LbbJviN94MQHzTqr7vZUMJ3h4EX0T0';
 
   const viewer = new Cesium.Viewer('cesiumContainer', {
     terrainProvider: await Cesium.CesiumTerrainProvider.fromIonAssetId(1),
@@ -43,7 +43,7 @@ onMounted(async () => {
   viewer.scene.globe.depthTestAgainstTerrain = true;
 
   try {
-    const tileset = await Cesium.Cesium3DTileset.fromIonAssetId(2716355);
+    const tileset = await Cesium.Cesium3DTileset.fromIonAssetId(2732343);
     viewer.scene.primitives.add(tileset);
     await viewer.zoomTo(tileset);
 

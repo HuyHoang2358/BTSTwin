@@ -1,13 +1,13 @@
 <template>
   <div
     v-if="modelStore.activeTool === 'images'"
-    class="bg-[#303030] w-[260px] overflow-auto"
+    class="flex flex-col bg-[#303030] w-[260px]"
   >
     <div class="flex justify-between items-center px-3 py-4">
       <a-typography-text class="text-base text-[#888]">
         Hình ảnh
         <br />
-        {{ images.length }} item(s)
+        {{ dataImage2D?.data.length }} item(s)
       </a-typography-text>
     </div>
     <div class="px-3 mb-4">
@@ -22,54 +22,63 @@
         </template>
       </a-input>
     </div>
-    <div
-      v-for="(item, index) in images"
-      :key="index"
-      :class="[
-        'flex flex-row items-center justify-between cursor-pointer pr-2',
-        item === modelStore.selectedImage && 'bg-[#38536d]',
-      ]"
-      @click="onChangeImage(item)"
-    >
-      <a-typography-text class="text-white text-sm ml-3">
-        {{ item }}
-      </a-typography-text>
-      <a-button
-        @click="null"
-        ghost
-        class="p-0 m-0 border-none"
+    <div class="flex flex-col flex-1 overflow-auto">
+      <div
+        v-for="(item, index) in dataImage2D?.data"
+        :key="index"
+        :class="[
+          'flex flex-row items-center justify-between cursor-pointer pr-2',
+          item === modelStore.selectedImage && 'bg-[#38536d]',
+        ]"
+        @click="onChangeImage(item)"
       >
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 16 16"
-          xmlns="http://www.w3.org/2000/svg"
-          preserveAspectRatio="xMidYMid meet"
-          focusable="false"
+        <a-typography-text class="text-white text-sm ml-3">
+          {{ item.fileName }}
+        </a-typography-text>
+        <a-button
+          @click="null"
+          ghost
+          class="p-0 m-0 border-none"
         >
-          <path
-            fill="#888888"
-            d="M8 3a8 8 0 0 0-7 5 8 8 0 0 0 7 5 8 8 0 0 0 7-5 8 8 0 0 0-7-5Zm0 8a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"
-          ></path>
-          <path
-            fill="#888888"
-            d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"
-          ></path>
-        </svg>
-      </a-button>
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            xmlns="http://www.w3.org/2000/svg"
+            preserveAspectRatio="xMidYMid meet"
+            focusable="false"
+          >
+            <path
+              fill="#888888"
+              d="M8 3a8 8 0 0 0-7 5 8 8 0 0 0 7 5 8 8 0 0 0 7-5 8 8 0 0 0-7-5Zm0 8a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"
+            ></path>
+            <path
+              fill="#888888"
+              d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"
+            ></path>
+          </svg>
+        </a-button>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useModelStore } from '@/stores/model';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import IconSearchInput from '@/components/icons/home/IconSearchInput.vue';
-import cameraData from '@/views/camera_pose.json';
 import { useChangeImage } from '@/potree/hooks/useChangeImage';
-const images = Object.keys(cameraData);
+import { useRoute } from 'vue-router';
+import { useGetImage2D } from '@/services/hooks/useBTS';
 
 const searchValue = ref<string>('');
+
+const route = useRoute();
+
+const { data: dataImage2D } = useGetImage2D(
+  computed(() => route.query.id as string),
+  computed(() => !!route.query.id),
+);
 
 const modelStore = useModelStore();
 const { onChangeImage } = useChangeImage();

@@ -9,7 +9,9 @@ import {
   DEVICE_PATH,
   CATEGORY_VENDOR_PATH,
   POLE_PATH,
-  CATEGORY_WINDY_AREA_PATH, STATION_PATH
+  CATEGORY_WINDY_AREA_PATH,
+  STATION_PATH,
+  STATION_DETAIL_PATH,
 } from '@/router/routePath';
 
 import HomeView from '@/views/HomeView.vue';
@@ -41,6 +43,7 @@ import Vendor from '@/views/admin/category/Vendor.vue';
 import Pole from '@/views/admin/data/Pole.vue';
 import WindyArea from '@/views/admin/category/WindyArea.vue';
 import Station from '@/views/admin/data/Station.vue';
+import StationDetail from '@/views/admin/data/StationDetail.vue';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -95,6 +98,11 @@ const router = createRouter({
         {
           path: STATION_PATH,
           component: Station,
+        },
+        {
+          name: 'station-detail',
+          path: STATION_DETAIL_PATH,
+          component: StationDetail,
         },
 
         {

@@ -2,11 +2,11 @@
   <header
     class="bg-[#212121] flex flex-row justify-between items-center w-full h-[56px] pl-3.5 pr-2.5"
   >
-    <a-image
+    <img
       src="/icons/ViettelAI-2023.svg"
       :width="105"
       :height="37"
-      :preview="false"
+      alt="logo-viettel"
     />
     <div class="flex flex-row items-center dark-form">
       <a-popover
@@ -53,11 +53,11 @@
           <div class="flex items-center">
             <IconProfile class="text-white mr-2" />
             <div class="flex flex-col">
-              <a-typography-text class="text-[#FAFAFA] text-xs font-medium">
+              <a-typography-text class="text-white text-xs font-medium">
                 {{ profileData?.data?.name || 'Tên người dùng' }}
               </a-typography-text>
               <a-typography-text
-                class="text-[#7D7D7D] text-start text-xs text-[10px] font-medium whitespace-nowrap overflow-hidden w-12 overflow-ellipsis"
+                class="text-white text-start text-xs text-[10px] font-medium whitespace-nowrap overflow-hidden w-12 overflow-ellipsis"
               >
                 {{ profileData?.data?.profile?.title?.name || 'Vai trò' }}
               </a-typography-text>
@@ -68,16 +68,16 @@
           <a-menu>
             <a-menu-item @click="onNavigateToDashBoard">
               <div class="flex items-center my-2">
-                <IconInfoAccount class="mr-3 text-[#201C1D]" />
-                <a-typography-text class="text-[#201C1D] font-normal text-xs">
+                <IconInfoAccount class="mr-3 text-white" />
+                <a-typography-text class="text-white font-normal text-xs">
                   Trang quản trị hệ thống
                 </a-typography-text>
               </div>
             </a-menu-item>
             <a-menu-item @click="onLogout">
               <div class="flex items-center my-2">
-                <IconLogOutAccount class="mr-3 text-[#201C1D]" />
-                <a-typography-text class="text-[#201C1D] font-normal text-xs">
+                <IconLogOutAccount class="mr-3 text-white" />
+                <a-typography-text class="text-white font-normal text-xs">
                   Đăng xuất
                 </a-typography-text>
               </div>

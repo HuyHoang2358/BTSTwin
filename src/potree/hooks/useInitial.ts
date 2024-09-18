@@ -1,11 +1,44 @@
-import { onMounted } from 'vue';
-import objectsData from '@/views/tower_metadata.json';
+import { computed, onMounted, watch } from 'vue';
 import * as THREE from 'three';
-import cameraData from '@/views/camera_pose.json';
 import { useModelStore } from '@/stores/model';
+import { useRoute } from 'vue-router';
+import { useBTSDetail, useGetImage2D, useGetInventory } from '@/services/hooks/useBTS';
+import type { Image2D, Inventory } from '@/services/apis/bts';
 
 export const useInitial = () => {
   const modelStore = useModelStore();
+
+  const route = useRoute();
+
+  const { data: dataDetail } = useBTSDetail(
+    computed(() => route.query.id as string),
+    computed(() => !!route.query.id),
+  );
+
+  const { data: dataInventory } = useGetInventory(
+    computed(() => route.query.id as string),
+    computed(() => !!route.query.id),
+  );
+
+  const { data: dataImage2D } = useGetImage2D(
+    computed(() => route.query.id as string),
+    computed(() => !!route.query.id),
+  );
+
+  const resetState = () => {
+    modelStore.currentMeasurement = undefined;
+    modelStore.measurements = [];
+    modelStore.activeTool = undefined;
+    modelStore.selectedInventory = undefined;
+    modelStore.selectedImage = undefined;
+  };
+
+  watch(
+    () => route.query.id,
+    () => {
+      resetState();
+    },
+  );
 
   const onMeasurementAdded = (e: any) => {
     modelStore.currentMeasurement = e.measurement;
@@ -13,48 +46,49 @@ export const useInitial = () => {
     modelStore.measurements.push(e.measurement);
   };
 
-  const addCameraToScene = (potreeViewer: any, cameraData: any, key: any) => {
-    const data = cameraData[key];
-    const position = new THREE.Vector3(...data.cam_cent);
+  const addCameraToScene = (image2D: Image2D) => {
+    const data = image2D.cameraPose;
+    const camCenter = JSON.parse(data.camCent);
+    const eulerAngle = JSON.parse(data.eulerAngle);
+    const position = new THREE.Vector3(...camCenter);
     const rotation = new THREE.Euler(
-      THREE.MathUtils.degToRad(data.euler_angle[0]),
-      THREE.MathUtils.degToRad(data.euler_angle[1]),
-      THREE.MathUtils.degToRad(data.euler_angle[2]),
+      THREE.MathUtils.degToRad(eulerAngle[0]),
+      THREE.MathUtils.degToRad(eulerAngle[1]),
+      THREE.MathUtils.degToRad(eulerAngle[2]),
       'XYZ',
     );
 
-    // Create a cone geometry
-    const geometry = new THREE.ConeGeometry(0.1, 0.15, 8); // radius, height, radialSegments
-    const material = new THREE.MeshBasicMaterial({
+    // Create a box to represent orientation
+    const boxGeometry = new THREE.BoxGeometry(0.1, 0.1, 0.2);
+    const boxMaterial = new THREE.MeshBasicMaterial({
       color: 0xffff00,
       transparent: true,
       opacity: 0.5,
       side: THREE.DoubleSide,
     });
 
-    const cone = new THREE.Mesh(geometry, material);
+    const box = new THREE.Mesh(boxGeometry, boxMaterial);
 
-    cone.position.copy(position);
-    cone.rotation.copy(rotation);
+    // Set position and rotation
+    box.position.copy(position);
+    box.rotation.copy(rotation);
 
-    const additionalRotation = new THREE.Euler(THREE.MathUtils.degToRad(-90), 0, 0, 'XYZ');
-    cone.rotation.x += additionalRotation.x;
-
-    // Add the cone to the scene
-    cone.userData = {
-      key,
-      data,
+    box.userData = {
+      data: image2D,
       type: 'camera_pose',
     };
-    potreeViewer.scene.scene.add(cone);
+
+    // Add to scene
+    window.potreeViewer.scene.scene.add(box);
   };
 
-  const loadInventory = (potreeViewer: any) => {
+  const loadInventory = () => {
     const boxMeshs =
-      objectsData?.objects?.map((object) => {
+      dataInventory.value?.data?.map((object) => {
+        const vertices = JSON.parse(object.vertices);
         // Define vertices of the Antenna
-        const antennaVertices = object.vertices.map(
-          (item) => new THREE.Vector3(item[0], item[1], item[2]),
+        const antennaVertices = vertices.map(
+          (item: number[]) => new THREE.Vector3(item[0], item[1], item[2]),
         );
 
         // Compute bounding box
@@ -67,7 +101,7 @@ export const useInitial = () => {
         // Create a material with transparency
         const boxMaterial = new THREE.MeshBasicMaterial({
           color: 0x83bb95,
-          opacity: 0.5, // Độ trong suốt
+          opacity: 0.3, // Độ trong suốt
           transparent: true, // Bật chế độ trong suốt
           depthWrite: false, // Ngăn chặn việc ghi vào buffer độ sâu
           side: THREE.DoubleSide, // Hiển thị cả hai mặt
@@ -80,23 +114,13 @@ export const useInitial = () => {
         const boxCenter = box.getCenter(new THREE.Vector3());
         boxMesh.position.set(boxCenter.x, boxCenter.y, boxCenter.z);
 
-        let normal;
-        if (boxSize.x >= boxSize.y && boxSize.x >= boxSize.z) {
-          normal = new THREE.Vector3(1, 0, 0); // Mặt lớn song song với trục X
-        } else if (boxSize.y >= boxSize.x && boxSize.y >= boxSize.z) {
-          normal = new THREE.Vector3(0, 1, 0); // Mặt lớn song song với trục Y
-        } else {
-          normal = new THREE.Vector3(0, 0, 1); // Mặt lớn song song với trục Z
-        }
-
         boxMesh.userData = {
           type: 'inventory',
           boxCenter,
-          normal,
           object,
         };
 
-        potreeViewer.scene.scene.add(boxMesh);
+        window.potreeViewer.scene.scene.add(boxMesh);
 
         // Create and configure Potree.BoxVolume
         const volume = new Potree.BoxVolume();
@@ -108,7 +132,7 @@ export const useInitial = () => {
         volume.scale.set(boxSize.x, boxSize.y, boxSize.z); // Convert vertices to THREE.Vector3
         // Thêm volume vào cảnh
         volume.visible = false;
-        potreeViewer.scene.addVolume(volume);
+        window.potreeViewer.scene.addVolume(volume);
 
         return {
           id: object.id,
@@ -117,7 +141,7 @@ export const useInitial = () => {
         };
       }) || [];
 
-    modelStore.objectGroup = objectsData.objects.reduce((acc: any, object: any) => {
+    modelStore.objectGroup = dataInventory.value?.data?.reduce((acc: any, object: Inventory) => {
       if (!acc[object.name]) {
         acc[object.name] = [];
       }
@@ -133,43 +157,58 @@ export const useInitial = () => {
   };
 
   onMounted(() => {
+    modelStore.loadingModel = true;
     const viewerElement = document.getElementById('potree_render_area');
+    if (!viewerElement) return;
     window.potreeViewer = new Potree.Viewer(viewerElement);
 
-    potreeViewer.setEDLEnabled(true);
-    potreeViewer.setFOV(60);
-    potreeViewer.loadSettingsFromURL();
-    potreeViewer.setBackground('black');
-    potreeViewer.setPointBudget(1_000_000);
-    potreeViewer.useHQ = true;
-    potreeViewer.compass.setVisible(true);
+    window.potreeViewer.setEDLEnabled(true);
+    window.potreeViewer.setFOV(60);
+    window.potreeViewer.loadSettingsFromURL();
+    window.potreeViewer.setBackground('black');
+    window.potreeViewer.setPointBudget(1_000_000);
+    window.potreeViewer.useHQ = true;
+    window.potreeViewer.compass.setVisible(true);
 
-    loadInventory(potreeViewer);
+    window.potreeViewer.scene.addEventListener('measurement_added', onMeasurementAdded);
+  });
+  resetState();
 
-    Potree.loadPointCloud(
-      'http://192.168.101.90:9000/public/BTS/HNI4067/potree/metadata.json',
-      'Lion',
-      (e: any) => {
-        const scene = potreeViewer.scene;
-        const pointCloud = e.pointcloud;
+  let loaded = false;
 
-        // Thêm pointCloud vào cảnh
-        scene.addPointCloud(pointCloud);
+  watch([dataDetail, dataInventory, dataImage2D], () => {
+    if (dataDetail.value && dataInventory.value && dataImage2D.value && !loaded) {
+      loaded = true;
+      loadInventory();
 
-        // Cài đặt camera
-        scene.view.yaw = 0;
-        scene.view.pitch = 0;
-        potreeViewer.fitToScreen(0.6);
+      Potree.loadPointCloud(
+        dataDetail.value?.data?.modelLink,
+        dataDetail.value?.data?.station,
+        (e: any) => {
+          const scene = window.potreeViewer.scene;
+          const pointCloud = e.pointcloud;
 
-        // Set clip task
-        potreeViewer.setClipTask(Potree.ClipTask.SHOW_OUTSIDE);
-      },
-    );
+          // Thêm pointCloud vào cảnh
+          scene.addPointCloud(pointCloud);
 
-    Object.keys(cameraData).forEach((key) => {
-      addCameraToScene(potreeViewer, cameraData, key);
-    });
+          const material = e.pointcloud.material;
+          material.size = 1;
 
-    potreeViewer.scene.addEventListener('measurement_added', onMeasurementAdded);
+          // Cài đặt camera
+          scene.view.yaw = 0;
+          scene.view.pitch = 0;
+          window.potreeViewer.fitToScreen(0.6);
+
+          // Set clip task
+          window.potreeViewer.setClipTask(Potree.ClipTask.SHOW_OUTSIDE);
+
+          modelStore.loadingModel = false;
+        },
+      );
+
+      dataImage2D.value?.data.forEach((item) => {
+        addCameraToScene(item);
+      });
+    }
   });
 };

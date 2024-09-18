@@ -4,7 +4,7 @@
     :data-source="dataSource"
     :loading="isLoading"
     size="middle"
-    :scroll="{y: 520 }"
+    :scroll="{ y: 520 }"
     @change="handleTableChange"
     :pagination="pagination"
     data-test="table"
@@ -46,27 +46,42 @@
         <span>{{ index + 1 }}</span>
       </template>
       <template v-if="column.dataIndex === 'address'">
-        <span>{{record.address.commune.name + ", " + record.address.district.name + ", " + record.address.province.name}}</span>
+        <span>
+          {{
+            record.address.commune.name +
+            ', ' +
+            record.address.district.name +
+            ', ' +
+            record.address.province.name
+          }}
+        </span>
       </template>
       <template v-if="column.dataIndex === 'location'">
-        <p class="m-0">{{t('admin.station.latitude') + ": " + record.location.latitude }}</p>
-        <p class="m-0">{{t('admin.station.longitude') + ": " + record.location.longitude }}</p>
+        <p class="m-0">{{ t('admin.station.latitude') + ': ' + record.location.latitude }}</p>
+        <p class="m-0">{{ t('admin.station.longitude') + ': ' + record.location.longitude }}</p>
       </template>
       <template v-if="column.dataIndex === 'poles'">
-        <span> 1</span>
+        <span>{{ record.poles.length + ' cột' }}</span>
       </template>
       <template v-if="column.dataIndex === 'owner'">
         <span>Nguyễn văn X</span>
       </template>
       <template v-if="column.dataIndex === 'action'">
         <div class="flex flex-row items-center gap-x-4">
+          <!-- Show params -->
+          <a-button
+            class="bg-[#F1F1F2] p-1.5 border-none"
+            @click="showStationDetail(record.id)"
+            :icon="h(IconEye)"
+          />
+
           <a-button
             class="bg-[#F1F1F2] p-1.5 border-none"
             @click="onEdit(record)"
             :icon="h(IconEdit)"
           />
           <a-popconfirm
-            :title="$t('admin.device.confirmDelete')"
+            :title="$t('admin.station.confirmDelete')"
             @confirm="confirm(record.id)"
           >
             <a-button
@@ -78,9 +93,6 @@
       </template>
     </template>
   </a-table>
-
-
-
 
   <ModalHandleStation
     :open="open"
@@ -104,27 +116,50 @@ import { useTable } from '@/utils/hooks/useTable';
 import { useTableSearch } from '@/utils/hooks/useTableSearch';
 import { useSuccessHandler } from '@/services/hooks/useSuccessHandler';
 import { useErrorHandler } from '@/services/hooks/useErrorHandler';
-import { useDeleteDevice } from '@/services/hooks/useDevice';
 
-import { useMutationStationSuccess, useStations } from '@/services/hooks/useStation';
+import {
+  useDeleteStation,
+  useMutationStationSuccess,
+  useStations,
+} from '@/services/hooks/useStation';
 import type { Station } from '@/services/apis/station';
 import ModalHandleStation from '@/components/admin/data/ModalHandleStation.vue';
+import IconEye from '@/components/icons/IconEye.vue';
+import router from '@/router';
 defineProps<{
   testMode?: boolean;
 }>();
 
 const { t } = useI18n();
-const { mutate: deleteDevice } = useDeleteDevice();
+const { mutate: deleteStation } = useDeleteStation();
 const { onError } = useErrorHandler();
 const { handleSuccess } = useSuccessHandler();
 const { invalidateQueries } = useMutationStationSuccess();
+// TODO: handel view detail
+const showStationDetail = (id: number) => {
+  // redirect to detail page
+  console.log(id);
+  router.push({
+    name: 'station-detail',
+    query: {
+      id: id,
+    },
+  });
+};
 // TODO: handle modal edit and add
 const selectedItem = ref<Station>();
 const open = ref<boolean>(false);
-const showModal = () => {open.value = true;};
-const onAdd = () => {selectedItem.value = undefined;showModal();}
-const onEdit = (item: Station) => {selectedItem.value = item;showModal();};
-
+const showModal = () => {
+  open.value = true;
+};
+const onAdd = () => {
+  selectedItem.value = undefined;
+  showModal();
+};
+const onEdit = (item: Station) => {
+  selectedItem.value = item;
+  showModal();
+};
 
 // TODO: Fetch info
 const { perPage, page, handleTableChange, pagination, sort, filter } = useTable(
@@ -143,13 +178,12 @@ watch(filter, () => {
   refetch();
 });
 
-
 const dataSource: ComputedRef<Station[]> = computed(() => data?.value?.data?.data || []);
 
 // TODO: Delete Station
 const confirm = (id: number) => {
   return new Promise((resolve) => {
-    deleteDevice(id, {
+    deleteStation(id, {
       onSuccess(data) {
         handleSuccess(data);
         invalidateQueries();
@@ -167,8 +201,8 @@ const confirm = (id: number) => {
 const columns = computed(() => [
   {
     title: t('index'),
-    align: "center",
-    width: 50
+    align: 'center',
+    width: 50,
   },
   {
     title: t('admin.station.code'),
@@ -191,7 +225,7 @@ const columns = computed(() => [
   {
     title: t('admin.station.pole'),
     dataIndex: 'poles',
-    align: "center",
+    align: 'center',
   },
   {
     title: t('admin.station.owner'),

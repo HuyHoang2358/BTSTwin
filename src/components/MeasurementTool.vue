@@ -7,6 +7,7 @@
           modelStore.activeTool === 'angle' ||
           modelStore.activeTool === 'distance' ||
           modelStore.activeTool === 'area' ||
+          modelStore.activeTool === 'height' ||
           modelStore.activeTool === 'circle' ||
           modelStore.activeTool === 'azimuth' ||
           modelStore.activeTool === 'annotation'
@@ -34,7 +35,7 @@
     <img
       src="/icons/angle.png"
       style="width: 32px; height: 32px"
-      :class="['button-icon', modelStore.activeTool === 'angle' && 'bg-[#38536d]']"
+      :class="['button-measure-icon', modelStore.activeTool === 'angle' && 'bg-[#38536d]']"
       title="Đo góc"
       @click="onMeasureAngle"
       alt="angle"
@@ -42,7 +43,7 @@
     <img
       src="/icons/distance.svg"
       style="width: 32px; height: 32px"
-      :class="['button-icon', modelStore.activeTool === 'distance' && 'bg-[#38536d]']"
+      :class="['button-measure-icon', modelStore.activeTool === 'distance' && 'bg-[#38536d]']"
       title="Đo khoảng cách"
       @click="onMeasureDistance"
       alt="distance"
@@ -50,7 +51,7 @@
     <img
       src="/icons/height.svg"
       style="width: 32px; height: 32px"
-      :class="['button-icon', modelStore.activeTool === 'height' && 'bg-[#38536d]']"
+      :class="['button-measure-icon', modelStore.activeTool === 'height' && 'bg-[#38536d]']"
       title="Đo chiều cao"
       @click="onMeasureHeight"
       alt="height"
@@ -58,7 +59,7 @@
     <img
       src="/icons/circle.svg"
       style="width: 32px; height: 32px"
-      :class="['button-icon', modelStore.activeTool === 'circle' && 'bg-[#38536d]']"
+      :class="['button-measure-icon', modelStore.activeTool === 'circle' && 'bg-[#38536d]']"
       title="Đo vòng tròn"
       @click="onMeasureCircle"
       alt="circle"
@@ -67,14 +68,14 @@
       src="/icons/azimuth.svg"
       style="width: 32px; height: 32px"
       title="Phương vị"
-      :class="['button-icon', modelStore.activeTool === 'azimuth' && 'bg-[#38536d]']"
+      :class="['button-measure-icon', modelStore.activeTool === 'azimuth' && 'bg-[#38536d]']"
       @click="onMeasureAzimuth"
       alt="azimuth"
     />
     <img
       src="/icons/area.svg"
       style="width: 32px; height: 32px"
-      :class="['button-icon', modelStore.activeTool === 'area' && 'bg-[#38536d]']"
+      :class="['button-measure-icon', modelStore.activeTool === 'area' && 'bg-[#38536d]']"
       title="Đo diện tích"
       @click="onMeasureArea"
       alt="area"
@@ -82,15 +83,26 @@
     <img
       src="/icons/annotation.svg"
       style="width: 32px; height: 32px"
-      :class="['button-icon', modelStore.activeTool === 'annotation' && 'bg-[#38536d]']"
+      :class="['button-measure-icon', modelStore.activeTool === 'annotation' && 'bg-[#38536d]']"
       title="Ghi chú"
       @click="onInsertAnnotation"
       alt="annotation"
     />
     <img
+      src="/icons/clip_volume.svg"
+      style="width: 32px; height: 32px"
+      :class="[
+        'button-measure-icon',
+        modelStore.activeTool === 'clip_volume_inside' && 'bg-[#38536d]',
+      ]"
+      title="Clip volume inside box"
+      @click="onInsertClipVolumeInside"
+      alt="clip_volume"
+    />
+    <img
       src="/icons/reset_tools.svg"
       style="width: 32px; height: 32px"
-      class="button-icon rounded-b"
+      class="button-measure-icon rounded-b"
       title="Xóa toàn bộ công cụ đo"
       @click="onRemoveAllMeasurements"
       alt="reset_tools"
@@ -179,6 +191,11 @@ const onMeasureAzimuth = () => {
 const onInsertAnnotation = () => {
   modelStore.activeTool = 'annotation';
   window.potreeViewer.annotationTool.startInsertion();
+};
+
+const onInsertClipVolumeInside = () => {
+  modelStore.activeTool = 'clip_volume_inside';
+  window.potreeViewer.volumeTool.startInsertion({ clip: true });
 };
 
 const onRemoveAllMeasurements = () => {

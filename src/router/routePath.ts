@@ -41,3 +41,4 @@ export const CATEGORY_WINDY_AREA_PATH = 'windy-areas';
 export const DEVICE_PATH = 'devices';
 export const POLE_PATH = 'poles';
 export const STATION_PATH = 'stations';
+export const STATION_DETAIL_PATH = 'station';

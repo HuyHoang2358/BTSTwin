@@ -43,7 +43,7 @@
         <p class="text-center">{{ (currentPage - 1) * pageSize + index + 1 }}</p>
       </template>
       <template v-if="column.title === $t('admin.role.function')">
-        <div class="max-h-64 overflow-x-scroll">
+        <div class="max-h-64 overflow-auto">
           <a-typography-text
             v-for="item in record.permissions"
             :key="item"

@@ -34,11 +34,18 @@
       class="ml-4"
     >
       <a-descriptions-item
+        label="Id"
+        :labelStyle="descriptionStyle"
+        :contentStyle="descriptionStyle"
+      >
+        {{ modelStore.selectedInventory.id }}
+      </a-descriptions-item>
+      <a-descriptions-item
         label="Loại thiết bị"
         :labelStyle="descriptionStyle"
         :contentStyle="descriptionStyle"
       >
-        Tên loại thiết bị
+        {{ modelStore.selectedInventory.model }}
       </a-descriptions-item>
       <a-descriptions-item
         label="Nghiêng xuống"
@@ -52,7 +59,7 @@
         :labelStyle="descriptionStyle"
         :contentStyle="descriptionStyle"
       >
-        0°
+        {{ modelStore.selectedInventory?.deviceAzimuth || 0 }} °
       </a-descriptions-item>
       <a-descriptions-item
         label="Dọi thẳng"
@@ -66,28 +73,28 @@
         :labelStyle="descriptionStyle"
         :contentStyle="descriptionStyle"
       >
-        0m
+        {{ modelStore.selectedInventory?.modelWidth || 0 }} mm
       </a-descriptions-item>
       <a-descriptions-item
         label="Chiều cao"
         :labelStyle="descriptionStyle"
         :contentStyle="descriptionStyle"
       >
-        0m
+        {{ modelStore.selectedInventory?.modelHeight || 0 }} mm
       </a-descriptions-item>
       <a-descriptions-item
         label="Độ sâu"
         :labelStyle="descriptionStyle"
         :contentStyle="descriptionStyle"
       >
-        0m
+        {{ modelStore.selectedInventory?.modelDepth || 0 }} mm
       </a-descriptions-item>
       <a-descriptions-item
         label="Độ cao (L)"
         :labelStyle="descriptionStyle"
         :contentStyle="descriptionStyle"
       >
-        0m
+        {{ modelStore.selectedInventory?.deviceHeight || 0 }} mm
       </a-descriptions-item>
       <a-descriptions-item
         label="Tọa độ"
@@ -171,7 +178,7 @@ const editableStr = ref(modelStore.selectedInventory?.name);
 watch(
   () => modelStore.selectedInventory,
   () => {
-    editableStr.value = modelStore.selectedInventory.name;
+    editableStr.value = modelStore.selectedInventory?.name;
   },
 );
 

@@ -38,7 +38,6 @@
           v-model:value="formState.device_category_id"
           :options="categoryOptions"
           :allow-clear="true"
-
           :placeholder="t('admin.device.form.placeholderCategory')"
         />
       </a-form-item>
@@ -74,7 +73,6 @@
               :placeholder="t('admin.device.form.placeholderLength')"
             />
           </a-form-item>
-
         </a-col>
         <a-col :span="12">
           <a-form-item
@@ -90,7 +88,6 @@
               :placeholder="t('admin.device.form.placeholderWidth')"
             />
           </a-form-item>
-
         </a-col>
         <a-col :span="12">
           <a-form-item
@@ -106,7 +103,6 @@
               :placeholder="t('admin.device.form.placeholderDepth')"
             />
           </a-form-item>
-
         </a-col>
         <a-col :span="12">
           <a-form-item
@@ -122,7 +118,6 @@
               :placeholder="t('admin.device.form.placeholderWeight')"
             />
           </a-form-item>
-
         </a-col>
         <a-col :span="24">
           <a-form-item
@@ -138,12 +133,11 @@
               :placeholder="t('admin.device.form.placeholderDiameter')"
             />
           </a-form-item>
-
         </a-col>
       </a-row>
       <div>
         <div class="flex justify-between items-center">
-          <div >Thông số kỹ thuật</div>
+          <div>Thông số kỹ thuật</div>
           <div class="flex justify-self-end">
             <a-button
               type="primary"
@@ -159,26 +153,31 @@
           style="display: flex; margin-bottom: 8px"
           align="baseline"
         >
-
           <a-form-item
             :name="['params', index, 'key']"
             :rules="{
-          required: true,
-          message: 'Nhập tên thông số',
-        }"
+              required: true,
+              message: 'Nhập tên thông số',
+            }"
             class="my-0.5"
           >
-            <a-input v-model:value="param.key" placeholder="Nhập tên thông số" />
+            <a-input
+              v-model:value="param.key"
+              placeholder="Nhập tên thông số"
+            />
           </a-form-item>
           <a-form-item
             :name="['params', index, 'value']"
             :rules="{
-          required: true,
-          message: 'Nhập giá trị thông số',
-        }"
+              required: true,
+              message: 'Nhập giá trị thông số',
+            }"
             class="my-0.5"
           >
-            <a-input v-model:value="param.value" placeholder="Nhập giá trị thông số" />
+            <a-input
+              v-model:value="param.value"
+              placeholder="Nhập giá trị thông số"
+            />
           </a-form-item>
 
           <a-button
@@ -220,7 +219,7 @@
           @preview="handlePreview"
           @change="handleChange"
         >
-          <div v-if="uploadFiles && uploadFiles.length <1">
+          <div v-if="uploadFiles && uploadFiles.length < 1">
             <plus-outlined />
             <div style="margin-top: 8px">Tải ảnh</div>
           </div>
@@ -245,7 +244,7 @@
 <script lang="ts" setup>
 import { useConfigStore } from '@/stores/config';
 import { ref, reactive, computed, h } from 'vue';
-import { type FormInstance, message, type UploadChangeParam} from 'ant-design-vue';
+import { type FormInstance, message, type UploadChangeParam } from 'ant-design-vue';
 import IconCloseModalGrey from '@/components/icons/IconCloseModalGrey.vue';
 import { watch } from 'vue';
 import { useErrorHandler } from '@/services/hooks/useErrorHandler';
@@ -257,7 +256,11 @@ import { compareString } from '@/utils/helpers';
 import IconTrash from '@/components/icons/IconTrash.vue';
 import IconAddCircle from '@/components/icons/IconAddCircle.vue';
 import { PlusOutlined } from '@ant-design/icons-vue';
-import { useCreateDevice, useMutationDeviceSuccess, useUpdateDevice } from '@/services/hooks/useDevice';
+import {
+  useCreateDevice,
+  useMutationDeviceSuccess,
+  useUpdateDevice,
+} from '@/services/hooks/useDevice';
 
 const props = defineProps<{
   open: boolean;
@@ -273,17 +276,19 @@ const removeParam = (item: DeviceParam) => {
   if (index && index >= 0) formState.params?.splice(index, 1);
 };
 
-const addParam = () => {formState.params?.push({ key: '', value: '', id: Date.now(), });};
+const addParam = () => {
+  formState.params?.push({ key: '', value: '', id: Date.now() });
+};
 
 // TODO handle Form
 type DeviceForm = {
   id?: string;
-} & Partial<DeviceData>  ;
+} & Partial<DeviceData>;
 
 const formRef = ref<FormInstance>();
 
 const formState = reactive<DeviceForm>({
-/*  name: '',
+  /*  name: '',
   model_url: '',
   length: undefined,
   width: undefined,
@@ -311,7 +316,7 @@ const { handleSuccess } = useSuccessHandler();
 watch(
   () => props.open,
   () => {
-    console.log("currentDevice", props.currentDevice)
+    console.log('currentDevice', props.currentDevice);
     formState.name = props.currentDevice?.name || undefined;
     formState.images = props.currentDevice?.images || undefined;
     formState.model_url = props.currentDevice?.model_url || undefined;
@@ -322,30 +327,33 @@ watch(
     formState.diameter = props.currentDevice?.diameter || undefined;
     formState.description = props.currentDevice?.description || undefined;
     formState.device_category_id = props.currentDevice?.category.id.toString() || undefined;
-    formState.vendor_id= props.currentDevice?.vendor.id.toString() || undefined;
-    formState.params = props.currentDevice?.params?.map((i)=>({
-      key: i.key,
-      value: i.value,
-      id: i?.id || Date.now(),
-    })) || [];
+    formState.vendor_id = props.currentDevice?.vendor.id.toString() || undefined;
+    formState.params =
+      props.currentDevice?.params?.map((i) => ({
+        key: i.key,
+        value: i.value,
+        id: i?.id || Date.now(),
+      })) || [];
 
-    uploadFiles.value = props.currentDevice?.images ? [
-      {
-        uid: '-1',
-        name: props.currentDevice?.name,
-        status: 'done',
-        url: storageUrl + props.currentDevice?.images,
-        response: {
-          data: storageUrl + props.currentDevice?.images,
-        },
-      },
-    ] : [];
+    uploadFiles.value = props.currentDevice?.images
+      ? [
+          {
+            uid: '-1',
+            name: props.currentDevice?.name,
+            status: 'done',
+            url: storageUrl + props.currentDevice?.images,
+            response: {
+              data: storageUrl + props.currentDevice?.images,
+            },
+          },
+        ]
+      : [];
   },
 );
 
 // TODO: filter option in select
 const filterOption = (input: string, option: any) => {
-  return compareString(option.label, input)
+  return compareString(option.label, input);
 };
 
 // TODO: handle upload image
@@ -355,7 +363,8 @@ const configStore = useConfigStore();
 
 // validate image
 const beforeUpload = (file: { type: string; size: number }) => {
-  const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/jpg';
+  const isJpgOrPng =
+    file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/jpg';
   if (!isJpgOrPng) {
     message.error('Chỉ được upload file hình ảnh!');
   }
@@ -388,35 +397,35 @@ const handlePreview = async (file: any) => {
   previewTitle.value = file.name || file.url.substring(file.url.lastIndexOf('/') + 1);
 };
 const handleChange = ({ file, fileList }: UploadChangeParam) => {
-   if (file.status !== 'uploading') {
+  if (file.status !== 'uploading') {
     const images = fileList.map((file) => file.response?.data?.url);
-    formState.images = images.length >0 ? images[0] : '';
+    formState.images = images.length > 0 ? images[0] : '';
   }
 };
 
 // TODO: submit form
 const handleFinish = () => {
-  console.log(formState)
+  console.log(formState);
   formRef.value?.validate().then(() => {
     const data: DeviceData = {
       name: formState.name ?? null,
-      images: formState.images ?? "",
-      model_url: formState.model_url ?? "",
+      images: formState.images ?? '',
+      model_url: formState.model_url ?? '',
       length: formState.length ?? null,
       width: formState.width ?? null,
       depth: formState.depth ?? null,
       weight: formState.weight ?? null,
       diameter: formState.diameter ?? null,
-      description: formState.description ?? "",
+      description: formState.description ?? '',
       device_category_id: formState.device_category_id ?? null,
       vendor_id: formState.vendor_id ?? null,
-      params: formState?.params?.map((i) => ({
-        key: i.key,
-        value: i.value,
-        id:   i?.id,
-      })) || [],
+      params:
+        formState?.params?.map((i) => ({
+          key: i.key,
+          value: i.value,
+          id: i?.id,
+        })) || [],
     };
-    console.log("data", data);
     if (isUpdate.value && props?.currentDevice?.id) {
       updateDevice(
         {

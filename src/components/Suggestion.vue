@@ -1,8 +1,5 @@
 <template>
-  <div
-    style="width: 300px"
-    class="bg-[#303030] flex flex-col items-center justify-center"
-  >
+  <div class="bg-[#303030] w-[285px] flex flex-col items-center justify-center">
     <svg
       width="48"
       height="48"

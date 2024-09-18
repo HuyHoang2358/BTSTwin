@@ -1,23 +1,27 @@
-import cameraData from '@/views/camera_pose.json';
 import * as THREE from 'three';
 import { useModelStore } from '@/stores/model';
+import type { Image2D } from '@/services/apis/bts';
 
 export const useChangeImage = () => {
   const modelStore = useModelStore();
 
-  const onChangeImage = (image: any) => {
-    modelStore.selectedImage = image;
-    const data = cameraData[image];
+  const onChangeImage = (data: Image2D) => {
+    modelStore.selectedImage = data;
+    if (!data) return;
+
     const viewer = window.potreeViewer;
 
-    const length = 7; // Length of the line
+    const length = 5; // Length of the line
     const moveForwardDistance = 0.1; // Distance to move the position forward
 
-    const cameraPosition = new THREE.Vector3(...data.cam_cent);
+    const camCenter = JSON.parse(data.cameraPose.camCent);
+    const eulerAngle = JSON.parse(data.cameraPose.eulerAngle);
+
+    const cameraPosition = new THREE.Vector3(...camCenter);
     const rotation = new THREE.Euler(
-      THREE.MathUtils.degToRad(data.euler_angle[0]),
-      THREE.MathUtils.degToRad(data.euler_angle[1]),
-      THREE.MathUtils.degToRad(data.euler_angle[2]),
+      THREE.MathUtils.degToRad(eulerAngle[0]),
+      THREE.MathUtils.degToRad(eulerAngle[1]),
+      THREE.MathUtils.degToRad(eulerAngle[2]),
       'XYZ',
     );
     const direction = new THREE.Vector3(0, 0, -1).applyEuler(rotation); // Original direction

@@ -1,5 +1,9 @@
 import type { Ref } from 'vue';
-import type { Point } from '@/services/apis/savedPlaceList';
+
+export interface Point {
+  x: number;
+  y: number;
+}
 
 export type WrapperResponse<T> = Promise<{
   data: T;
@@ -26,8 +30,6 @@ export type BaseRefParams = {
   sort?: Ref<string | undefined>;
   filters?: Ref<Record<string, string[]> | undefined>;
 };
-
-
 
 
 export type PaginationRefParams = {

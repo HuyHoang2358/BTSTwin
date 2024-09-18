@@ -1,17 +1,5 @@
 <template>
-  <div class="bg-[#212121] flex flex-col">
-    <a-tooltip
-      title="Về trang chủ"
-      placement="right"
-      color="#212121"
-    >
-      <a-button
-        class="p-0 border-none rounded-none w-10 h-10 bg-transparent"
-        @click="router.push(HOME_PAGE_PATH)"
-      >
-        🏠︎
-      </a-button>
-    </a-tooltip>
+  <div class="bg-[#212121] flex flex-col pt-2">
     <a-tooltip
       title="Thiết bị"
       placement="right"
@@ -141,21 +129,23 @@
       </a-button>
     </a-tooltip>
   </div>
-  <Inventory />
-  <Setting />
-  <ImageSection />
-  <Measurement />
+  <div
+    style="height: calc(100vh - 84px)"
+    class="flex"
+  >
+    <Inventory />
+    <Setting />
+    <ImageSection />
+    <Measurement />
+  </div>
 </template>
 
 <script setup lang="ts">
-import { HOME_PAGE_PATH } from '@/router/routePath';
-import { useRouter } from 'vue-router';
 import { useModelStore } from '@/stores/model';
 import Inventory from '@/components/Inventory.vue';
 import Measurement from '@/components/Measurement.vue';
 import ImageSection from '@/components/ImageSection.vue';
 import Setting from '@/components/Setting.vue';
 
-const router = useRouter();
 const modelStore = useModelStore();
 </script>

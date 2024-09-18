@@ -35,7 +35,7 @@
         class="p-0 m-0 border-none"
       >
         <svg
-          v-if="item.clip"
+          v-if="!item.visible"
           width="16"
           height="16"
           viewBox="0 0 16 16"

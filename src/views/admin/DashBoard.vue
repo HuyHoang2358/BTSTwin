@@ -14,7 +14,7 @@
         <header>
           <HeaderAdmin />
         </header>
-        <main>
+        <main style="height: calc(100vh - 64px); overflow: auto">
           <RouterView v-if="route.path === ADMIN_UPDATE_PROFILE" />
           <a-layout-content
             class="m-5"

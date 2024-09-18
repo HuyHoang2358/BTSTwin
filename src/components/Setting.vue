@@ -48,9 +48,9 @@
         <a-typography-text class="text-white">Point size: {{ pointSize }}</a-typography-text>
         <a-slider
           v-model:value="pointSize"
-          :min="0"
-          :max="3"
-          :step="0.01"
+          :min="0.1"
+          :max="5"
+          :step="0.1"
         />
       </div>
     </div>
@@ -92,5 +92,9 @@ watch(splat, () => {
   }
 });
 
-watch(pointSize, () => {});
+watch(pointSize, () => {
+  if (window.potreeViewer.scene.pointclouds) {
+    window.potreeViewer.scene.pointclouds[0].material.size = pointSize.value;
+  }
+});
 </script>

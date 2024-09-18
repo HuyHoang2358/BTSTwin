@@ -206,9 +206,8 @@ import { useErrorHandler } from '@/services/hooks/useErrorHandler';
 import { useSuccessHandler } from '@/services/hooks/useSuccessHandler';
 import { useI18n } from 'vue-i18n';
 import { compareString } from '@/utils/helpers';
-import { useMutationDeviceSuccess } from '@/services/hooks/useDevice';
 import type { Station, StationData } from '@/services/apis/station';
-import { useCreateStation, useUpdateStation } from '@/services/hooks/useStation';
+import { useCreateStation, useMutationStationSuccess, useUpdateStation } from '@/services/hooks/useStation';
 import {
   useAddressCommunes,
   useAddressCountries,
@@ -239,7 +238,7 @@ const buttonTitle = computed(() => (isUpdate.value ? 'Cập nhật' : 'Thêm m�
 const { t } = useI18n();
 const { mutate: createStation, isPending: isCreating } = useCreateStation();
 const { mutate: updateStation, isPending: isUpdating } = useUpdateStation();
-const { invalidateQueries } = useMutationDeviceSuccess();
+const { invalidateQueries } = useMutationStationSuccess();
 const { onError } = useErrorHandler();
 const { handleSuccess } = useSuccessHandler();
 
@@ -258,7 +257,6 @@ watch(
     formState.address_district_id = props.currentStation?.address?.district?.id || undefined;
     formState.address_commune_id = props.currentStation?.address?.commune?.id || undefined;
     formState.description = props.currentStation?.description || undefined;
-
 
     selectionCountryId.value = formState.address_country_id?.toString() || '';
     selectionProvinceId.value = formState.address_province_id?.toString() || '';
@@ -384,7 +382,7 @@ const handleFinish = () => {
       address_district_id: formState.address_district_id ?? null,
       address_commune_id: formState.address_commune_id ?? null,
     };
-    console.log("data", data);
+   //console.log("data", data);
     if (isUpdate.value && props?.currentStation?.id) {
       updateStation(
         {
@@ -395,8 +393,8 @@ const handleFinish = () => {
           onError,
           onSuccess: (data) => {
             invalidateQueries();
-            props.close();
             handleSuccess(data);
+            props.close();
           },
         },
       );
@@ -407,8 +405,8 @@ const handleFinish = () => {
       onError,
       onSuccess: (data) => {
         invalidateQueries();
-        props.close();
         handleSuccess(data);
+        props.close();
       },
     });
   });

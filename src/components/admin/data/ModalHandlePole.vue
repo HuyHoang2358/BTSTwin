@@ -3,6 +3,7 @@
     :open="open"
     :title="title"
     @close="props.close"
+    :width="720"
   >
     <template #closeIcon>
       <IconCloseModalGrey />
@@ -14,21 +15,41 @@
       layout="vertical"
       @finish="handleFinish"
     >
-      <a-form-item
-        name="name"
-        :label="t('admin.pole.name')"
-        :rules="[{ required: true, message: t('admin.pole.form.inputName') }]"
-        class="my-1"
-      >
-        <a-input
-          v-model:value="formState.name"
-          :allow-clear="true"
-          :maxlength="100"
-          :placeholder="t('admin.pole.form.placeholderName')"
-        />
-      </a-form-item>
-
-
+      <a-row :gutter="16">
+        <a-col :span="12">
+          <a-form-item
+            name="name"
+            :label="t('admin.pole.name')"
+            :rules="[{ required: true, message: t('admin.pole.form.inputName') }]"
+            class="my-1"
+          >
+            <a-input
+              v-model:value="formState.name"
+              :allow-clear="true"
+              :maxlength="100"
+              :placeholder="t('admin.pole.form.placeholderName')"
+            />
+          </a-form-item>
+        </a-col>
+        <a-col :span="12">
+          <a-form-item
+            name="station_code"
+            :label="t('admin.station.code')"
+            :rules="[{ required: true, message: t('admin.station.form.inputCode') }]"
+            class="my-1"
+          >
+            <a-select
+              v-model:value="formState.station_code"
+              :allow-clear="true"
+              :placeholder="t('admin.station.form.placeholderCode')"
+              :options="stationOptions"
+              :loading="isLoading"
+              show-search
+              :filter-option="filterOption"
+            />
+          </a-form-item>
+        </a-col>
+      </a-row>
       <a-form-item
         name="pole_category_id"
         :label="t('admin.pole.category')"
@@ -51,7 +72,10 @@
       >
         <a-select
           v-model:value="formState.is_roof"
-          :options="[{ label: 'Trên mái(TM)', value: 1 }, { label: 'Dưới mặt đất(DD)', value: 0 }]"
+          :options="[
+            { label: 'Trên mái(TM)', value: 1 },
+            { label: 'Dưới mặt đất(DD)', value: 0 },
+          ]"
           :allow-clear="true"
           :placeholder="t('admin.pole.form.placeholderIsRoof')"
         />
@@ -60,9 +84,9 @@
       <a-row :gutter="16">
         <a-col :span="12">
           <a-form-item
-            name="length"
+            name="height"
             :label="t('admin.pole.height')"
-            :rules="[{ required: false, message: t('admin.pole.form.inputHeight') }]"
+            :rules="[{ required: true, message: t('admin.pole.form.inputHeight') }]"
             class="my-1"
           >
             <a-input-number
@@ -75,7 +99,7 @@
         </a-col>
         <a-col :span="12">
           <a-form-item
-            name="width"
+            name="house_height"
             :label="t('admin.pole.house_height')"
             :rules="[{ required: false, message: t('admin.pole.form.inputHouseHeight') }]"
             class="my-1"
@@ -90,12 +114,12 @@
         </a-col>
         <a-col :span="12">
           <a-form-item
-            name="depth"
+            name="diameter_body_tube"
             :label="t('admin.pole.diameter_body_tube')"
             :rules="[{ required: false, message: t('admin.pole.form.inputDiameterBodyTube') }]"
             class="my-1"
           >
-            <a-input-number
+            <a-input
               v-model:value="formState.diameter_body_tube"
               :allow-clear="true"
               class="w-full"
@@ -105,12 +129,12 @@
         </a-col>
         <a-col :span="12">
           <a-form-item
-            name="weight"
+            name="diameter_strut_tube"
             :label="t('admin.pole.diameter_strut_tube')"
             :rules="[{ required: false, message: t('admin.pole.form.inputDiameterStrutTube') }]"
             class="my-1"
           >
-            <a-input-number
+            <a-input
               v-model:value="formState.diameter_strut_tube"
               :allow-clear="true"
               class="w-full"
@@ -125,7 +149,7 @@
             :rules="[{ required: false, message: t('admin.pole.form.inputDiameterTopTube') }]"
             class="my-1"
           >
-            <a-input-number
+            <a-input
               v-model:value="formState.diameter_top_tube"
               :allow-clear="true"
               class="w-full"
@@ -140,7 +164,7 @@
             :rules="[{ required: false, message: t('admin.pole.form.inputDiameterBottomTube') }]"
             class="my-1"
           >
-            <a-input-number
+            <a-input
               v-model:value="formState.diameter_bottom_tube"
               :allow-clear="true"
               class="w-full"
@@ -155,7 +179,7 @@
             :rules="[{ required: false, message: t('admin.pole.form.inputFootSize') }]"
             class="my-1"
           >
-            <a-input-number
+            <a-input
               v-model:value="formState.foot_size"
               :allow-clear="true"
               class="w-full"
@@ -170,7 +194,7 @@
             :rules="[{ required: false, message: t('admin.pole.form.inputTopSize') }]"
             class="my-1"
           >
-            <a-input-number
+            <a-input
               v-model:value="formState.top_size"
               :allow-clear="true"
               class="w-full"
@@ -195,7 +219,7 @@
 
       <div>
         <div class="flex justify-between items-center">
-          <div >Thông số kỹ thuật</div>
+          <div>Thông số kỹ thuật</div>
           <div class="flex justify-self-end">
             <a-button
               type="primary"
@@ -211,26 +235,31 @@
           style="display: flex; margin-bottom: 8px"
           align="baseline"
         >
-
           <a-form-item
             :name="['params', index, 'key']"
             :rules="{
-          required: true,
-          message: 'Nhập tên thông số',
-        }"
+              required: true,
+              message: 'Nhập tên thông số',
+            }"
             class="my-0.5"
           >
-            <a-input v-model:value="param.key" placeholder="Nhập tên thông số" />
+            <a-input
+              v-model:value="param.key"
+              placeholder="Nhập tên thông số"
+            />
           </a-form-item>
           <a-form-item
             :name="['params', index, 'value']"
             :rules="{
-          required: true,
-          message: 'Nhập giá trị thông số',
-        }"
+              required: true,
+              message: 'Nhập giá trị thông số',
+            }"
             class="my-0.5"
           >
-            <a-input v-model:value="param.value" placeholder="Nhập giá trị thông số" />
+            <a-input
+              v-model:value="param.value"
+              placeholder="Nhập giá trị thông số"
+            />
           </a-form-item>
 
           <a-button
@@ -282,6 +311,9 @@ import type { Pole, PoleData, PoleParam } from '@/services/apis/pole';
 import IconTrash from '@/components/icons/IconTrash.vue';
 import IconAddCircle from '@/components/icons/IconAddCircle.vue';
 import { useCreatePole, useMutationPoleSuccess, useUpdatePole } from '@/services/hooks/usePole';
+import { useStationCodes } from '@/services/hooks/useStation';
+import type { StationCode } from '@/services/apis/station';
+import { compareString } from '@/utils/helpers';
 
 const props = defineProps<{
   open: boolean;
@@ -296,12 +328,14 @@ const removeParam = (item: PoleParam) => {
   if (index && index >= 0) formState.params?.splice(index, 1);
 };
 
-const addParam = () => {formState.params?.push({ key: '', value: '', id: Date.now(), });};
+const addParam = () => {
+  formState.params?.push({ key: '', value: '', id: Date.now() });
+};
 
 // TODO handle Form
 type PoleForm = {
   id?: string;
-} & Partial<PoleData>  ;
+} & Partial<PoleData>;
 
 const formRef = ref<FormInstance>();
 
@@ -321,8 +355,9 @@ const { handleSuccess } = useSuccessHandler();
 watch(
   () => props.open,
   () => {
-    console.log("currentPole", props.currentPole)
+    console.log('currentPole', props.currentPole);
     formState.name = props.currentPole?.name || undefined;
+    formState.station_code = props.currentPole?.station_code || undefined;
     formState.height = props.currentPole?.height || undefined;
     formState.is_roof = props.currentPole?.is_roof ? 1 : 0;
     formState.house_height = props.currentPole?.house_height || undefined;
@@ -336,21 +371,22 @@ watch(
     formState.top_size = props.currentPole?.top_size || undefined;
     formState.structure = props.currentPole?.structure || undefined;
     formState.description = props.currentPole?.description || undefined;
-    formState.params = props.currentPole?.params?.map((i)=>({
-      key: i.key,
-      value: i.value,
-      id: i?.id || Date.now(),
-    })) || [];
+    formState.params =
+      props.currentPole?.params?.map((i) => ({
+        key: i.key,
+        value: i.value,
+        id: i?.id || Date.now(),
+      })) || [];
   },
 );
 
-
 // TODO: submit form
 const handleFinish = () => {
-  console.log(formState)
+  console.log(formState);
   formRef.value?.validate().then(() => {
     const data: PoleData = {
       name: formState.name ?? null,
+      station_code: formState.station_code ?? null,
       height: formState.height ?? null,
       is_roof: formState.is_roof ?? 0,
       house_height: formState.house_height ?? null,
@@ -363,16 +399,16 @@ const handleFinish = () => {
       foot_size: formState.foot_size ?? null,
       top_size: formState.top_size ?? null,
       structure: formState.structure ?? null,
-      description: formState.description ?? "",
+      description: formState.description ?? '',
 
-
-      params: formState?.params?.map((i) => ({
-        key: i.key,
-        value: i.value,
-        id:   i?.id,
-      })) || [],
+      params:
+        formState?.params?.map((i) => ({
+          key: i.key,
+          value: i.value,
+          id: i?.id,
+        })) || [],
     };
-    console.log("data", data);
+    console.log('data', data);
     if (isUpdate.value && props?.currentPole?.id) {
       updatePole(
         {
@@ -400,5 +436,22 @@ const handleFinish = () => {
       },
     });
   });
+};
+
+const { data: stationData, isLoading } = useStationCodes();
+const stationOptions = computed(
+  () =>
+    stationData?.value?.data?.map((i: StationCode) => {
+      return {
+        text: i.code,
+        label: i.code,
+        value: i.code,
+      };
+    }) || [],
+);
+
+// TODO: filter option in select
+const filterOption = (input: string, option: any) => {
+  return compareString(option.label, input);
 };
 </script>

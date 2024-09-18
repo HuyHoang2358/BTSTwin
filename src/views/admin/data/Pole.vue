@@ -4,7 +4,7 @@
     :data-source="dataSource"
     :loading="isLoading"
     size="middle"
-    :scroll="{y: 520 }"
+    :scroll="{ y: 520 }"
     @change="handleTableChange"
     :pagination="pagination"
     data-test="table"
@@ -17,7 +17,7 @@
 
         <a-col :span="10">
           <div class="flex flex-row gap-x-2.5">
-<!-- Search -->
+            <!-- Search -->
             <a-input
               :placeholder="$t('search')"
               v-model:value="searchValue"
@@ -28,7 +28,7 @@
                 <IconSearchInput />
               </template>
             </a-input>
-<!-- Add -->
+            <!-- Add -->
             <a-button
               type="primary"
               class="flex justify-center items-center space-x-2.5"
@@ -37,7 +37,6 @@
             >
               {{ $t('add') }}
             </a-button>
-
           </div>
         </a-col>
       </a-row>
@@ -50,28 +49,28 @@
       </template>
 
       <template v-if="column.dataIndex === 'pole_category_id'">
-        <span>{{ record.category?.code}}</span>
+        <span>{{ record.category?.code }}</span>
       </template>
       <template v-if="column.dataIndex === 'is_roof'">
-        <span v-if="record.is_roof"> TM </span>
-        <span v-else> DD </span>
+        <span v-if="record.is_roof">TM</span>
+        <span v-else>DD</span>
       </template>
 
       <template v-if="column.dataIndex === 'action'">
         <div class="flex flex-row items-center gap-x-4">
-<!-- Show params -->
+          <!-- Show params -->
           <a-button
             class="bg-[#F1F1F2] p-1.5 border-none"
             @click="showParams(record)"
             :icon="h(IconEye)"
           />
-<!-- Edit -->
+          <!-- Edit -->
           <a-button
             class="bg-[#F1F1F2] p-1.5 border-none"
             @click="onEdit(record)"
             :icon="h(IconEdit)"
           />
-<!-- Delete -->
+          <!-- Delete -->
           <a-popconfirm
             :title="$t('admin.pole.confirmDelete')"
             @confirm="confirm(record.id)"
@@ -86,15 +85,19 @@
     </template>
   </a-table>
 
-  <a-modal v-model:open="openParams" title="Bảng thông số kỹ thuật" @ok="openParams = !openParams">
+  <a-modal
+    v-model:open="openParams"
+    title="Bảng thông số kỹ thuật"
+    @ok="openParams = !openParams"
+  >
     <a-table
       :columns="paramColumns"
       :data-source="selectedItem?.params"
       :pagination="false"
     >
-      <template #bodyCell="{ column, index }: { column: ColumnType; index: number}">
+      <template #bodyCell="{ column, index }: { column: ColumnType; index: number }">
         <template v-if="column.dataIndex === 'index'">
-          <p>{{ index + 1}}</p>
+          <p>{{ index + 1 }}</p>
         </template>
       </template>
     </a-table>
@@ -143,10 +146,17 @@ const { invalidateQueries } = useMutationPoleSuccess();
 // TODO: handle modal edit and add
 const selectedItem = ref<Pole>();
 const open = ref<boolean>(false);
-const showModal = () => {open.value = true;};
-const onAdd = () => {selectedItem.value = undefined;showModal();}
-const onEdit = (item: Pole) => {selectedItem.value = item;showModal();};
-
+const showModal = () => {
+  open.value = true;
+};
+const onAdd = () => {
+  selectedItem.value = undefined;
+  showModal();
+};
+const onEdit = (item: Pole) => {
+  selectedItem.value = item;
+  showModal();
+};
 
 // TODO: Fetch info
 const { perPage, page, handleTableChange, pagination, sort, filter } = useTable(
@@ -160,16 +170,17 @@ const { data, isLoading, refetch } = usePoles({
   filter,
   searchValue: debouncedSearch,
 });
-watch(filter, () => {refetch();});
+watch(filter, () => {
+  refetch();
+});
 
 const dataSource: ComputedRef<Pole[]> = computed(() => data?.value?.data?.data || []);
 const { data: poleCategories } = useCategoryPoles();
 
-
 // TODO: Edit
 const categoryOptions = computed(
   () =>
-    poleCategories?.value?.data?.map((i:PoleCategory) => {
+    poleCategories?.value?.data?.map((i: PoleCategory) => {
       return {
         text: i.name,
         label: i.name,
@@ -200,7 +211,7 @@ const confirm = (id: number) => {
 const columns = computed(() => [
   {
     title: t('index'),
-    align: "center",
+    align: 'center',
     fixed: 'left',
     width: 50,
   },
@@ -214,87 +225,84 @@ const columns = computed(() => [
   {
     title: t('admin.pole.category'),
     dataIndex: 'pole_category_id',
-    filters: poleCategories?.value?.data?.map((i: PoleCategory) => {
-      return {
-        text: i.name,
-        value: i.id,
-      };
-    }) || [],
-    fixed: 'left',
-    align: "center",
+    filters:
+      poleCategories?.value?.data?.map((i: PoleCategory) => {
+        return {
+          text: i.name,
+          value: i.id,
+        };
+      }) || [],
+    align: 'center',
     width: 100,
   },
   {
     title: t('admin.pole.is_roof'),
     dataIndex: 'is_roof',
-    align: "center",
-    fixed: 'left',
+    align: 'center',
     width: 100,
     filters: [
       { text: 'TM', value: true },
       { text: 'DD', value: false },
-    ]
+    ],
   },
   {
     title: t('admin.pole.height'),
     dataIndex: 'height',
-    align: "right",
-    fixed: 'left',
+    align: 'right',
     width: 100,
     sorter: true,
   },
   {
     title: t('admin.pole.house_height'),
     dataIndex: 'house_height',
-    align: "right",
-    fixed: 'left',
+    align: 'right',
     width: 100,
     sorter: true,
   },
   {
     title: t('admin.pole.diameter_body_tube'),
     dataIndex: 'diameter_body_tube',
-    align: "right",
+    align: 'right',
     width: 150,
     sorter: true,
   },
   {
     title: t('admin.pole.diameter_strut_tube'),
     dataIndex: 'diameter_strut_tube',
-    align: "right",
+    align: 'right',
     width: 150,
     sorter: true,
   },
   {
     title: t('admin.pole.diameter_top_tube'),
     dataIndex: 'diameter_top_tube',
-    align: "right",
+    align: 'right',
     width: 150,
     sorter: true,
   },
   {
     title: t('admin.pole.diameter_bottom_tube'),
     dataIndex: 'diameter_bottom_tube',
-    align: "right",
+    align: 'right',
     width: 150,
     sorter: true,
   },
   {
     title: t('admin.pole.foot_size'),
     dataIndex: 'diameter_top_tube',
-    align: "right",
+    align: 'right',
     width: 150,
   },
   {
     title: t('admin.pole.top_size'),
     dataIndex: 'diameter_bottom_tube',
-    align: "right",
+    align: 'right',
     width: 150,
   },
   {
     title: t('admin.pole.structure'),
     dataIndex: 'structure',
-    align: "right",
+    align: 'right',
     width: 150,
   },
 
@@ -309,8 +317,8 @@ const columns = computed(() => [
 const paramColumns = computed(() => [
   {
     title: t('index'),
-    dataIndex : 'index',
-    align: "center",
+    dataIndex: 'index',
+    align: 'center',
   },
   {
     title: t('admin.device.params.key'),
