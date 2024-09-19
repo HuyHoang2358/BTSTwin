@@ -1,9 +1,19 @@
-import { computed, onMounted, watch } from 'vue';
+import { computed, onMounted, onUnmounted, watch } from 'vue';
 import * as THREE from 'three';
 import { useModelStore } from '@/stores/model';
 import { useRoute } from 'vue-router';
 import { useBTSDetail, useGetImage2D, useGetInventory } from '@/services/hooks/useBTS';
 import type { Image2D, Inventory } from '@/services/apis/bts';
+
+export type InventoryDetail = {
+  boxMesh?: THREE.Mesh<THREE.BoxGeometry, THREE.MeshBasicMaterial, THREE.Object3DEventMap>;
+  volume?: Potree.BoxVolume;
+  visibleMesh: boolean;
+  visible: boolean;
+  clip: boolean;
+  isNewDevice: boolean;
+  newDevice?: any;
+} & Partial<Inventory>;
 
 export const useInitial = () => {
   const modelStore = useModelStore();
@@ -141,19 +151,24 @@ export const useInitial = () => {
         };
       }) || [];
 
-    modelStore.objectGroup = dataInventory.value?.data?.reduce((acc: any, object: Inventory) => {
-      if (!acc[object.name]) {
-        acc[object.name] = [];
-      }
-      acc[object.name].push({
-        ...object,
-        boxMesh: boxMeshs?.find((elem) => elem.id === object.id)?.boxMesh,
-        volume: boxMeshs?.find((elem) => elem.id === object.id)?.volume,
-        visibleMesh: true,
-        visible: true,
-      });
-      return acc;
-    }, {});
+    modelStore.objectGroup = dataInventory.value?.data?.reduce<Record<string, InventoryDetail[]>>(
+      (acc, object) => {
+        if (!acc[object.name]) {
+          acc[object.name] = [];
+        }
+        acc[object.name].push({
+          ...object,
+          boxMesh: boxMeshs?.find((elem) => elem.id === object.id)?.boxMesh,
+          volume: boxMeshs?.find((elem) => elem.id === object.id)?.volume,
+          visibleMesh: true,
+          visible: true,
+          clip: false,
+          isNewDevice: false,
+        });
+        return acc;
+      },
+      {},
+    );
   };
 
   onMounted(() => {
@@ -167,12 +182,16 @@ export const useInitial = () => {
     window.potreeViewer.loadSettingsFromURL();
     window.potreeViewer.setBackground('black');
     window.potreeViewer.setPointBudget(1_000_000);
-    window.potreeViewer.useHQ = true;
+    window.potreeViewer.useHQ = false;
     window.potreeViewer.compass.setVisible(true);
 
     window.potreeViewer.scene.addEventListener('measurement_added', onMeasurementAdded);
   });
   resetState();
+
+  onUnmounted(() => {
+    window.potreeViewer.scene.removeEventListener('measurement_added', onMeasurementAdded);
+  });
 
   let loaded = false;
 

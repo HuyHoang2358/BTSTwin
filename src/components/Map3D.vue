@@ -43,7 +43,7 @@ onMounted(async () => {
   viewer.scene.globe.depthTestAgainstTerrain = true;
 
   try {
-    const tileset = await Cesium.Cesium3DTileset.fromIonAssetId(2732343);
+    const tileset = await Cesium.Cesium3DTileset.fromIonAssetId(2736511);
     viewer.scene.primitives.add(tileset);
     await viewer.zoomTo(tileset);
 

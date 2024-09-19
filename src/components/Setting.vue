@@ -68,7 +68,7 @@ const lightingChecked = ref(true);
 const backgroundData = reactive(['skybox', 'gradient', 'black', 'white']);
 const background = ref('black');
 const splatData = reactive(['Thấp', 'Cao']);
-const splat = ref(splatData[1]);
+const splat = ref(splatData[0]);
 
 const modelStore = useModelStore();
 

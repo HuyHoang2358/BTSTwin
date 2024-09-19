@@ -100,7 +100,7 @@ import type { NotificationResType } from '@/services/apis/systemApi';
 import IconLogOutAccount from '@/components/icons/home/IconLogOutAccount.vue';
 import IconInfoAccount from '@/components/icons/home/IconInfoAccount.vue';
 import { useRouter } from 'vue-router';
-import { ADMIN_USER_PAGE_PATH } from '@/router/routePath';
+import { ADMIN_PAGE_PATH, ADMIN_USER_PAGE_PATH } from '@/router/routePath';
 
 const configStore = useConfigStore();
 const router = useRouter();
@@ -108,12 +108,14 @@ const router = useRouter();
 const isEnableProfile = computed(() => !!configStore.accessToken);
 const { data: profileData } = useProfile(isEnableProfile);
 
+const data = [];
+const isPending = false;
 const onLogout = () => {
   localStorage.clear();
   window.location.reload();
 };
 
-const notificationsData = []
+const notificationsData = [];
 /*const { data: notificationsData, isPending } = useNotifications();
 
 const data: ComputedRef<NotificationResType[]> = computed(() => {
@@ -121,6 +123,6 @@ const data: ComputedRef<NotificationResType[]> = computed(() => {
 });*/
 
 const onNavigateToDashBoard = () => {
-  router.push(ADMIN_USER_PAGE_PATH);
+  router.push(ADMIN_PAGE_PATH);
 };
 </script>

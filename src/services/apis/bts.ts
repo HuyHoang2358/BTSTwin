@@ -23,7 +23,7 @@ export type Bts = {
 };
 
 export interface Inventory {
-  id: number;
+  id: number | string;
   createdAt: string;
   updatedAt: string;
   name: string;
@@ -84,12 +84,18 @@ export interface CameraPose {
   nerfName: string;
 }
 
-export const fetchBTS = (): WrapperResponse<Bts[]> => client.get(API_BTS);
+/*
+const localAPI = 'http://localhost:8899/api/';
+*/
+const localAPI = 'http://172.16.30.169:8899/api/';
 
-export const fetchBTSById = (id: string): WrapperResponse<Bts> => client.get(`${API_BTS}/${id}`);
+export const fetchBTS = (): WrapperResponse<Bts[]> => client.get(`${localAPI}${API_BTS}`);
+
+export const fetchBTSById = (id: string): WrapperResponse<Bts> =>
+  client.get(`${localAPI}${API_BTS}/${id}`);
 
 export const fetchInventoryByBtsId = (id: string): WrapperResponse<Inventory[]> =>
-  client.get(`${API_INVENTORY}/get-by-bts/${id}`);
+  client.get(`${localAPI}${API_INVENTORY}/get-by-bts/${id}`);
 
 export const fetchImage2DByBtsId = (id: string): WrapperResponse<Image2D[]> =>
-  client.get(`${API_CAMERA_POSE}/get-by-bts/${id}`);
+  client.get(`${localAPI}${API_CAMERA_POSE}/get-by-bts/${id}`);

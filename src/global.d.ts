@@ -24,12 +24,14 @@ declare namespace Potree {
   namespace Utils {
     function moveTo(a, b, c): any;
     function getMeasurementIcon(e): string;
+    function addCommas(e): any;
   }
 
   class BoxVolume {
     position: any;
     scale: any;
-    visible: any;
+    visible: boolean;
+    clip: boolean;
   }
 
   function loadPointCloud(a, b, c): any;

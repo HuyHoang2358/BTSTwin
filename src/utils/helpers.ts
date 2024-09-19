@@ -1,7 +1,13 @@
 import { defaultPage, defaultPageSize, displayDateFormat, excelMineType } from '@/utils/constants';
 import dayjs from 'dayjs';
-import type { BaseRefParams, IndexRefParams, PaginateRefParams, PaginationRefParams } from '@/services/services.types';
+import type {
+  BaseRefParams,
+  IndexRefParams,
+  PaginateRefParams,
+  PaginationRefParams,
+} from '@/services/services.types';
 import { useConfigStore } from '@/stores/config';
+import { useModelStore } from '@/stores/model';
 
 export function filterSameElement(arr: { text: string; value: string }[]) {
   const uniqueElements = new Set();
@@ -58,16 +64,15 @@ export const getParamsFromIndexRefParams = (params: IndexRefParams & PaginateRef
     sort: params?.sort?.value || undefined,
     filter: params?.filter?.value || undefined,
     searchValue: params?.searchValue?.value || undefined,
-  }
+  };
   // Loại bỏ các giá trị null hoặc undefined
-  Object.keys(queryParams).forEach(key => {
+  Object.keys(queryParams).forEach((key) => {
     if (queryParams[key] === null || queryParams[key] === undefined) {
       delete queryParams[key];
     }
   });
   return queryParams;
 };
-
 
 export const getRoiIdsAndDistrictIdsFromRegionSelect = (region?: string[]) => {
   const roiIds =
@@ -88,4 +93,23 @@ export const checkPermission = (permission: string) => {
 
 export function formatNumber(num: number) {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+export function checkRuleActiveTool(except?: string[]) {
+  const modelStore = useModelStore();
+  if (except && except.includes(modelStore.activeTool)) {
+    return false;
+  }
+
+  return (
+    modelStore.activeTool === 'angle' ||
+    modelStore.activeTool === 'distance' ||
+    modelStore.activeTool === 'area' ||
+    modelStore.activeTool === 'height' ||
+    modelStore.activeTool === 'circle' ||
+    modelStore.activeTool === 'azimuth' ||
+    modelStore.activeTool === 'clip_volume_inside' ||
+    modelStore.activeTool === 'add-inventory' ||
+    modelStore.activeTool === 'annotation'
+  );
 }

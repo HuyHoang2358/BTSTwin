@@ -3,17 +3,7 @@
     <a-button
       :class="[
         'w-8 h-8 p-0 m-0 rounded-t rounded-b-none',
-        !(
-          modelStore.activeTool === 'angle' ||
-          modelStore.activeTool === 'distance' ||
-          modelStore.activeTool === 'area' ||
-          modelStore.activeTool === 'height' ||
-          modelStore.activeTool === 'circle' ||
-          modelStore.activeTool === 'azimuth' ||
-          modelStore.activeTool === 'annotation'
-        )
-          ? 'bg-[#38536d]'
-          : 'bg-[#19282c]',
+        !checkRuleActiveTool() ? 'bg-[#38536d]' : 'bg-[#19282c]',
       ]"
       style="border-color: #7a8184"
       @click="modelStore.activeTool = null"
@@ -100,6 +90,14 @@
       alt="clip_volume"
     />
     <img
+      src="/icons/add-inventory.svg"
+      style="width: 32px; height: 32px"
+      :class="['button-measure-icon', modelStore.activeTool === 'add-inventory' && 'bg-[#38536d]']"
+      title="Thêm thiết bị mới"
+      @click="onAddInventory"
+      alt="clip_volume"
+    />
+    <img
       src="/icons/reset_tools.svg"
       style="width: 32px; height: 32px"
       class="button-measure-icon rounded-b"
@@ -112,6 +110,7 @@
 
 <script setup lang="ts">
 import { useModelStore } from '@/stores/model';
+import { checkRuleActiveTool } from '@/utils/helpers';
 
 const modelStore = useModelStore();
 
@@ -201,5 +200,12 @@ const onInsertClipVolumeInside = () => {
 const onRemoveAllMeasurements = () => {
   window.potreeViewer.scene.removeAllMeasurements();
   modelStore.measurements = [];
+};
+
+const onAddInventory = () => {
+  modelStore.openModalAddInventory = true;
+  modelStore.activeTool = 'add-inventory';
+  modelStore.selectedImage = undefined;
+  modelStore.selectedInventory = undefined;
 };
 </script>

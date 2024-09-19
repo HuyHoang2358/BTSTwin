@@ -92,6 +92,7 @@
         <Information v-else />
       </div>
     </div>
+    <ModalAddInventory />
   </a-config-provider>
 </template>
 
@@ -115,6 +116,8 @@ import IconTickGreen from '@/components/icons/home/IconTickGreen.vue';
 import { useBTSDetail } from '@/services/hooks/useBTS';
 import viVN from 'ant-design-vue/es/locale/vi_VN';
 import { theme } from 'ant-design-vue';
+import { checkRuleActiveTool } from '@/utils/helpers';
+import ModalAddInventory from '@/components/ModalAddInventory.vue';
 
 const pane1Size = ref(50);
 const container = ref<HTMLElement | null>(null);
@@ -169,27 +172,14 @@ const onPointerDown = () => {
 
 const { onChangeImage } = useChangeImage();
 
-const checkRuleClick = computed(
-  () =>
-    modelStore.activeTool === 'angle' ||
-    modelStore.activeTool === 'distance' ||
-    modelStore.activeTool === 'area' ||
-    modelStore.activeTool === 'height' ||
-    modelStore.activeTool === 'circle' ||
-    modelStore.activeTool === 'azimuth' ||
-    modelStore.activeTool === 'clip_volume_inside' ||
-    modelStore.activeTool === 'annotation',
-);
-
 const onPointerClick = (evt: any) => {
-  if (isDragging.value) return;
-
-  if (checkRuleClick.value) {
-    return;
-  }
-  if (evt.button !== 0) return;
-  const viewer = window.potreeViewer;
   evt.preventDefault();
+
+  if (isDragging.value) return;
+  if (checkRuleActiveTool()) return;
+  if (evt.button !== 0) return;
+
+  const viewer = window.potreeViewer;
   const rect = viewer.renderer.domElement.getBoundingClientRect();
   const [x, y] = [evt.clientX, evt.clientY];
   const array = [(x - rect.left) / rect.width, (y - rect.top) / rect.height];
@@ -202,7 +192,9 @@ const onPointerClick = (evt: any) => {
 
   if (intersects.length > 0) {
     const targetObject = intersects[0].object;
+
     if (targetObject.userData.data && targetObject.userData.type === 'camera_pose') {
+      modelStore.selectedInventory = undefined;
       onChangeImage(targetObject.userData.data);
     } else if (targetObject.userData.type === 'inventory') {
       const selectedInventory = targetObject.userData?.object;
@@ -224,7 +216,7 @@ const onPointerClick = (evt: any) => {
 const onPointerMove = (evt: any) => {
   isDragging.value = true;
 
-  if (checkRuleClick.value) {
+  if (checkRuleActiveTool()) {
     return;
   }
   const viewer = window.potreeViewer;
