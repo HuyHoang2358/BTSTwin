@@ -1,5 +1,7 @@
 interface Window {
   potreeViewer?: any; // Hoặc thay thế `any` bằng kiểu dữ liệu cụ thể nếu bạn biết loại của `potreeViewer`
+  triggerStationClick: boolean;
+  cesiumViewer?: any;
 }
 
 declare namespace Potree {

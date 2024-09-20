@@ -4,7 +4,6 @@
     :data-source="dataSource"
     :loading="isLoading"
     size="middle"
-    :scroll="{y: 520 }"
     @change="handleTableChange"
     :pagination="pagination"
     data-test="table"
@@ -46,16 +45,19 @@
         <span>{{ index + 1 }}</span>
       </template>
       <template v-if="column.dataIndex === 'image'">
-        <div class="w-10 h-10 rounded-full bg-gray-200">
-          <img :src="storageUrl + record?.images || ''" alt="image" class="w-full h-full rounded-full" v-if="record.images !== '' && record.images"/>
-
-        </div>
+        <a-image
+          :src="storageUrl + record?.images || ''"
+          alt="image"
+          v-if="record.images !== '' && record.images"
+          style="width: 50px; height: 50px; object-fit: contain"
+          :fallback="imageFallback"
+        />
       </template>
       <template v-if="column.dataIndex === 'device_category_id'">
-        <span>{{ record.category?.name}}</span>
+        <span>{{ record.category?.name }}</span>
       </template>
       <template v-if="column.dataIndex === 'vendor_id'">
-        <span>{{ record.vendor?.name}}</span>
+        <span>{{ record.vendor?.name }}</span>
       </template>
       <template v-if="column.dataIndex === 'action'">
         <div class="flex flex-row items-center gap-x-4">
@@ -84,21 +86,23 @@
     </template>
   </a-table>
 
-  <a-modal v-model:open="openParams" title="Bảng thông số kỹ thuật" @ok="openParams = !openParams">
+  <a-modal
+    v-model:open="openParams"
+    title="Bảng thông số kỹ thuật"
+    @ok="openParams = !openParams"
+  >
     <a-table
       :columns="paramColumns"
       :data-source="selectedItem?.params"
       :pagination="false"
     >
-      <template #bodyCell="{ column, index }: { column: ColumnType; index: number}">
+      <template #bodyCell="{ column, index }: { column: ColumnType; index: number }">
         <template v-if="column.dataIndex === 'index'">
-          <p>{{ index + 1}}</p>
+          <p>{{ index + 1 }}</p>
         </template>
       </template>
     </a-table>
   </a-modal>
-
-
 
   <ModalHandleDevice
     :open="open"
@@ -133,6 +137,7 @@ import { useErrorHandler } from '@/services/hooks/useErrorHandler';
 import { useDeleteDevice, useDevices, useMutationDeviceSuccess } from '@/services/hooks/useDevice';
 
 import ModalHandleDevice from '@/components/admin/data/ModalHandleDevice.vue';
+import { imageFallback } from '@/utils/constants';
 defineProps<{
   testMode?: boolean;
 }>();
@@ -146,10 +151,17 @@ const storageUrl = import.meta.env.VITE_STORAGE_DOMAIN;
 // TODO: handle modal edit and add
 const selectedItem = ref<Device>();
 const open = ref<boolean>(false);
-const showModal = () => {open.value = true;};
-const onAdd = () => {selectedItem.value = undefined;showModal();}
-const onEdit = (item: Device) => {selectedItem.value = item;showModal();};
-
+const showModal = () => {
+  open.value = true;
+};
+const onAdd = () => {
+  selectedItem.value = undefined;
+  showModal();
+};
+const onEdit = (item: Device) => {
+  selectedItem.value = item;
+  showModal();
+};
 
 // TODO: Fetch info
 const { perPage, page, handleTableChange, pagination, sort, filter } = useTable(
@@ -168,16 +180,14 @@ watch(filter, () => {
   refetch();
 });
 
-
 const dataSource: ComputedRef<Device[]> = computed(() => data?.value?.data?.data || []);
 const { data: vendors } = useVendors();
 const { data: deviceCategories } = useCategoryDevices();
 
-
 // TODO: Edit
 const vendorOptions = computed(
   () =>
-    vendors?.value?.data?.map((i:Vendor) => {
+    vendors?.value?.data?.map((i: Vendor) => {
       return {
         text: i.name,
         label: i.name,
@@ -188,7 +198,7 @@ const vendorOptions = computed(
 
 const categoryOptions = computed(
   () =>
-    deviceCategories?.value?.data?.map((i:DeviceCategory) => {
+    deviceCategories?.value?.data?.map((i: DeviceCategory) => {
       return {
         text: i.name,
         label: i.name,
@@ -198,7 +208,6 @@ const categoryOptions = computed(
 );
 
 // TODO: Delete device
-
 
 const confirm = (id: number) => {
   return new Promise((resolve) => {
@@ -220,8 +229,8 @@ const confirm = (id: number) => {
 const columns = computed(() => [
   {
     title: t('index'),
-    align: "center",
-    width: 50
+    align: 'center',
+    width: 50,
   },
   {
     title: t('admin.device.name'),
@@ -231,56 +240,58 @@ const columns = computed(() => [
   {
     title: t('admin.device.image'),
     dataIndex: 'image',
-    align: "center",
+    align: 'center',
   },
   {
     title: t('admin.device.category'),
     dataIndex: 'device_category_id',
-    filters: deviceCategories?.value?.data?.map((i: DeviceCategory) => {
-      return {
-        text: i.name,
-        value: i.id,
-      };
-    }) || [],
+    filters:
+      deviceCategories?.value?.data?.map((i: DeviceCategory) => {
+        return {
+          text: i.name,
+          value: i.id,
+        };
+      }) || [],
   },
   {
     title: t('admin.device.vendor'),
     dataIndex: 'vendor_id',
-    filters: vendors?.value?.data?.map((i: Vendor) => {
-      return {
-        text: i.name,
-        value: i.id,
-      };
-    }) || [],
+    filters:
+      vendors?.value?.data?.map((i: Vendor) => {
+        return {
+          text: i.name,
+          value: i.id,
+        };
+      }) || [],
   },
   {
     title: t('admin.device.length'),
     dataIndex: 'length',
-    align: "right",
+    align: 'right',
     sorter: true,
   },
   {
     title: t('admin.device.width'),
     dataIndex: 'width',
-    align: "right",
+    align: 'right',
     sorter: true,
   },
   {
     title: t('admin.device.depth'),
     dataIndex: 'depth',
-    align: "right",
+    align: 'right',
     sorter: true,
   },
   {
     title: t('admin.device.weight'),
     dataIndex: 'weight',
-    align: "right",
+    align: 'right',
     sorter: true,
   },
   {
     title: t('admin.device.diameter'),
     dataIndex: 'diameter',
-    align: "right",
+    align: 'right',
     sorter: true,
   },
 
@@ -293,8 +304,8 @@ const columns = computed(() => [
 const paramColumns = computed(() => [
   {
     title: t('index'),
-    dataIndex : 'index',
-    align: "center",
+    dataIndex: 'index',
+    align: 'center',
   },
   {
     title: t('admin.pole.params.key'),

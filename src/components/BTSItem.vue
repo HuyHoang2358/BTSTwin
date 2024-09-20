@@ -53,8 +53,8 @@ const props = defineProps<{
 const router = useRouter();
 const modelStore = useModelStore();
 
-const onSelectedScanStation = (scanItem: Omit<Bts, 'station'>) => {
-  router.push({
+const onSelectedScanStation = async (scanItem: Omit<Bts, 'station'>) => {
+  await router.push({
     path: MODEL_3D_PAGE_PATH,
     query: {
       id: scanItem.id,
@@ -62,7 +62,12 @@ const onSelectedScanStation = (scanItem: Omit<Bts, 'station'>) => {
   });
 };
 
-const ontoggleExpanded = () => {
+const ontoggleExpanded = async () => {
+  if (!modelStore.is2DMode && modelStore.mappingStationWithTileset[props.item.items[0].assetId]) {
+    await window.cesiumViewer.zoomTo(
+      modelStore.mappingStationWithTileset[props.item.items[0].assetId],
+    );
+  }
   modelStore.btsData = modelStore.btsData.map((i) =>
     i.station === props.item.station ? { ...i, expanded: !i.expanded } : { ...i, expanded: false },
   );

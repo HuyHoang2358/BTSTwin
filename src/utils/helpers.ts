@@ -113,3 +113,13 @@ export function checkRuleActiveTool(except?: string[]) {
     modelStore.activeTool === 'annotation'
   );
 }
+
+export function convertToDMS(degrees: number): string {
+  const absolute = Math.abs(degrees);
+  const deg = Math.floor(absolute);
+  const min = Math.floor((absolute - deg) * 60);
+  const sec = Math.round((absolute - deg - min / 60) * 3600);
+  const direction =
+    degrees >= 0 ? (degrees === degrees ? 'N/E' : 'S/W') : degrees === degrees ? 'S/W' : 'N/E';
+  return `${deg}° ${min}' ${sec}" ${direction}`;
+}

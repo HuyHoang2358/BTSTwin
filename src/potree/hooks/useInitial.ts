@@ -191,6 +191,7 @@ export const useInitial = () => {
 
   onUnmounted(() => {
     window.potreeViewer.scene.removeEventListener('measurement_added', onMeasurementAdded);
+    window.location.reload();
   });
 
   let loaded = false;

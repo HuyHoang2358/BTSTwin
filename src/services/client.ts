@@ -6,7 +6,7 @@ import { LOGIN_PAGE_PATH } from '@/router/routePath';
 export const baseUrl = import.meta.env.VITE_BASE_URL;
 
 const client = axios.create({
-  timeout: 60000,
+  timeout: 200000,
   baseURL: baseUrl,
 });
 
@@ -19,12 +19,12 @@ client.interceptors.request.use(
       Authorization: configStore.accessToken ? `Bearer ${configStore.accessToken}` : undefined,
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*',
-      'Accept': 'application/json, text/plain',
-      'charset': 'UTF-8',
-      "Access-Control-Allow-Methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+      Accept: 'application/json, text/plain',
+      charset: 'UTF-8',
+      'Access-Control-Allow-Methods': 'GET,HEAD,PUT,PATCH,POST,DELETE',
       'Access-Control-Allow-Credentials': 'true',
-      "Access-Control-Allow-Headers": '*',
-      "Access-Control-Expose-Headers": '*',
+      'Access-Control-Allow-Headers': '*',
+      'Access-Control-Expose-Headers': '*',
       ...config.headers,
     };
 

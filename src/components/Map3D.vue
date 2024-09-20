@@ -3,18 +3,28 @@
     id="cesiumContainer"
     class="w-full h-full"
   />
+  <div
+    class="absolute inset-0 flex items-center justify-center z-10"
+    v-if="loading"
+  >
+    <div class="loader" />
+  </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import * as Cesium from 'cesium';
 import 'cesium/Build/Cesium/Widgets/widgets.css';
+import { useModelStore } from '@/stores/model';
+
+const modelStore = useModelStore();
+const loading = ref(true);
 
 onMounted(async () => {
   Cesium.Ion.defaultAccessToken =
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZGE1ZjFkMi1lODkzLTQ1NDgtYWRjZi04OTA2Y2Y5MTRlNTciLCJpZCI6MjM5NDgyLCJpYXQiOjE3MjU1ODc3NjZ9.imrKQey9J0KQ5LbbJviN94MQHzTqr7vZUMJ3h4EX0T0';
 
-  const viewer = new Cesium.Viewer('cesiumContainer', {
+  window.cesiumViewer = new Cesium.Viewer('cesiumContainer', {
     terrainProvider: await Cesium.CesiumTerrainProvider.fromIonAssetId(1),
     baseLayerPicker: false, // remove button baseLayerPicker
     vrButton: false, // remove button view by VR mode
@@ -40,21 +50,44 @@ onMounted(async () => {
       },
     },
   });
-  viewer.scene.globe.depthTestAgainstTerrain = true;
+  window.cesiumViewer.scene.globe.depthTestAgainstTerrain = true;
+
+  if (modelStore.btsData.length === 0) return;
+
+  const assetIds: number[] = [];
+
+  for (const item of modelStore.btsData) {
+    const firstItem = item.items[0];
+    firstItem.assetId && assetIds.push(firstItem.assetId);
+  }
+
+  if (assetIds.length === 0) return;
 
   try {
-    const tileset = await Cesium.Cesium3DTileset.fromIonAssetId(2736511);
-    viewer.scene.primitives.add(tileset);
-    await viewer.zoomTo(tileset);
+    for (const id of assetIds) {
+      const tileset = await Cesium.Cesium3DTileset.fromIonAssetId(id);
+      window.cesiumViewer.scene.primitives.add(tileset);
+      const extras = tileset.asset.extras;
+      if (
+        Cesium.defined(extras) &&
+        Cesium.defined(extras.ion) &&
+        Cesium.defined(extras.ion.defaultStyle)
+      ) {
+        tileset.style = new Cesium.Cesium3DTileStyle(extras.ion.defaultStyle);
+      }
 
-    const extras = tileset.asset.extras;
-    if (
-      Cesium.defined(extras) &&
-      Cesium.defined(extras.ion) &&
-      Cesium.defined(extras.ion.defaultStyle)
-    ) {
-      tileset.style = new Cesium.Cesium3DTileStyle(extras.ion.defaultStyle);
+      modelStore.mappingStationWithTileset = {
+        ...modelStore.mappingStationWithTileset,
+        [id]: tileset,
+      };
     }
+
+    const firstAssetId = assetIds[0];
+    await window.cesiumViewer.zoomTo(modelStore.mappingStationWithTileset[firstAssetId]);
+    modelStore.btsData = modelStore.btsData.map((i) =>
+      i.items[0].assetId === firstAssetId ? { ...i, expanded: true } : { ...i, expanded: false },
+    );
+    loading.value = false;
   } catch (error) {
     console.error(error);
   }

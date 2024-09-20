@@ -3,6 +3,7 @@ import { computed, ref } from 'vue';
 import Map from 'ol/Map';
 import type { Image2D, StationItems } from '@/services/apis/bts';
 import type { InventoryDetail } from '@/potree/hooks/useInitial';
+import { Cesium3DTileset } from 'cesium';
 
 export const useModelStore = defineStore('model', () => {
   const mapOl = ref<Map>();
@@ -22,6 +23,10 @@ export const useModelStore = defineStore('model', () => {
   const openModalAddInventory = ref<boolean>(false);
   const loadingModel = ref<boolean>(true);
   const potreeVolumes = ref<any[]>([]);
+  const windyLayerVisible = ref(false);
+  const isShowBTSInfo = ref(false);
+  const selectedBTS = ref<StationItems>();
+  const mappingStationWithTileset = ref<Record<number, Cesium3DTileset>>({});
 
   const objectGroupArray = computed(() =>
     objectGroup.value ? Object.keys(objectGroup.value) : [],
@@ -46,5 +51,9 @@ export const useModelStore = defineStore('model', () => {
     loadingModel,
     newInventories,
     potreeVolumes,
+    windyLayerVisible,
+    isShowBTSInfo,
+    selectedBTS,
+    mappingStationWithTileset,
   };
 });

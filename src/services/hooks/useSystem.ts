@@ -5,12 +5,9 @@ import {
   fetchLogs,
   fetchMediaFiles,
   fetchNotifications,
-  uploadMediaFile
+  uploadMediaFile,
 } from '@/services/apis/systemApi';
 import type { Ref } from 'vue';
-import { PROJECT_QUERY_KEY } from '@/services/hooks/useProject';
-import { downloadUsersInUnit, insertUnitsFromExcel } from '@/services/apis/unit';
-import { deleteProject } from '@/services/apis/project';
 
 export const NOTIFICATIONS_QUERY_KEY = 'NOTIFICATIONS_QUERY_KEY';
 export const LOGS_QUERY_KEY = 'LOGS_QUERY_KEY';
@@ -48,9 +45,10 @@ export const useLogs = (params: {
     retry: 2,
   });
 
-export const useDeleteLog = () => useMutation({
-  mutationFn: deleteLog
-});
+export const useDeleteLog = () =>
+  useMutation({
+    mutationFn: deleteLog,
+  });
 export const useNotifications = () =>
   useQuery({
     queryKey: [NOTIFICATIONS_QUERY_KEY],
@@ -65,13 +63,12 @@ export const useMutationSystemSuccess = () => {
     await queryClient.invalidateQueries({ queryKey: [LOGS_QUERY_KEY] });
   };
 
-
   return {
     invalidateQueriesLogs,
   };
 };
 
-export const useMedia= () =>
+export const useMedia = () =>
   useQuery({
     queryKey: [MEDIA_QUERY_KEY],
     queryFn: fetchMediaFiles,

@@ -17,23 +17,8 @@ import {
 import HomeView from '@/views/HomeView.vue';
 import LoginView from '@/views/LoginView.vue';
 import DashBoard from '@/views/admin/DashBoard.vue';
-import AdministrativeView from '@/views/admin/AdministrativeView.vue';
 import UpdateAccount from '@/views/admin/UpdateAccount.vue';
 import LogView from '@/views/admin/LogView.vue';
-import DataTypeView from '@/views/admin/DataTypeView.vue';
-import FieldView from '@/views/admin/FieldView.vue';
-import SpecLayerView from '@/views/admin/SpecLayerView.vue';
-import ImageryView from '@/views/admin/ImageryView.vue';
-import SatelliteLayerView from '@/views/admin/SatelliteLayerView.vue';
-import DefaultLayerView from '@/views/admin/DefaultLayerView.vue';
-import LabelCategoryView from '@/views/admin/AIModule/LabelCategoryView.vue';
-import LabelAIView from '@/views/admin/AIModule/LabelAIView.vue';
-import RasterDataStoreView from '@/views/admin/RasterDataStoreView.vue';
-import PrivateLayerView from '@/views/admin/PrivateLayerView.vue';
-import ChangeDetectionResultView from '@/views/admin/AIModule/ChangeDetectionResultView.vue';
-import ObjectDetectionResultView from '@/views/admin/AIModule/ObjectDetectionResultView.vue';
-import ProjectView from '@/views/admin/ProjectView.vue';
-import MediaManagerView from '@/views/admin/MediaManagerView.vue';
 import Model3DView from '@/views/Model3DView.vue';
 
 import CategoryDevice from '@/views/admin/category/CategoryDevice.vue';
@@ -110,72 +95,8 @@ const router = createRouter({
           component: LogView,
         },
         {
-          path: 'data-type',
-          component: DataTypeView,
-        },
-        {
-          path: 'field',
-          component: FieldView,
-        },
-        {
-          path: 'administrative',
-          component: AdministrativeView,
-        },
-        {
           path: 'profile',
           component: UpdateAccount,
-        },
-        {
-          path: 'satellite-layer',
-          component: SatelliteLayerView,
-        },
-        {
-          path: 'default-layer',
-          component: DefaultLayerView,
-        },
-        {
-          path: 'spec-layer',
-          component: SpecLayerView,
-        },
-        {
-          path: 'layer-private',
-          component: PrivateLayerView,
-        },
-        {
-          path: 'imagery',
-          component: ImageryView,
-        },
-        {
-          path: 'raster-store',
-          component: RasterDataStoreView,
-        },
-        {
-          path: 'ai-module/categories',
-          component: LabelCategoryView,
-        },
-        {
-          path: 'ai-module/labels',
-          component: LabelAIView,
-        },
-        {
-          path: 'ai-module/change-detection-result',
-          component: ChangeDetectionResultView,
-        },
-        {
-          path: 'ai-module/object-detection-result',
-          component: ObjectDetectionResultView,
-        },
-        {
-          path: 'ai-module/land-use-cover-result',
-          component: ChangeDetectionResultView,
-        },
-        {
-          path: 'project',
-          component: ProjectView,
-        },
-        {
-          path: 'media-manager',
-          component: MediaManagerView,
         },
       ],
     },

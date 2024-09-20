@@ -1,22 +1,25 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query';
 import {
   addPermissionToUser,
-  createPermission, createPermissionGroup,
+  createPermission,
+  createPermissionGroup,
   createRole,
   deleteRole,
   fetchAuthorizations,
   fetchPermissionGroups,
   fetchPermissions,
-  fetchRoles, fetchUserPermissions,
-  removePermission, removePermissionGroup, removePermissionToUser,
+  fetchRoles,
+  fetchUserPermissions,
+  removePermission,
+  removePermissionGroup,
+  removePermissionToUser,
   updatePermission,
   updatePermissionGroup,
-  updateRole
+  updateRole,
 } from '@/services/apis/iam';
 import type { BaseRefParams, PaginationRefParams } from '@/services/services.types';
 import { getParamsFromBaseRefParams } from '@/utils/helpers';
 import type { ComputedRef, Ref } from 'vue';
-import type { ImageryRefParams } from '@/services/hooks/useLayer';
 
 export const PERMISSION_GROUPS_QUERY_KEY = 'PERMISSION_GROUPS_QUERY_KEY';
 export const AUTHORIZATIONS_QUERY_KEY = 'AUTHORIZATIONS_QUERY_KEY';
@@ -28,16 +31,16 @@ export const USER_PERMISSIONS_KEY = 'USER_PERMISSIONS_KEY';
 export const usePermissionGroups = (refParams: { searchValue?: Ref<string> }) =>
   useQuery({
     queryKey: [PERMISSION_GROUPS_QUERY_KEY, refParams],
-    queryFn: () => fetchPermissionGroups({searchValue: refParams?.searchValue?.value}),
+    queryFn: () => fetchPermissionGroups({ searchValue: refParams?.searchValue?.value }),
   });
-export const useCreatePermissionGroup = () => useMutation({mutationFn: createPermissionGroup})
+export const useCreatePermissionGroup = () => useMutation({ mutationFn: createPermissionGroup });
 export const useUpdatePermissionGroup = () => useMutation({ mutationFn: updatePermissionGroup });
 export const useRemovePermissionGroup = () => useMutation({ mutationFn: removePermissionGroup });
 
 // TODO: Permission
 export const usePermissions = () =>
   useQuery({
-    queryKey: [PERMISSIONS_QUERY_KEY, ],
+    queryKey: [PERMISSIONS_QUERY_KEY],
     queryFn: fetchPermissions,
   });
 export const useCreatePermission = () => useMutation({ mutationFn: createPermission });
@@ -54,7 +57,6 @@ export const useCreateRole = () => useMutation({ mutationFn: createRole });
 export const useUpdateRole = () => useMutation({ mutationFn: updateRole });
 export const useDeleteRole = () => useMutation({ mutationFn: deleteRole });
 
-
 // TODO: Authorizations
 export const useAuthorizations = (refParams: BaseRefParams & PaginationRefParams) =>
   useQuery({
@@ -66,13 +68,12 @@ export const useUserPermissions = (id: Ref<number>, enabled: ComputedRef<boolean
     queryKey: [USER_PERMISSIONS_KEY, id],
     queryFn: () => fetchUserPermissions(id),
     enabled,
-  })
+  });
 // add permission for User
 export const useAddPermissionToUser = () => useMutation({ mutationFn: addPermissionToUser });
 // Remove permission from User
-export const useRemovePermissionFromUser = () => useMutation({ mutationFn: removePermissionToUser });
-
-
+export const useRemovePermissionFromUser = () =>
+  useMutation({ mutationFn: removePermissionToUser });
 
 // TODO: IAM handle success
 export const useMutationIAMSuccess = () => {
@@ -96,7 +97,3 @@ export const useMutationIAMSuccess = () => {
     invalidateQueriesAuthorizations,
   };
 };
-
-
-
-

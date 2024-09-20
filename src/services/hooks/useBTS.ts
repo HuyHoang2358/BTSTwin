@@ -1,5 +1,6 @@
-import { useQuery } from '@tanstack/vue-query';
+import { useMutation, useQuery } from '@tanstack/vue-query';
 import {
+  calculate,
   fetchBTS,
   fetchBTSById,
   fetchImage2DByBtsId,
@@ -38,3 +39,5 @@ export const useGetImage2D = (idComputed: ComputedRef<string>, enabled: Computed
     queryFn: () => fetchImage2DByBtsId(idComputed.value),
     enabled,
   });
+
+export const useCalculate = () => useMutation({ mutationFn: calculate });

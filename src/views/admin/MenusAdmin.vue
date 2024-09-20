@@ -26,8 +26,8 @@
       class="mt-20"
       v-model:openKeys="openKeys"
     >
-<!-- Quản trị hệ thống -->
-<!--      <a-sub-menu key="system">
+      <!-- Quản trị hệ thống -->
+      <!--      <a-sub-menu key="system">
         <template #title>
           <span class="ml-4 font-medium font-sarabun text-lg text-main">
             {{ $t('admin.menus.systemManagement') }}
@@ -71,14 +71,14 @@
         </MenuItem>
       </a-sub-menu>-->
 
-<!-- Quản lý danh mục -->
-      <a-sub-menu key="index"      >
+      <!-- Quản lý danh mục -->
+      <a-sub-menu key="index">
         <template #title>
           <span class="ml-4 font-medium font-sarabun text-lg text-main">
             {{ t('admin.menus.categoryManagement') }}
           </span>
         </template>
-<!-- Quản lý danh mục thiết b-->
+        <!-- Quản lý danh mục thiết b-->
         <MenuItem
           :path="`${ADMIN_PAGE_PATH}/${CATEGORY_DEVICE_PATH}`"
           :menu-key="MENU_KEY.CATEGORY_DEVICE"
@@ -110,10 +110,9 @@
         >
           <IconDatabase />
         </MenuItem>
-
       </a-sub-menu>
 
-<!-- Quản lý dữ liệu -->
+      <!-- Quản lý dữ liệu -->
       <a-sub-menu key="data">
         <template #title>
           <span class="ml-4 font-medium font-sarabun text-lg text-main">
@@ -144,16 +143,17 @@
         </MenuItem>
       </a-sub-menu>
       <!-- Cấu hình hệ thống -->
-      <a-menu-item
-        :key="MENU_KEY.CONFIG"
-        :id="MENU_KEY.CONFIG">
-        <router-link
-          :to="'#'"
-          class="font-medium font-sarabun text-lg text-main"
-        >
-          {{ t('admin.menus.config') }}
-        </router-link>
-      </a-menu-item>
+      <!--      <a-menu-item-->
+      <!--        :key="MENU_KEY.CONFIG"-->
+      <!--        :id="MENU_KEY.CONFIG"-->
+      <!--      >-->
+      <!--        <router-link-->
+      <!--          :to="'#'"-->
+      <!--          class="font-medium font-sarabun text-lg text-main"-->
+      <!--        >-->
+      <!--          {{ t('admin.menus.config') }}-->
+      <!--        </router-link>-->
+      <!--      </a-menu-item>-->
     </a-menu>
   </a-layout-sider>
 </template>
@@ -161,13 +161,14 @@
 <script setup lang="ts">
 import {
   HOME_PAGE_PATH,
-  ADMIN_DEFAULT_LAYER_PAGE_PATH,
   ADMIN_PAGE_PATH,
   CATEGORY_DEVICE_PATH,
   CATEGORY_POLE_PATH,
   DEVICE_PATH,
   CATEGORY_VENDOR_PATH,
-  POLE_PATH, CATEGORY_WINDY_AREA_PATH, STATION_PATH
+  POLE_PATH,
+  CATEGORY_WINDY_AREA_PATH,
+  STATION_PATH,
 } from '@/router/routePath';
 
 import { MENU_KEY } from '@/utils/enums';

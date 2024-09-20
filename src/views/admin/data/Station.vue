@@ -4,7 +4,6 @@
     :data-source="dataSource"
     :loading="isLoading"
     size="middle"
-    :scroll="{ y: 520 }"
     @change="handleTableChange"
     :pagination="pagination"
     data-test="table"
