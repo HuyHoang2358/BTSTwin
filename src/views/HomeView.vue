@@ -64,7 +64,20 @@
           </a-button>
         </div>
       </div>
-      <div class="flex flex-row items-center absolute z-10 bottom-3 right-4">
+      <div class="flex flex-row items-center gap-x-1 absolute z-10 bottom-3 right-4">
+        <div
+          v-if="modelStore.windyLayerVisible"
+          class="flex flex-row gap-1"
+        >
+          <div
+            v-for="item in dataWindy?.data?.data || []"
+            :key="item.id"
+            :style="{ background: item.color }"
+            class="flex w-6 h-6 rounded-full text-center items-center justify-center"
+          >
+            {{ item.name }}
+          </div>
+        </div>
         <a-tooltip
           title="Bản đồ vùng gió"
           placement="top"
@@ -100,11 +113,17 @@ import Map3D from '@/components/Map3D.vue';
 import viVN from 'ant-design-vue/es/locale/vi_VN';
 import { theme } from 'ant-design-vue';
 import BTSInfo from '@/components/BTSInfo.vue';
+import { useWindyAreas } from '@/services/hooks/useWindyArea';
+import { maxPageSize } from '@/utils/constants';
 
 const current = shallowRef(Map2D);
 const isViettelLayer = ref(true);
 
 const modelStore = useModelStore();
+
+const { data: dataWindy } = useWindyAreas({
+  perPage: ref(maxPageSize),
+});
 
 watch(
   () => modelStore.is2DMode,

@@ -188,9 +188,9 @@ const onSubmit = () => {
 
   modelStore.objectGroup = {
     ...modelStore.objectGroup,
-    [dataDevice.category.name]: modelStore.objectGroup[dataDevice.category.name].concat([
-      newInventory,
-    ]),
+    [dataDevice.category.name]: modelStore.objectGroup[dataDevice.category.name]
+      ? modelStore.objectGroup[dataDevice.category.name].concat([newInventory])
+      : [newInventory],
   };
 
   modelStore.selectedInventory = newInventory;

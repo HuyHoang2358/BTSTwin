@@ -165,5 +165,6 @@ const onRemoveDevice = () => {
   };
   window.potreeViewer.scene.removeVolume(toRaw(modelStore.selectedInventory?.newDevice));
   window.potreeViewer.inputHandler.deselectAll();
+  modelStore.selectedInventory = undefined;
 };
 </script>
