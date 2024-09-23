@@ -12,6 +12,7 @@ import {
   CATEGORY_WINDY_AREA_PATH,
   STATION_PATH,
   STATION_DETAIL_PATH,
+  PROCESSING_DATA_PROCESS,
 } from '@/router/routePath';
 
 import HomeView from '@/views/HomeView.vue';
@@ -88,6 +89,10 @@ const router = createRouter({
           name: 'station-detail',
           path: STATION_DETAIL_PATH,
           component: StationDetail,
+        },
+        {
+          path: PROCESSING_DATA_PROCESS,
+          component: Process,
         },
 
         {

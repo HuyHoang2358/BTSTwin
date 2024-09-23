@@ -122,8 +122,8 @@
           </span>
         </template>
         <MenuItem
-          :path="`${ADMIN_PAGE_PATH}/${STATION_PATH}`"
-          :menu-key="MENU_KEY.STATION"
+          :path="`${ADMIN_PAGE_PATH}/${PROCESSING_DATA_PROCESS}`"
+          :menu-key="MENU_KEY.PROCESSING_DATA_PROCESS"
           :title="t('admin.menus.dataFlowManager')"
         >
           <IconDataFlow />
@@ -179,6 +179,7 @@ import {
   POLE_PATH,
   CATEGORY_WINDY_AREA_PATH,
   STATION_PATH,
+  PROCESSING_DATA_PROCESS,
 } from '@/router/routePath';
 
 import { MENU_KEY } from '@/utils/enums';
