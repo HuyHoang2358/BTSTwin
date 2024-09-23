@@ -91,11 +91,12 @@
       "categoryManagement" : " Quản lý danh mục",
       "deviceCategory" : "Quản lý danh mục thiết bị",
       "poleCategory": "Quản lý loại cột",
-      "deviceManager": "Quản lý thiết bị",
+      "deviceManager": "Quản lý loại thiết bị",
       "PoleManager": "Quản lý cột",
       "StationManager": "Quản lý trạm",
       "windyAreaManager": "Quản lý vùng gió",
       "vendorManager": "Danh sách nhà cung cấp",
+      "dataFlowManager": "Quản lý luồng xử lý dữ liệu",
 
       "systemManagement": "Quản trị hệ thống",
       "user": "Quản lý người dùng",
@@ -304,6 +305,7 @@
       "windyArea": {
         "title": "Danh sách vùng gió",
         "name": "Tên vùng gió",
+        "color": "Màu thể hiện",
         "wo": "Wo (daN/m2) 3s, 20 năm",
         "v3s50": "V3s50 (m/s) 3s, 50 năm",
         "v10m50": "V10m50 (m/s) 10 phút, 50 năm",

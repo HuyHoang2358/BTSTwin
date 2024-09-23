@@ -10,11 +10,13 @@
           <IconHomeAdmin class="text-[#454545] group-hover:text-[#EE0033]" />
         </a>
       </div>
-      <img
-        src="/images/auth/logo-viettel.png"
-        alt="logo-viettel"
-        class="logo"
-      />
+      <a :href="ADMIN_PAGE_PATH">
+        <img
+          src="/icons/ViettelAI-2023.svg"
+          alt="logo-viettel"
+          class="logo"
+        />
+      </a>
     </div>
 
     <a-divider class="h-px bg-[#373737] m-0 p-0" />
@@ -92,7 +94,7 @@
           :menu-key="MENU_KEY.CATEGORY_POLE"
           :title="t('admin.menus.poleCategory')"
         >
-          <IconDatabase />
+          <IconCategoryPole />
         </MenuItem>
 
         <MenuItem
@@ -100,7 +102,7 @@
           :menu-key="MENU_KEY.CATEGORY_WINDY_AREA"
           :title="t('admin.menus.windyAreaManager')"
         >
-          <IconDatabase />
+          <IconCategoryWindyArea />
         </MenuItem>
 
         <MenuItem
@@ -108,7 +110,7 @@
           :menu-key="MENU_KEY.CATEGORY_VENDOR"
           :title="t('admin.menus.vendorManager')"
         >
-          <IconDatabase />
+          <IconCategoryVendor />
         </MenuItem>
       </a-sub-menu>
 
@@ -119,27 +121,35 @@
             {{ $t('admin.menus.dataManagement') }}
           </span>
         </template>
-
         <MenuItem
-          :path="`${ADMIN_PAGE_PATH}/${DEVICE_PATH}`"
-          :menu-key="MENU_KEY.DEVICE"
-          :title="t('admin.menus.deviceManager')"
+          :path="`${ADMIN_PAGE_PATH}/${STATION_PATH}`"
+          :menu-key="MENU_KEY.STATION"
+          :title="t('admin.menus.dataFlowManager')"
         >
-          <IconCategoryAILabel />
-        </MenuItem>
-        <MenuItem
-          :path="`${ADMIN_PAGE_PATH}/${POLE_PATH}`"
-          :menu-key="MENU_KEY.POLE"
-          :title="t('admin.menus.PoleManager')"
-        >
-          <IconMap />
+          <IconDataFlow />
         </MenuItem>
         <MenuItem
           :path="`${ADMIN_PAGE_PATH}/${STATION_PATH}`"
           :menu-key="MENU_KEY.STATION"
           :title="t('admin.menus.StationManager')"
         >
-          <IconThirdPartyLayer />
+          <IconDataStation />
+        </MenuItem>
+
+        <MenuItem
+          :path="`${ADMIN_PAGE_PATH}/${POLE_PATH}`"
+          :menu-key="MENU_KEY.POLE"
+          :title="t('admin.menus.PoleManager')"
+        >
+          <IconDataPole />
+        </MenuItem>
+
+        <MenuItem
+          :path="`${ADMIN_PAGE_PATH}/${DEVICE_PATH}`"
+          :menu-key="MENU_KEY.DEVICE"
+          :title="t('admin.menus.deviceManager')"
+        >
+          <IconDataDevice />
         </MenuItem>
       </a-sub-menu>
       <!-- Cấu hình hệ thống -->
@@ -174,7 +184,6 @@ import {
 import { MENU_KEY } from '@/utils/enums';
 import MenuItem from '@/views/admin/MenuItem.vue';
 import IconHomeAdmin from '@/components/icons/home/IconHomeAdmin.vue';
-import IconCategory from '@/components/icons/admin/IconCategory.vue';
 import IconDatabase from '@/components/icons/admin/IconDatabase.vue';
 import IconMap from '@/components/icons/admin/IconMap.vue';
 import IconThirdPartyLayer from '@/components/icons/IconThirdPartyLayer.vue';
@@ -182,6 +191,15 @@ import IconCategoryAILabel from '@/components/icons/IconCategoryAILabel.vue';
 import { ref } from 'vue';
 import { useConfigStore } from '@/stores/config';
 import { useI18n } from 'vue-i18n';
+import IconCategory from '@/components/icon/IconCategory.vue';
+import IconCategoryPole from '@/components/icon/IconCategoryPole.vue';
+import IconCategoryWindyArea from '@/components/icon/IconCategoryWindyArea.vue';
+import IconCategoryVendor from '@/components/icon/IconCategoryVendor.vue';
+import IconDataFlow from '@/components/icon/IconDataFlow.vue';
+import IconDataPole from '@/components/icon/IconDataPole.vue';
+import IconDataStation from '@/components/icon/IconDataStation.vue';
+import IconDataDevice from '@/components/icon/IconDataDevice.vue';
+
 const { t } = useI18n();
 const configStore = useConfigStore();
 const openKeys = ref(['system', 'index', 'data', 'aiModule']);

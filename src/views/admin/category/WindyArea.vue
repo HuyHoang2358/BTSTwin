@@ -16,7 +16,7 @@
 
         <a-col :span="10">
           <div class="flex flex-row gap-x-2.5">
-<!-- Search -->
+            <!-- Search -->
             <a-input
               :placeholder="$t('search')"
               v-model:value="searchValue"
@@ -27,7 +27,7 @@
                 <IconSearchInput />
               </template>
             </a-input>
-<!-- Add -->
+            <!-- Add -->
             <a-button
               type="primary"
               class="flex justify-center items-center space-x-2.5"
@@ -36,27 +36,40 @@
             >
               {{ $t('add') }}
             </a-button>
-
           </div>
         </a-col>
       </a-row>
     </template>
     <template
-      #bodyCell="{ column, index, record }: { column: ColumnType; index: number; record: WindyArea }"
+      #bodyCell="{
+        column,
+        index,
+        record,
+      }: {
+        column: ColumnType;
+        index: number;
+        record: WindyArea;
+      }"
     >
       <template v-if="column.title === 'STT'">
         <span>{{ index + 1 }}</span>
       </template>
+      <template v-if="column.dataIndex === 'color'">
+        <div
+          class="w-10 h-6 rounded-full"
+          :style="getColor(record.color)"
+        ></div>
+      </template>
 
       <template v-if="column.dataIndex === 'action'">
         <div class="flex flex-row items-center gap-x-4">
-<!-- Edit -->
+          <!-- Edit -->
           <a-button
             class="bg-[#F1F1F2] p-1.5 border-none"
             @click="onEdit(record)"
             :icon="h(IconEdit)"
           />
-<!-- Delete -->
+          <!-- Delete -->
           <a-popconfirm
             :title="$t('admin.category.windyArea.confirmDelete')"
             @confirm="confirm(record.id)"
@@ -95,7 +108,11 @@ import { useTable } from '@/utils/hooks/useTable';
 import { useTableSearch } from '@/utils/hooks/useTableSearch';
 import { useSuccessHandler } from '@/services/hooks/useSuccessHandler';
 import { useErrorHandler } from '@/services/hooks/useErrorHandler';
-import { useDeleteWindyArea, useMutationWindyAreaSuccess, useWindyAreas } from '@/services/hooks/useWindyArea';
+import {
+  useDeleteWindyArea,
+  useMutationWindyAreaSuccess,
+  useWindyAreas,
+} from '@/services/hooks/useWindyArea';
 
 defineProps<{
   testMode?: boolean;
@@ -110,10 +127,17 @@ const { invalidateQueries } = useMutationWindyAreaSuccess();
 // TODO: handle modal edit and add
 const selectedItem = ref<WindyArea>();
 const open = ref<boolean>(false);
-const showModal = () => {open.value = true;};
-const onAdd = () => {selectedItem.value = undefined;showModal();}
-const onEdit = (item: WindyArea) => {selectedItem.value = item;showModal();};
-
+const showModal = () => {
+  open.value = true;
+};
+const onAdd = () => {
+  selectedItem.value = undefined;
+  showModal();
+};
+const onEdit = (item: WindyArea) => {
+  selectedItem.value = item;
+  showModal();
+};
 
 // TODO: Fetch info
 const { perPage, page, handleTableChange, pagination, sort, filter } = useTable(
@@ -127,10 +151,11 @@ const { data, isLoading, refetch } = useWindyAreas({
   filter,
   searchValue: debouncedSearch,
 });
-watch(filter, () => {refetch();});
+watch(filter, () => {
+  refetch();
+});
 
 const dataSource: ComputedRef<WindyArea[]> = computed(() => data?.value?.data?.data || []);
-
 
 // TODO: Delete WindyArea
 
@@ -154,7 +179,7 @@ const confirm = (id: number) => {
 const columns = computed(() => [
   {
     title: t('index'),
-    align: "center",
+    align: 'center',
     fixed: 'left',
     width: 50,
   },
@@ -164,31 +189,39 @@ const columns = computed(() => [
     sorter: true,
   },
   {
+    title: t('admin.category.windyArea.color'),
+    dataIndex: 'color',
+    align: 'center',
+  },
+  {
     title: t('admin.category.windyArea.wo'),
     dataIndex: 'wo',
-    align: "center",
+    align: 'center',
     sorter: true,
   },
   {
     title: t('admin.category.windyArea.v3s50'),
     dataIndex: 'v3s50',
-    align: "center",
+    align: 'center',
     sorter: true,
   },
   {
     title: t('admin.category.windyArea.v10m50'),
     dataIndex: 'v10m50',
-    align: "center",
+    align: 'center',
     sorter: true,
   },
   {
     title: t('admin.category.windyArea.description'),
     dataIndex: 'description',
-    align: "center",
+    align: 'center',
   },
   {
     title: t('operation'),
     dataIndex: 'action',
   },
 ]);
+const getColor = (color: string) => {
+  return `background-color:${color}`;
+};
 </script>

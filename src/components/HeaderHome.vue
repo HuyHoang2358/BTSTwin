@@ -1,13 +1,19 @@
 <template>
-  <header
-    class="bg-[#212121] flex flex-row justify-between items-center w-full h-[56px] pl-3.5 pr-2.5"
-  >
+  <header class="bg-[#212121] flex flex-row justify-between items-center w-full pl-3.5 pr-2.5 py-3">
     <img
       src="/icons/ViettelAI-2023.svg"
       :width="105"
       :height="37"
       alt="logo-viettel"
     />
+    <div>
+      <h1
+        class="text-[#D0002D] m-0 font-bold text-lg lg:text-xl whitespace-nowrap font-magistral text-center uppercase"
+      >
+        Công cụ khảo sát và thiết kế mạng tự động
+      </h1>
+    </div>
+
     <div class="flex flex-row items-center dark-form">
       <a-popover
         title="Danh sách thông báo"
@@ -57,9 +63,9 @@
                 {{ profileData?.data?.name || 'Tên người dùng' }}
               </a-typography-text>
               <a-typography-text
-                class="text-white text-start text-xs text-[10px] font-medium whitespace-nowrap overflow-hidden w-12 overflow-ellipsis"
+                class="text-white text-start text-xs text-[10px] font-medium whitespace-nowrap overflow-hidden overflow-ellipsis"
               >
-                {{ profileData?.data?.profile?.title?.name || 'Vai trò' }}
+                {{ profileData?.data?.profile?.title?.name || 'Quản trị viên' }}
               </a-typography-text>
             </div>
           </div>

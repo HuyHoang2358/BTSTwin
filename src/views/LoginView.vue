@@ -11,16 +11,17 @@
     <div class="flex h-screen w-screen dark-form">
       <a-row class="w-full">
         <a-col
-          :span="12"
+          :span="18"
           class="background-img"
         >
           <div
             class="flex flex-col h-full w-full bg-[#151515] bg-opacity-60 relative justify-between left-container"
           >
             <img
-              src="/images/auth/logo-viettel.png"
+              src="/icons/ViettelAI-2023.svg"
+              :width="200"
+              :height="50"
               alt="logo-viettel"
-              class="logo"
             />
             <div>
               <a-typography-text class="text-[#F4F4F4] font-medium text-[49px]">
@@ -35,7 +36,7 @@
           </div>
         </a-col>
         <a-col
-          :span="12"
+          :span="6"
           class="bg-[#151515] flex flex-col justify-center items-center"
         >
           <a-typography-text class="text-[#D8D8D8] text-[40px] font-medium mb-20 font-magistral">
@@ -165,7 +166,7 @@ const warning = () => {
 }
 
 .background-img {
-  background-image: url('/images/auth/login-bg.png');
+  background-image: url('/images/auth/bts-Twin-bg.jpg');
   background-repeat: no-repeat;
   background-size: cover;
 }
