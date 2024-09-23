@@ -30,6 +30,7 @@ import Pole from '@/views/admin/data/Pole.vue';
 import WindyArea from '@/views/admin/category/WindyArea.vue';
 import Station from '@/views/admin/data/Station.vue';
 import StationDetail from '@/views/admin/data/StationDetail.vue';
+import ProcessView from '@/views/admin/data/ProcessView.vue';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -92,7 +93,7 @@ const router = createRouter({
         },
         {
           path: PROCESSING_DATA_PROCESS,
-          component: Process,
+          component: ProcessView,
         },
 
         {
