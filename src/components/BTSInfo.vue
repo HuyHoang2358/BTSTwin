@@ -16,59 +16,30 @@
         :labelStyle="descriptionStyle"
         :contentStyle="descriptionStyle"
       >
-        {{ modelStore.selectedBTS?.station }}
+        {{ modelStore.selectedBTS?.name }}
       </a-descriptions-item>
       <a-descriptions-item
         label="Địa chỉ"
         :labelStyle="descriptionStyle"
         :contentStyle="descriptionStyle"
       >
-        {{ modelStore.selectedBTS?.items[0].address }}
+        {{ modelStore.selectedBTS?.address?.address_detail }}
       </a-descriptions-item>
       <a-descriptions-item
         label="Tọa độ"
         :labelStyle="descriptionStyle"
         :contentStyle="descriptionStyle"
-        v-if="modelStore.selectedBTS?.items[0].geom"
       >
-        {{ convertToDMS(modelStore.selectedBTS?.items[0].geom.x) }}
+        {{ convertToDMS(Number(modelStore.selectedBTS?.location?.longitude)) }}
         {{ `, ` }}
-        {{ convertToDMS(modelStore.selectedBTS?.items[0].geom.y) }}
-      </a-descriptions-item>
-      <a-descriptions-item
-        label="Chiều cao"
-        :labelStyle="descriptionStyle"
-        :contentStyle="descriptionStyle"
-      >
-        {{ modelStore.selectedBTS?.items[0].towerHeight }}m
+        {{ convertToDMS(Number(modelStore.selectedBTS?.location?.latitude)) }}
       </a-descriptions-item>
       <a-descriptions-item
         label="Vận hành"
         :labelStyle="descriptionStyle"
         :contentStyle="descriptionStyle"
       >
-        {{ modelStore.selectedBTS?.items[0].operator }}
-      </a-descriptions-item>
-      <a-descriptions-item
-        label="Mounting Position"
-        :labelStyle="descriptionStyle"
-        :contentStyle="descriptionStyle"
-      >
-        {{ modelStore.selectedBTS?.items[0].mountingPosition }}
-      </a-descriptions-item>
-      <a-descriptions-item
-        label="Kiểu"
-        :labelStyle="descriptionStyle"
-        :contentStyle="descriptionStyle"
-      >
-        {{ modelStore.selectedBTS?.items[0].type }}
-      </a-descriptions-item>
-      <a-descriptions-item
-        label="Có vật che chắn"
-        :labelStyle="descriptionStyle"
-        :contentStyle="descriptionStyle"
-      >
-        Không
+        {{ 'VTNET' }}
       </a-descriptions-item>
     </a-descriptions>
   </div>

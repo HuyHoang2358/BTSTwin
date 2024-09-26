@@ -311,8 +311,8 @@ import type { Pole, PoleData, PoleParam } from '@/services/apis/pole';
 import IconTrash from '@/components/icons/IconTrash.vue';
 import IconAddCircle from '@/components/icons/IconAddCircle.vue';
 import { useCreatePole, useMutationPoleSuccess, useUpdatePole } from '@/services/hooks/usePole';
-import { useStationCodes } from '@/services/hooks/useStation';
-import type { StationCode } from '@/services/apis/station';
+import { useStationCodes } from '@/services/hooks/useStationCategory';
+import type { StationCode } from '@/services/apis/stationCategory';
 import { compareString } from '@/utils/helpers';
 
 const props = defineProps<{

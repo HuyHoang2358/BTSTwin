@@ -249,7 +249,7 @@
 </template>
 <script lang="ts" setup>
 import { useRoute } from 'vue-router';
-import { useGetStation } from '@/services/hooks/useStation';
+import { useGetStation } from '@/services/hooks/useStationCategory';
 import { computed, h, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import type { Pole } from '@/services/apis/pole';

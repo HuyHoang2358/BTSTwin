@@ -10,7 +10,7 @@
       <h1
         class="text-[#D0002D] m-0 font-bold text-lg lg:text-xl whitespace-nowrap font-magistral text-center uppercase"
       >
-        Công cụ khảo sát và thiết kế mạng tự động
+        Công cụ Khảo sát hạ tầng & Đánh giá thiết kế vô tuyến cho cột viễn thông
       </h1>
     </div>
 

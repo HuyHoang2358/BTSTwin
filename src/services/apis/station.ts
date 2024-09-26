@@ -1,76 +1,152 @@
+import type { Point, WrapperResponse } from '@/services/services.types';
 import client from '@/services/client';
-import { API_STATION } from '@/services/apiPath';
-import type {
-  IdParam,
-  IndexRequestParams,
-  PaginateRequestParams,
-  PaginateResType,
-  WrapperResponse,
-} from '@/services/services.types';
-import type { Country, Province, District, Commune } from '@/services/apis/address';
-import type { Pole } from '@/services/apis/pole';
+import {
+  API_BTS,
+  API_CALCULATE,
+  API_CAMERA_POSE,
+  API_INVENTORY,
+  API_MEDIA_MANAGER,
+  API_STATION,
+} from '@/services/apiPath';
+import type { Address } from '@/services/apis/stationCategory';
 
-export interface Location {
+export type Bts = {
   id: number;
-  latitude: number;
-  longitude: number;
-  height: number;
+  createdAt: string;
+  updatedAt: string;
+  station: string;
+  modelLink: string;
+  address: string;
+  operator: string;
+  type: string;
+  mountingPosition: string;
+  towerHeight: number;
+  towerTilt: number;
+  gpsRatio: number;
+  paramA: number;
+  assetId: number;
+  paramB: number;
+  northDirection: number[];
+  geom: Point;
+  zplane: number;
+};
+
+export interface Inventory {
+  id: number | string;
+  createdAt: string;
+  updatedAt: string;
+  name: string;
+  model: string;
+  vendor: string;
+  deviceTilt: number;
+  deviceAzimuth: number;
+  deviceHeight: number;
+  status: boolean;
+  modelHeight: number;
+  modelWidth: number;
+  modelDepth: number;
+  vertices: string;
+  translation: string;
+  rotation: string;
+  image2D?: Image2D;
 }
 
-export interface Address {
+export type StationItems = {
+  station: string;
+  expanded: boolean;
+  items: Omit<Bts, 'station'>[];
+};
+
+export interface Image2D {
   id: number;
-  detail: any;
-  country: Country;
-  province: Province;
-  district: District;
-  commune: Commune;
+  createdAt: string;
+  updatedAt: string;
+  fileName: string;
+  width: number;
+  height: number;
+  gpsLatitudeRef: string;
+  gpsLongitudeRef: string;
+  gpsAltitudeRef: string;
+  gimbalRollDegree: string;
+  gimbalYawDegree: string;
+  gimbalPitchDegree: number;
+  gpsAltitude: string;
+  gpsLatitude: string;
+  gpsLongitude: string;
+  imageUrl: string;
+  previewImageUrl: string;
+  cameraPose: CameraPose;
+}
+
+export interface CameraPose {
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+  fileName: string;
+  w2c: string;
+  qvec: string;
+  tvec: string;
+  intrinsicMtx: string;
+  camCent: string;
+  eulerAngle: string;
+  cameraId: number;
+  nerfName: string;
+}
+
+export interface CalculateData {
+  station_code: string;
+  devices: Device[];
+}
+
+export interface Device {
+  name: string;
+  depth: number;
+  width: number;
+  height: number;
+  DC: number;
+}
+
+export interface CalculateResType {
+  pole_stress: number;
+}
+
+// TODO: Define types
+export interface LocationPoint {
+  id: number;
+  latitude: string;
+  longitude: string;
+  height: string;
 }
 
 export interface Station {
   id: number;
   name: string;
   code: string;
-  description: any;
-  location: Location;
+  description: string;
+  scans_count: number;
+  scans: Scan[];
+  location: LocationPoint;
   address: Address;
-  poles?: Pole[];
-}
-export interface StationCode {
-  id: number;
-  code: string;
+  expanded?: boolean;
 }
 
-export type StationData = {
-  name: string | null;
-  code: string | null;
-  description: string | null;
-  location_latitude: number | null;
-  location_longitude: number | null;
-  location_height: number | null;
-  address_detail: string | null;
-  address_country_id: number | null;
-  address_province_id: number | null;
-  address_district_id: number | null;
-  address_commune_id: number | null;
-};
+export interface Model3D {
+  id: number;
+  filename: string;
+  preview_img: string;
+  url: string;
+  file_path: string;
+  type: string;
+}
+export interface Scan {
+  id: number;
+  name: string;
+  code: string;
+  station_category_id: number | null;
+  date: string;
+  status: number;
+  models: Model3D[];
+}
 
 // TODO: Functions
-export const fetchStations = (
-  params: IndexRequestParams & PaginateRequestParams,
-): WrapperResponse<PaginateResType<Station>> =>
-  client.get(API_STATION, {
-    params,
-  });
-
-export const getStation = (id: string): WrapperResponse<Station> =>
-  client.get(`${API_STATION}/${id}`);
-
-export const fetchStationCodes = (): WrapperResponse<StationCode[]> =>
-  client.get(`${API_STATION}/codes`);
-
-export const createStation = (data: StationData) => client.post(API_STATION, data);
-
-export const updateStation = (data: StationData & IdParam) =>
-  client.patch(`${API_STATION}/${data.id}`, data);
-
-export const deleteStation = (id: number) => client.delete(`${API_STATION}/${id}`);
+export const fetchStations = (): WrapperResponse<Station[]> => client.get(API_STATION);

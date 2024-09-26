@@ -4,6 +4,7 @@ import Map from 'ol/Map';
 import type { Image2D, StationItems } from '@/services/apis/bts';
 import type { InventoryDetail } from '@/potree/hooks/useInitial';
 import { Cesium3DTileset } from 'cesium';
+import type { Station } from '@/services/apis/station';
 
 export const useModelStore = defineStore('model', () => {
   const mapOl = ref<Map>();
@@ -25,8 +26,11 @@ export const useModelStore = defineStore('model', () => {
   const potreeVolumes = ref<any[]>([]);
   const windyLayerVisible = ref(false);
   const isShowBTSInfo = ref(false);
-  const selectedBTS = ref<StationItems>();
+  const selectedBTS = ref<Station>();
   const mappingStationWithTileset = ref<Record<number, Cesium3DTileset>>({});
+
+  // Hoangth33
+  const stationsData = ref<Station[]>([]);
 
   const objectGroupArray = computed(() =>
     objectGroup.value ? Object.keys(objectGroup.value) : [],
@@ -55,5 +59,6 @@ export const useModelStore = defineStore('model', () => {
     isShowBTSInfo,
     selectedBTS,
     mappingStationWithTileset,
+    stationsData,
   };
 });

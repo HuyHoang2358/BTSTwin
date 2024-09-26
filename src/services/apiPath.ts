@@ -36,6 +36,7 @@ export const API_CAMERA_POSE = 'camera-pose';
 export const API_CALCULATE = 'calculate-pole-stress';
 
 export const API_DEVICE_CATEGORY = '/device-categories';
+export const API_STATION_CATEGORY = '/stations-categories';
 export const API_POLE_CATEGORY = '/pole-categories';
 export const API_WINDY_AREA = '/windy-areas';
 export const API_VENDOR = '/vendors';
@@ -45,4 +46,5 @@ export const API_ADDRESS_DISTRICT = '/address/districts';
 export const API_ADDRESS_COMMUNE = '/address/communes';
 export const API_DEVICE = '/devices';
 export const API_STATION = '/stations';
+export const API_PROCESS = '/processing-data-processes';
 export const API_POLE = '/poles';

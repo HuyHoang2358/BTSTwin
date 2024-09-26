@@ -52,13 +52,14 @@ onMounted(async () => {
   });
   window.cesiumViewer.scene.globe.depthTestAgainstTerrain = true;
 
-  if (modelStore.btsData.length === 0) return;
+  if (modelStore.stationsData.length === 0) return;
 
   const assetIds: number[] = [];
 
-  for (const item of modelStore.btsData) {
-    const firstItem = item.items[0];
-    firstItem.assetId && assetIds.push(firstItem.assetId);
+  for (const item of modelStore.stationsData) {
+    const firstItem = item.scans[0];
+    const assetId = Number(firstItem.models.find((i) => i.type == 'las')?.file_path || '');
+    assetId && assetIds.push(assetId);
   }
 
   if (assetIds.length === 0) return;
@@ -84,8 +85,10 @@ onMounted(async () => {
 
     const firstAssetId = assetIds[0];
     await window.cesiumViewer.zoomTo(modelStore.mappingStationWithTileset[firstAssetId]);
-    modelStore.btsData = modelStore.btsData.map((i) =>
-      i.items[0].assetId === firstAssetId ? { ...i, expanded: true } : { ...i, expanded: false },
+    modelStore.stationsData = modelStore.stationsData.map((i) =>
+      Number(i.scans[0].models.find((i) => i.type == 'las') || '') === firstAssetId
+        ? { ...i, expanded: true }
+        : { ...i, expanded: false },
     );
     loading.value = false;
   } catch (error) {

@@ -41,13 +41,13 @@
           :placeholder="t('admin.station.form.placeholderCode')"
         />
       </a-form-item>
-<!-- location -->
+      <!-- location -->
       <a-row :gutter="16">
         <a-col :span="12">
           <a-form-item
             name="location_longitude"
             :label="t('admin.station.longitude')"
-            :rules="[{ required: false, message: t('admin.station.form.inputLocationLongitude') }]"
+            :rules="[{ required: true, message: t('admin.station.form.inputLocationLongitude') }]"
             class="my-1"
           >
             <a-input-number
@@ -63,7 +63,7 @@
           <a-form-item
             name="location_latitude"
             :label="t('admin.station.latitude')"
-            :rules="[{ required: false, message: t('admin.station.form.inputLocationLatitude') }]"
+            :rules="[{ required: true, message: t('admin.station.form.inputLocationLatitude') }]"
             class="my-1"
           >
             <a-input-number
@@ -76,9 +76,9 @@
           </a-form-item>
         </a-col>
       </a-row>
-<!-- address -->
+      <!-- address -->
       <a-row :gutter="16">
-  <!-- Address Country -->
+        <!-- Address Country -->
         <a-col :span="12">
           <a-form-item
             name="address_country_id"
@@ -93,7 +93,7 @@
             />
           </a-form-item>
         </a-col>
-  <!-- Address Province -->
+        <!-- Address Province -->
         <a-col :span="12">
           <a-form-item
             name="address_province_id"
@@ -112,7 +112,7 @@
             />
           </a-form-item>
         </a-col>
-  <!-- Address District -->
+        <!-- Address District -->
         <a-col :span="12">
           <a-form-item
             name="address_district_id"
@@ -131,7 +131,7 @@
             />
           </a-form-item>
         </a-col>
-  <!-- Address Commune -->
+        <!-- Address Commune -->
         <a-col :span="12">
           <a-form-item
             name="address_commune_id"
@@ -150,7 +150,7 @@
             />
           </a-form-item>
         </a-col>
-  <!-- Address detail -->
+        <!-- Address detail -->
         <a-col :span="24">
           <a-form-item
             name=""
@@ -180,7 +180,6 @@
           :rows="3"
         />
       </a-form-item>
-
     </a-form>
     <template #footer>
       <div class="flex flex-row justify-end gap-x-4">
@@ -199,33 +198,37 @@
 </template>
 <script lang="ts" setup>
 import { ref, reactive, computed } from 'vue';
-import { type FormInstance} from 'ant-design-vue';
+import { type FormInstance } from 'ant-design-vue';
 import IconCloseModalGrey from '@/components/icons/IconCloseModalGrey.vue';
 import { watch } from 'vue';
 import { useErrorHandler } from '@/services/hooks/useErrorHandler';
 import { useSuccessHandler } from '@/services/hooks/useSuccessHandler';
 import { useI18n } from 'vue-i18n';
 import { compareString } from '@/utils/helpers';
-import type { Station, StationData } from '@/services/apis/station';
-import { useCreateStation, useMutationStationSuccess, useUpdateStation } from '@/services/hooks/useStation';
+import type { StationCategory, StationData } from '@/services/apis/stationCategory';
+import {
+  useCreateStation,
+  useMutationStationSuccess,
+  useUpdateStation,
+} from '@/services/hooks/useStationCategory';
 import {
   useAddressCommunes,
   useAddressCountries,
   useAddressDistricts,
-  useAddressProvinces
+  useAddressProvinces,
 } from '@/services/hooks/useAddress';
 import type { Country, Province, District, Commune } from '@/services/apis/address';
 
 const props = defineProps<{
   open: boolean;
   close: () => void;
-  currentStation?: Station;
+  currentStation?: StationCategory;
 }>();
 
 // TODO handle Form
 type StationForm = {
   id?: string;
-} & Partial<StationData>  ;
+} & Partial<StationData>;
 
 const formRef = ref<FormInstance>();
 
@@ -245,7 +248,7 @@ const { handleSuccess } = useSuccessHandler();
 watch(
   () => props.open,
   () => {
-    console.log("currentStation", props.currentStation)
+    console.log('currentStation', props.currentStation);
     formState.name = props.currentStation?.name || undefined;
     formState.code = props.currentStation?.code || undefined;
     formState.location_latitude = props.currentStation?.location?.latitude || undefined;
@@ -261,24 +264,34 @@ watch(
     selectionCountryId.value = formState.address_country_id?.toString() || '';
     selectionProvinceId.value = formState.address_province_id?.toString() || '';
     selectionDistrictId.value = formState.address_district_id?.toString() || '';
-
-
   },
 );
 
 // TODO: fetch data
 
-const selectionCountryId = ref<string>("1");
-const selectionProvinceId = ref<string>("");
-const selectionDistrictId = ref<string>("");
-const {data: dataCountries} = useAddressCountries();
-const { data: dataProvinces, isLoading: isLoadingProvince, refetch: refetchProvinces } = useAddressProvinces(selectionCountryId);
-const { data: dataDistricts, isLoading: isLoadingDistricts, refetch: refetchDistricts } = useAddressDistricts(selectionProvinceId);
-const { data: dataCommunes, isLoading: isLoadingCommunes, refetch: refetchCommunes } = useAddressCommunes(selectionDistrictId);
+const selectionCountryId = ref<string>('1');
+const selectionProvinceId = ref<string>('');
+const selectionDistrictId = ref<string>('');
+const { data: dataCountries } = useAddressCountries();
+const {
+  data: dataProvinces,
+  isLoading: isLoadingProvince,
+  refetch: refetchProvinces,
+} = useAddressProvinces(selectionCountryId);
+const {
+  data: dataDistricts,
+  isLoading: isLoadingDistricts,
+  refetch: refetchDistricts,
+} = useAddressDistricts(selectionProvinceId);
+const {
+  data: dataCommunes,
+  isLoading: isLoadingCommunes,
+  refetch: refetchCommunes,
+} = useAddressCommunes(selectionDistrictId);
 
 const countryOptions = computed(
   () =>
-    dataCountries?.value?.data?.map((i:Country) => {
+    dataCountries?.value?.data?.map((i: Country) => {
       return {
         text: i.name,
         label: i.name,
@@ -290,11 +303,11 @@ const countryOptions = computed(
 watch(
   () => formState.address_country_id,
   () => {
-    console.log("change country", formState.address_country_id);
+    console.log('change country', formState.address_country_id);
     if (formState.address_country_id?.toString() !== selectionCountryId.value) {
       selectionCountryId.value = formState.address_country_id?.toString() || '';
-      selectionProvinceId.value = "";
-      selectionDistrictId.value = "";
+      selectionProvinceId.value = '';
+      selectionDistrictId.value = '';
       refetchProvinces();
       refetchDistricts();
       refetchCommunes();
@@ -302,16 +315,15 @@ watch(
   },
 );
 
-
 watch(
   () => formState.address_province_id,
   () => {
-    console.log("change province", formState.address_province_id);
+    console.log('change province', formState.address_province_id);
     if (selectionProvinceId.value !== formState.address_province_id?.toString()) {
       selectionProvinceId.value = formState.address_province_id?.toString() || '';
       formState.address_district_id = undefined;
       formState.address_commune_id = undefined;
-      selectionDistrictId.value = "";
+      selectionDistrictId.value = '';
       refetchDistricts();
       refetchCommunes();
     }
@@ -321,8 +333,8 @@ watch(
 watch(
   () => formState.address_district_id,
   () => {
-    console.log("change district", formState.address_district_id);
-    if(selectionDistrictId.value !== formState.address_district_id?.toString()){
+    console.log('change district', formState.address_district_id);
+    if (selectionDistrictId.value !== formState.address_district_id?.toString()) {
       selectionDistrictId.value = formState.address_district_id?.toString() || '';
       formState.address_commune_id = undefined;
       refetchCommunes();
@@ -330,11 +342,9 @@ watch(
   },
 );
 
-
-
 const provinceOptions = computed(
   () =>
-    dataProvinces?.value?.data?.map((i:Province) => {
+    dataProvinces?.value?.data?.map((i: Province) => {
       return {
         text: i.name,
         label: i.name,
@@ -345,7 +355,7 @@ const provinceOptions = computed(
 
 const districtOptions = computed(
   () =>
-    dataDistricts?.value?.data?.map((i:District) => {
+    dataDistricts?.value?.data?.map((i: District) => {
       return {
         text: i.name,
         label: i.name,
@@ -356,7 +366,7 @@ const districtOptions = computed(
 
 const communeOptions = computed(
   () =>
-    dataCommunes?.value?.data?.map((i:Commune) => {
+    dataCommunes?.value?.data?.map((i: Commune) => {
       return {
         text: i.name,
         label: i.name,
@@ -367,7 +377,7 @@ const communeOptions = computed(
 
 // TODO: submit form
 const handleFinish = () => {
-  console.log(formState)
+  console.log(formState);
   formRef.value?.validate().then(() => {
     const data: StationData = {
       name: formState.name ?? null,
@@ -382,7 +392,7 @@ const handleFinish = () => {
       address_district_id: formState.address_district_id ?? null,
       address_commune_id: formState.address_commune_id ?? null,
     };
-   //console.log("data", data);
+    //console.log("data", data);
     if (isUpdate.value && props?.currentStation?.id) {
       updateStation(
         {
@@ -414,7 +424,6 @@ const handleFinish = () => {
 
 // TODO: filter option in select
 const filterOption = (input: string, option: any) => {
-  return compareString(option.label, input)
+  return compareString(option.label, input);
 };
-
 </script>

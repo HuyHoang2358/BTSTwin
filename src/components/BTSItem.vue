@@ -13,24 +13,25 @@
         style="color: #f6f6f6; font-size: 12px; margin-bottom: 4px"
         @click="ontoggleExpanded"
       >
-        Trạm {{ item.station }}
+        Trạm {{ item.name }}
       </a-typography-title>
+
       <a-typography-text
         v-if="!item.expanded"
         class="text-[#8c8c8c] text-xs"
         @click="ontoggleExpanded"
       >
-        Quét {{ item.items.length }} lần
+        Quét {{ item.scans.length }} lần
       </a-typography-text>
       <a-button
         v-else
         :key="scanItem.id"
-        v-for="scanItem in item.items"
+        v-for="scanItem in item.scans"
         class="flex flex-row items-center justify-between h-6 m-0 p-0 bg-transparent border-none"
-        @click="onSelectedScanStation(scanItem)"
+        @click="onSelectedScanStation(scanItem.id)"
       >
         <a-typography style="color: #f6f6f6; font-size: 12px; margin-bottom: 0">
-          {{ scanItem.createdAt }}
+          {{ scanItem.date }}
         </a-typography>
         <IconTickGreen />
       </a-button>
@@ -41,35 +42,40 @@
 import IconExpanded from '@/components/icons/home/IconExpanded.vue';
 import IconBTS from '@/components/icons/home/IconBTS.vue';
 import IconTickGreen from '@/components/icons/home/IconTickGreen.vue';
-import type { Bts, StationItems } from '@/services/apis/bts';
 import { useRouter } from 'vue-router';
 import { MODEL_3D_PAGE_PATH } from '@/router/routePath';
 import { useModelStore } from '@/stores/model';
+import type { Station } from '@/services/apis/station';
 
 const props = defineProps<{
-  item: StationItems;
+  item: Station;
 }>();
 
 const router = useRouter();
 const modelStore = useModelStore();
 
-const onSelectedScanStation = async (scanItem: Omit<Bts, 'station'>) => {
+const onSelectedScanStation = async (scanItemID: number) => {
   await router.push({
     path: MODEL_3D_PAGE_PATH,
     query: {
-      id: scanItem.id,
+      id: scanItemID,
     },
   });
 };
 
 const ontoggleExpanded = async () => {
-  if (!modelStore.is2DMode && modelStore.mappingStationWithTileset[props.item.items[0].assetId]) {
-    await window.cesiumViewer.zoomTo(
-      modelStore.mappingStationWithTileset[props.item.items[0].assetId],
+  if (!modelStore.is2DMode) {
+    const assetId = Number(
+      props.item.scans[0].models.find((i) => i.type == 'las')?.file_path || '',
     );
+    if (modelStore.mappingStationWithTileset[assetId])
+      await window.cesiumViewer.zoomTo(modelStore.mappingStationWithTileset[assetId]);
   }
-  modelStore.btsData = modelStore.btsData.map((i) =>
-    i.station === props.item.station ? { ...i, expanded: !i.expanded } : { ...i, expanded: false },
+
+  modelStore.isShowBTSInfo = !modelStore.isShowBTSInfo;
+  modelStore.selectedBTS = modelStore.stationsData.find((i) => i.code === props.item.code);
+  modelStore.stationsData = modelStore.stationsData.map((i) =>
+    i.code === props.item.code ? { ...i, expanded: !i.expanded } : { ...i, expanded: false },
   );
 };
 </script>

@@ -480,6 +480,19 @@
         "placeholderAddress": "Nhập địa chỉ trạm",
         "placeholderDescription": "Nhập thông tin mô tả trạm"
       }
+    },
+    "process":{
+      "title": "Danh sách luồng xử lý dữ liệu",
+      "station" : "Mã trạm",
+      "date" : "Ngày quét",
+      "status": "Trạng thái",
+      "progress": "Tiến độ",
+      "form":{
+        "inputStationCode": "Vui lòng nhập mã trạm",
+        "inputDate": "Vui lòng nhập ngày quét",
+        "placeholderStationCode": "Nhập mã trạm",
+        "placeholderDate": "Nhập ngày quét YYYY-MM-DD"
+      }
     }
   },
   "address": {

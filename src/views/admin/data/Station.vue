@@ -39,7 +39,15 @@
       </a-row>
     </template>
     <template
-      #bodyCell="{ column, index, record }: { column: ColumnType; index: number; record: Station }"
+      #bodyCell="{
+        column,
+        index,
+        record,
+      }: {
+        column: ColumnType;
+        index: number;
+        record: StationCategory;
+      }"
     >
       <template v-if="column.title === 'STT'">
         <span>{{ index + 1 }}</span>
@@ -59,21 +67,11 @@
         <p class="m-0">{{ t('admin.station.latitude') + ': ' + record.location.latitude }}</p>
         <p class="m-0">{{ t('admin.station.longitude') + ': ' + record.location.longitude }}</p>
       </template>
-      <template v-if="column.dataIndex === 'poles'">
-        <span>{{ record.poles.length + ' cột' }}</span>
-      </template>
       <template v-if="column.dataIndex === 'owner'">
-        <span>Nguyễn văn X</span>
+        <span>VTNet</span>
       </template>
       <template v-if="column.dataIndex === 'action'">
         <div class="flex flex-row items-center gap-x-4">
-          <!-- Show params -->
-          <a-button
-            class="bg-[#F1F1F2] p-1.5 border-none"
-            @click="showStationDetail(record.id)"
-            :icon="h(IconEye)"
-          />
-
           <a-button
             class="bg-[#F1F1F2] p-1.5 border-none"
             @click="onEdit(record)"
@@ -120,11 +118,9 @@ import {
   useDeleteStation,
   useMutationStationSuccess,
   useStations,
-} from '@/services/hooks/useStation';
-import type { Station } from '@/services/apis/station';
+} from '@/services/hooks/useStationCategory';
+import type { StationCategory } from '@/services/apis/stationCategory';
 import ModalHandleStation from '@/components/admin/data/ModalHandleStation.vue';
-import IconEye from '@/components/icons/IconEye.vue';
-import router from '@/router';
 defineProps<{
   testMode?: boolean;
 }>();
@@ -134,19 +130,9 @@ const { mutate: deleteStation } = useDeleteStation();
 const { onError } = useErrorHandler();
 const { handleSuccess } = useSuccessHandler();
 const { invalidateQueries } = useMutationStationSuccess();
-// TODO: handel view detail
-const showStationDetail = (id: number) => {
-  // redirect to detail page
-  console.log(id);
-  router.push({
-    name: 'station-detail',
-    query: {
-      id: id,
-    },
-  });
-};
+
 // TODO: handle modal edit and add
-const selectedItem = ref<Station>();
+const selectedItem = ref<StationCategory>();
 const open = ref<boolean>(false);
 const showModal = () => {
   open.value = true;
@@ -155,7 +141,7 @@ const onAdd = () => {
   selectedItem.value = undefined;
   showModal();
 };
-const onEdit = (item: Station) => {
+const onEdit = (item: StationCategory) => {
   selectedItem.value = item;
   showModal();
 };
@@ -177,7 +163,7 @@ watch(filter, () => {
   refetch();
 });
 
-const dataSource: ComputedRef<Station[]> = computed(() => data?.value?.data?.data || []);
+const dataSource: ComputedRef<StationCategory[]> = computed(() => data?.value?.data?.data || []);
 
 // TODO: Delete Station
 const confirm = (id: number) => {
@@ -205,7 +191,7 @@ const columns = computed(() => [
   },
   {
     title: t('admin.station.code'),
-    dataIndex: 'name',
+    dataIndex: 'code',
     sorter: true,
   },
   {
@@ -220,11 +206,6 @@ const columns = computed(() => [
   {
     title: t('admin.station.location'),
     dataIndex: 'location',
-  },
-  {
-    title: t('admin.station.pole'),
-    dataIndex: 'poles',
-    align: 'center',
   },
   {
     title: t('admin.station.owner'),

@@ -20,10 +20,10 @@
     </div>
     <div class="flex flex-col flex-1 overflow-auto mt-1 pr-2">
       <BTSItem
-        v-for="item in modelStore.btsData.filter((i) =>
-          compareString(`tram ${i.station}`, searchValue),
+        v-for="item in modelStore.stationsData.filter((i) =>
+          compareString(`tram ${i.code}`, searchValue),
         )"
-        :key="item.station"
+        :key="item.id"
         :item="item"
       />
     </div>
@@ -34,56 +34,45 @@ import IconSearchInput from '@/components/icons/home/IconSearchInput.vue';
 import { ref, watch } from 'vue';
 import BTSItem from '@/components/BTSItem.vue';
 import IconFilter from '@/components/icons/home/IconFilter.vue';
-import { useBTS } from '@/services/hooks/useBTS';
-import type { StationItems } from '@/services/apis/bts';
+import { useStations } from '@/services/hooks/useStation';
 import { useModelStore } from '@/stores/model';
 import VectorLayer from 'ol/layer/Vector';
 import { Feature } from 'ol';
-import VectorSource from 'ol/source/Vector';
-import { Point } from 'ol/geom';
 import { fromLonLat } from 'ol/proj';
+import { Point } from 'ol/geom';
 import { Icon, Style } from 'ol/style';
+import VectorSource from 'ol/source/Vector';
 import { click } from 'ol/events/condition';
 import { Select } from 'ol/interaction';
 import { compareString } from '@/utils/helpers';
 
-const { data } = useBTS();
 const modelStore = useModelStore();
-
-interface Accumulator {
-  [station: string]: StationItems;
-}
+const { data } = useStations();
 
 watch(data, () => {
-  const transformedData = data.value?.data?.reduce((acc: Accumulator, item) => {
-    if (!acc[item.station]) {
-      acc[item.station] = {
-        station: item.station,
+  modelStore.stationsData =
+    data.value?.data?.map((i) => {
+      return {
+        ...i,
         expanded: false,
-        items: [],
       };
-    }
-    // Xóa các thuộc tính không cần thiết trước khi thêm vào mảng items
-    const { station, ...rest } = item;
-    acc[item.station].items.push(rest);
-    return acc;
-  }, {});
-
-  modelStore.btsData = transformedData ? Object.values(transformedData) : [];
+    }) || [];
 });
 
-watch([() => modelStore.mapOl, () => modelStore.btsData], () => {
-  if (modelStore.mapOl && modelStore.btsData.length > 0) {
+watch([() => modelStore.mapOl, () => modelStore.stationsData], () => {
+  if (modelStore.mapOl && modelStore.stationsData.length > 0) {
     const vectorLayer = modelStore.mapOl
       .getLayers()
       .getArray()
       .find((layer) => layer instanceof VectorLayer);
 
     if (!vectorLayer) {
-      const features = modelStore.btsData.map((item) => {
+      const features = modelStore.stationsData.map((item) => {
         return new Feature({
-          geometry: new Point(fromLonLat([item.items[0].geom.x, item.items[0].geom.y])), // Chuyển đổi tọa độ
-          name: item.station,
+          geometry: new Point(
+            fromLonLat([Number(item.location.longitude), Number(item.location.latitude)]),
+          ), // Chuyển đổi tọa độ
+          name: item.code,
         });
       });
 
@@ -130,10 +119,8 @@ watch([() => modelStore.mapOl, () => modelStore.btsData], () => {
             minResolution: 5,
           });
 
-          modelStore.btsData = modelStore.btsData.map((i) =>
-            i.station === feature.values_.name
-              ? { ...i, expanded: true }
-              : { ...i, expanded: false },
+          modelStore.stationsData = modelStore.stationsData.map((i) =>
+            i.code === feature.values_.name ? { ...i, expanded: true } : { ...i, expanded: false },
           );
         });
         const overlay = modelStore.mapOl?.getOverlays().getArray()[0];
@@ -150,8 +137,9 @@ watch([() => modelStore.mapOl, () => modelStore.btsData], () => {
           modelStore.isShowBTSInfo = false;
         } else {
           modelStore.isShowBTSInfo = true;
-          modelStore.selectedBTS = modelStore.btsData.find(
-            (i) => i.station === e.selected[0].values_.name,
+
+          modelStore.selectedBTS = modelStore.stationsData.find(
+            (i) => i.code === e.selected[0].values_.name,
           );
         }
       });

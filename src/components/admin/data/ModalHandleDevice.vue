@@ -287,20 +287,7 @@ type DeviceForm = {
 
 const formRef = ref<FormInstance>();
 
-const formState = reactive<DeviceForm>({
-  /*  name: '',
-  model_url: '',
-  length: undefined,
-  width: undefined,
-  depth: undefined,
-  weight: undefined,
-  diameter: undefined,
-  description: '',
-  device_category_id: undefined,
-  vendor_id: undefined,
-  params: [],
-  images: ''*/
-});
+const formState = reactive<DeviceForm>({});
 
 const isUpdate = computed(() => !!props?.currentDevice);
 const title = computed(() => (isUpdate.value ? 'Cập nhật thông tin' : 'Thêm mới thiết bị'));

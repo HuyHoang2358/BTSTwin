@@ -13,6 +13,7 @@
       <KeepAlive>
         <component :is="current" />
       </KeepAlive>
+
       <div
         id="popup"
         class="ol-popup"
@@ -24,9 +25,13 @@
         ></a>
         <div id="popup-content"></div>
       </div>
+
       <Search />
+
       <BTSList />
+
       <BTSInfo />
+
       <div class="flex flex-row items-center absolute z-10 bottom-3 left-4">
         <a-button
           class="w-[54px] h-[54px] bg-transparent m-0 p-0 border-none"
@@ -64,6 +69,7 @@
           </a-button>
         </div>
       </div>
+
       <div class="flex flex-row items-center gap-x-1 absolute z-10 bottom-3 right-4">
         <div
           v-if="modelStore.windyLayerVisible"

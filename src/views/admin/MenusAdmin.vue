@@ -86,7 +86,15 @@
           :menu-key="MENU_KEY.CATEGORY_DEVICE"
           :title="t('admin.menus.deviceCategory')"
         >
-          <IconCategory />
+          <IconDeviceCategory />
+        </MenuItem>
+
+        <MenuItem
+          :path="`${ADMIN_PAGE_PATH}/${DEVICE_PATH}`"
+          :menu-key="MENU_KEY.DEVICE"
+          :title="t('admin.menus.deviceManager')"
+        >
+          <IconDataDevice />
         </MenuItem>
 
         <MenuItem
@@ -131,7 +139,7 @@
         <MenuItem
           :path="`${ADMIN_PAGE_PATH}/${STATION_PATH}`"
           :menu-key="MENU_KEY.STATION"
-          :title="t('admin.menus.StationManager')"
+          :title="'Danh sách trạm'"
         >
           <IconDataStation />
         </MenuItem>
@@ -142,14 +150,6 @@
           :title="t('admin.menus.PoleManager')"
         >
           <IconDataPole />
-        </MenuItem>
-
-        <MenuItem
-          :path="`${ADMIN_PAGE_PATH}/${DEVICE_PATH}`"
-          :menu-key="MENU_KEY.DEVICE"
-          :title="t('admin.menus.deviceManager')"
-        >
-          <IconDataDevice />
         </MenuItem>
       </a-sub-menu>
       <!-- Cấu hình hệ thống -->
@@ -192,7 +192,7 @@ import IconCategoryAILabel from '@/components/icons/IconCategoryAILabel.vue';
 import { ref } from 'vue';
 import { useConfigStore } from '@/stores/config';
 import { useI18n } from 'vue-i18n';
-import IconCategory from '@/components/icon/IconCategory.vue';
+import IconCategory from '@/components/icon/IconDeviceCategory.vue';
 import IconCategoryPole from '@/components/icon/IconCategoryPole.vue';
 import IconCategoryWindyArea from '@/components/icon/IconCategoryWindyArea.vue';
 import IconCategoryVendor from '@/components/icon/IconCategoryVendor.vue';
@@ -200,6 +200,7 @@ import IconDataFlow from '@/components/icon/IconDataFlow.vue';
 import IconDataPole from '@/components/icon/IconDataPole.vue';
 import IconDataStation from '@/components/icon/IconDataStation.vue';
 import IconDataDevice from '@/components/icon/IconDataDevice.vue';
+import IconDeviceCategory from '@/components/icon/IconDeviceCategory.vue';
 
 const { t } = useI18n();
 const configStore = useConfigStore();
