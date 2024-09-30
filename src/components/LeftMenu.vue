@@ -1,7 +1,38 @@
 <template>
   <div class="bg-[#212121] flex flex-col pt-2">
     <a-tooltip
-      title="Thiết bị"
+      title="Đo lường"
+      placement="right"
+      color="#212121"
+    >
+      <a-button
+        @click="
+          modelStore.activeTool === 'measurements'
+            ? (modelStore.activeTool = undefined)
+            : (modelStore.activeTool = 'measurements')
+        "
+        :class="[
+          'p-0 border-none rounded-none w-10 h-10',
+          modelStore.activeTool === 'measurements' ? 'bg-[#303030]' : 'bg-transparent',
+        ]"
+      >
+        <svg
+          fill="white"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+          preserveAspectRatio="xMidYMid meet"
+          focusable="false"
+        >
+          <path
+            d="M19 6H5a2.006 2.006 0 0 0-2 2v8a2.006 2.006 0 0 0 2 2h14a2.006 2.006 0 0 0 2-2V8a2.006 2.006 0 0 0-2-2Zm0 10H5V8h2v4h2V8h2v4h2V8h2v4h2V8h2v8Z"
+          ></path>
+        </svg>
+      </a-button>
+    </a-tooltip>
+    <a-tooltip
+      title="Khảo sát"
       placement="right"
       color="#212121"
     >
@@ -32,32 +63,36 @@
       </a-button>
     </a-tooltip>
     <a-tooltip
-      title="Công cụ đo vẽ"
+      title="Đánh giá"
       placement="right"
       color="#212121"
     >
       <a-button
         @click="
-          modelStore.activeTool === 'measurements'
+          modelStore.activeTool === 'evaluate'
             ? (modelStore.activeTool = undefined)
-            : (modelStore.activeTool = 'measurements')
+            : (modelStore.activeTool = 'evaluate')
         "
         :class="[
           'p-0 border-none rounded-none w-10 h-10',
-          modelStore.activeTool === 'measurements' ? 'bg-[#303030]' : 'bg-transparent',
+          modelStore.activeTool === 'evaluate' ? 'bg-[#303030]' : 'bg-transparent',
         ]"
       >
         <svg
-          fill="white"
           width="24"
           height="24"
-          viewBox="0 0 24 24"
+          viewBox="0 0 16 16"
           xmlns="http://www.w3.org/2000/svg"
           preserveAspectRatio="xMidYMid meet"
           focusable="false"
         >
           <path
-            d="M19 6H5a2.006 2.006 0 0 0-2 2v8a2.006 2.006 0 0 0 2 2h14a2.006 2.006 0 0 0 2-2V8a2.006 2.006 0 0 0-2-2Zm0 10H5V8h2v4h2V8h2v4h2V8h2v4h2V8h2v8Z"
+            d="M8 2 5.836 7h4.328L8 2Z"
+            fill="white"
+          ></path>
+          <path
+            fill="white"
+            d="M10.597 8h-1.09l1.931 4.46-3.052-1.277L8 11.021l-.386.162-3.052 1.277L6.493 8h-1.09L3 13.552l.473.448L8 12.105 12.527 14l.473-.448L10.597 8Z"
           ></path>
         </svg>
       </a-button>
@@ -128,15 +163,52 @@
         </svg>
       </a-button>
     </a-tooltip>
+    <a-tooltip
+      title="Export"
+      placement="right"
+      color="#212121"
+    >
+      <a-button
+        @click="
+          modelStore.activeTool === 'export'
+            ? (modelStore.activeTool = undefined)
+            : (modelStore.activeTool = 'export')
+        "
+        :class="[
+          'p-0 border-none rounded-none w-10 h-10',
+          modelStore.activeTool === 'setting' ? 'bg-[#303030]' : 'bg-transparent',
+        ]"
+      >
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+          preserveAspectRatio="xMidYMid meet"
+          focusable="false"
+        >
+          <path
+            d="M13.45 10h-2.9v3H8l4 4 4-4h-2.55v-3Z"
+            fill="white"
+          ></path>
+          <path
+            fill="white"
+            d="M19.35 10.04a7.493 7.493 0 0 0-14-2A5.998 5.998 0 0 0 6 20h13a4.986 4.986 0 0 0 .35-9.96ZM19 18H6a3.997 3.997 0 0 1-.44-7.97l1.07-.11.5-.95a5.487 5.487 0 0 1 10.26 1.46l.3 1.5 1.53.11A2.984 2.984 0 0 1 19 18Z"
+          ></path>
+        </svg>
+      </a-button>
+    </a-tooltip>
   </div>
   <div
     style="height: calc(100vh - 84px)"
     class="flex"
   >
     <Inventory />
+    <Evaluate />
     <Setting />
     <ImageSection />
     <Measurement />
+    <Export />
   </div>
 </template>
 
@@ -146,6 +218,8 @@ import Inventory from '@/components/Inventory.vue';
 import Measurement from '@/components/Measurement.vue';
 import ImageSection from '@/components/ImageSection.vue';
 import Setting from '@/components/Setting.vue';
+import Evaluate from '@/components/Evaluate.vue';
+import Export from '@/components/Export.vue';
 
 const modelStore = useModelStore();
 </script>

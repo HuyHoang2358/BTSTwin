@@ -42,7 +42,7 @@
       src="/icons/height.svg"
       style="width: 32px; height: 32px"
       :class="['button-measure-icon', modelStore.activeTool === 'height' && 'bg-[#38536d]']"
-      title="Đo chiều cao"
+      title="Đo Tilt cơ"
       @click="onMeasureHeight"
       alt="height"
     />
@@ -70,33 +70,33 @@
       @click="onMeasureArea"
       alt="area"
     />
-    <img
-      src="/icons/annotation.svg"
-      style="width: 32px; height: 32px"
-      :class="['button-measure-icon', modelStore.activeTool === 'annotation' && 'bg-[#38536d]']"
-      title="Ghi chú"
-      @click="onInsertAnnotation"
-      alt="annotation"
-    />
-    <img
-      src="/icons/clip_volume.svg"
-      style="width: 32px; height: 32px"
-      :class="[
-        'button-measure-icon',
-        modelStore.activeTool === 'clip_volume_inside' && 'bg-[#38536d]',
-      ]"
-      title="Clip volume inside box"
-      @click="onInsertClipVolumeInside"
-      alt="clip_volume"
-    />
-    <img
-      src="/icons/add-inventory.svg"
-      style="width: 32px; height: 32px"
-      :class="['button-measure-icon', modelStore.activeTool === 'add-inventory' && 'bg-[#38536d]']"
-      title="Thêm thiết bị mới"
-      @click="onAddInventory"
-      alt="clip_volume"
-    />
+    <!--    <img-->
+    <!--      src="/icons/annotation.svg"-->
+    <!--      style="width: 32px; height: 32px"-->
+    <!--      :class="['button-measure-icon', modelStore.activeTool === 'annotation' && 'bg-[#38536d]']"-->
+    <!--      title="Ghi chú"-->
+    <!--      @click="onInsertAnnotation"-->
+    <!--      alt="annotation"-->
+    <!--    />-->
+    <!--    <img-->
+    <!--      src="/icons/clip_volume.svg"-->
+    <!--      style="width: 32px; height: 32px"-->
+    <!--      :class="[-->
+    <!--        'button-measure-icon',-->
+    <!--        modelStore.activeTool === 'clip_volume_inside' && 'bg-[#38536d]',-->
+    <!--      ]"-->
+    <!--      title="Clip volume inside box"-->
+    <!--      @click="onInsertClipVolumeInside"-->
+    <!--      alt="clip_volume"-->
+    <!--    />-->
+    <!--        <img-->
+    <!--          src="/icons/add-inventory.svg"-->
+    <!--          style="width: 32px; height: 32px"-->
+    <!--          :class="['button-measure-icon', modelStore.activeTool === 'add-inventory' && 'bg-[#38536d]']"-->
+    <!--          title="Thêm thiết bị mới"-->
+    <!--          @click="onAddInventory"-->
+    <!--          alt="clip_volume"-->
+    <!--        />-->
     <img
       src="/icons/reset_tools.svg"
       style="width: 32px; height: 32px"
@@ -154,7 +154,7 @@ const onMeasureHeight = () => {
     showArea: false,
     closed: false,
     maxMarkers: 2,
-    name: 'Height',
+    name: 'Tilt',
   });
 };
 
@@ -207,5 +207,7 @@ const onAddInventory = () => {
   modelStore.activeTool = 'add-inventory';
   modelStore.selectedImage = undefined;
   modelStore.selectedInventory = undefined;
+  modelStore.selectedPole = undefined;
+  modelStore.isSelectedBasePlate = false;
 };
 </script>

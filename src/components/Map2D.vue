@@ -14,6 +14,8 @@ import { fromLonLat } from 'ol/proj';
 import TileLayer from 'ol/layer/Tile';
 import { TileWMS } from 'ol/source';
 import { Overlay } from 'ol';
+import VectorSource from 'ol/source/Vector';
+import VectorLayer from 'ol/layer/Vector';
 
 const mapContainer = ref(null);
 const modelStore = useModelStore();
@@ -62,9 +64,16 @@ onMounted(() => {
     zoom: 6,
   });
 
+  const vectorSource = new VectorSource();
+  const vectorLayer = new VectorLayer({
+    source: vectorSource,
+  });
+
+  modelStore.vectorSource = vectorSource;
+
   modelStore.mapOl = new Map({
     target: mapContainer.value,
-    layers: [googleSatelliteLayer, viettelLayer, windyLayer],
+    layers: [googleSatelliteLayer, viettelLayer, windyLayer, vectorLayer],
     view,
     overlays: [overlay],
   });

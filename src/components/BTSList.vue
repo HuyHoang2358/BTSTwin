@@ -18,7 +18,16 @@
         <IconFilter />
       </a-button>
     </div>
-    <div class="flex flex-col flex-1 overflow-auto mt-1 pr-2">
+    <div
+      v-if="isLoading && modelStore.stationsData.length === 0"
+      class="h-[80px] flex flex-row items-center justify-center"
+    >
+      <a-spin :spinning="true"></a-spin>
+    </div>
+    <div
+      class="flex flex-col flex-1 overflow-auto mt-1 pr-2"
+      v-if="!isLoading"
+    >
       <BTSItem
         v-for="item in modelStore.stationsData.filter((i) =>
           compareString(`tram ${i.code}`, searchValue),
@@ -47,7 +56,7 @@ import { Select } from 'ol/interaction';
 import { compareString } from '@/utils/helpers';
 
 const modelStore = useModelStore();
-const { data } = useStations();
+const { data, isLoading } = useStations();
 
 watch(data, () => {
   modelStore.stationsData =
@@ -61,89 +70,71 @@ watch(data, () => {
 
 watch([() => modelStore.mapOl, () => modelStore.stationsData], () => {
   if (modelStore.mapOl && modelStore.stationsData.length > 0) {
-    const vectorLayer = modelStore.mapOl
-      .getLayers()
-      .getArray()
-      .find((layer) => layer instanceof VectorLayer);
-
-    if (!vectorLayer) {
-      const features = modelStore.stationsData.map((item) => {
-        return new Feature({
-          geometry: new Point(
-            fromLonLat([Number(item.location.longitude), Number(item.location.latitude)]),
-          ), // Chuyển đổi tọa độ
-          name: item.code,
-        });
+    const features = modelStore.stationsData.map((item) => {
+      return new Feature({
+        geometry: new Point(
+          fromLonLat([Number(item.location.longitude), Number(item.location.latitude)]),
+        ), // Chuyển đổi tọa độ
+        name: item.code,
       });
+    });
 
-      // Thêm tương tác hover
-      const defaultStyle = new Style({
-        image: new Icon({
-          src: '/images/icons/bts.png',
-          scale: 0.5,
-        }),
-      });
+    // Thêm tương tác hover
+    const defaultStyle = new Style({
+      image: new Icon({
+        src: '/images/icons/bts.png',
+        scale: 0.5,
+      }),
+    });
 
-      const clickStyle = new Style({
-        image: new Icon({
-          src: '/images/icons/location-pin.png',
-          scale: 1,
-        }),
-      });
+    // Nếu lớp vector chưa tồn tại, tạo mới
+    const newVectorLayer = new VectorLayer({
+      source: new VectorSource({
+        features,
+      }),
+      style: defaultStyle,
+    });
 
-      // Nếu lớp vector chưa tồn tại, tạo mới
-      const newVectorLayer = new VectorLayer({
-        source: new VectorSource({
-          features,
-        }),
-        style: defaultStyle,
-      });
+    modelStore.mapOl.addLayer(newVectorLayer);
 
-      modelStore.mapOl.addLayer(newVectorLayer);
+    // Thêm sự kiện click cho marker
+    const select = new Select({
+      condition: click,
+      layers: [newVectorLayer], // Chọn lớp marker
+    });
 
-      // Thêm sự kiện click cho marker
-      const select = new Select({
-        condition: click,
-        layers: [newVectorLayer], // Chọn lớp marker
-      });
+    modelStore.mapOl.addInteraction(select);
 
-      modelStore.mapOl.addInteraction(select);
-
-      select.on('select', (e) => {
-        window.triggerStationClick = true;
-        const selectedFeatures = e.target.getFeatures();
-        selectedFeatures.forEach((feature: any) => {
-          const point = feature.getGeometry();
-          modelStore.mapOl?.getView().fit(point, {
-            duration: 500,
-            minResolution: 5,
-          });
-
-          modelStore.stationsData = modelStore.stationsData.map((i) =>
-            i.code === feature.values_.name ? { ...i, expanded: true } : { ...i, expanded: false },
-          );
-        });
-        const overlay = modelStore.mapOl?.getOverlays().getArray()[0];
-        const closer = document.getElementById('popup-closer');
-        if (!closer || !overlay) return;
-        overlay.setPosition(undefined);
-        closer.blur();
-
-        e.target.getFeatures().forEach((feature: any) => {
-          feature.setStyle(clickStyle);
+    select.on('select', (e) => {
+      window.triggerStationClick = true;
+      const selectedFeatures = e.target.getFeatures();
+      selectedFeatures.forEach((feature: any) => {
+        const point = feature.getGeometry();
+        modelStore.mapOl?.getView().fit(point, {
+          duration: 500,
+          minResolution: 5,
         });
 
-        if (e.selected.length === 0) {
-          modelStore.isShowBTSInfo = false;
-        } else {
-          modelStore.isShowBTSInfo = true;
-
-          modelStore.selectedBTS = modelStore.stationsData.find(
-            (i) => i.code === e.selected[0].values_.name,
-          );
-        }
+        modelStore.stationsData = modelStore.stationsData.map((i) =>
+          i.code === feature.values_.name ? { ...i, expanded: true } : { ...i, expanded: false },
+        );
       });
-    }
+      const overlay = modelStore.mapOl?.getOverlays().getArray()[0];
+      const closer = document.getElementById('popup-closer');
+      if (!closer || !overlay) return;
+      overlay.setPosition(undefined);
+      closer.blur();
+
+      if (e.selected.length === 0) {
+        modelStore.isShowBTSInfo = false;
+      } else {
+        modelStore.isShowBTSInfo = true;
+
+        modelStore.selectedBTS = modelStore.stationsData.find(
+          (i) => i.code === e.selected[0].values_.name,
+        );
+      }
+    });
   }
 });
 

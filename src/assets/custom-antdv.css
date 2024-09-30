@@ -36,6 +36,12 @@
   font-family: 'Sarabun', sans-serif;
 }
 
+.search-address .ant-select-single .ant-select-selector {
+  background: #303030;
+  font-weight: 400;
+  font-family: 'Sarabun', sans-serif;
+}
+
 body,
 .ant-menu,
 .ant-dropdown-menu,
@@ -56,7 +62,7 @@ body,
 
 .ant-collapse>.ant-collapse-item >.ant-collapse-header .ant-collapse-header-text {
   color: white !important;
-  font-size: 14px;
+  font-size: 14px !important;
 }
 
 .ant-collapse>.ant-collapse-item >.ant-collapse-header{
@@ -383,4 +389,14 @@ body,
 
 .search-bts .ant-input-affix-wrapper .ant-input-prefix {
   margin-inline-end: 8px;
+}
+
+
+.ant-descriptions .ant-descriptions-header {
+  margin-bottom: 12px;
+  margin-left: -16px;
+}
+
+.ant-descriptions .ant-descriptions-title {
+  font-size: 14px;
 }

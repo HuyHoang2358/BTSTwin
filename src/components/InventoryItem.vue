@@ -1,8 +1,8 @@
 <template>
   <div
     :class="[
-      'flex flex-row items-center justify-between cursor-pointer h-8',
-      item.id === modelStore.selectedInventory?.id && 'bg-[#38536d]',
+      'flex flex-row items-center justify-between cursor-pointer',
+      item.pivot.id === modelStore.selectedInventory?.pivot.id && 'bg-[#38536d]',
     ]"
   >
     <div
@@ -11,7 +11,7 @@
     >
       <div class="w-1 h-[28px] bg-[#69f0ae] mr-7" />
       <a-typography-text class="text-white text-sm">
-        {{ item.model }} ({{ index + 1 }})
+        {{ item.name }} ({{ index + 1 }})
       </a-typography-text>
     </div>
     <div
@@ -19,43 +19,9 @@
       v-if="!item.isNewDevice"
     >
       <a-button
-        @click="onToggleBoxMeshInventory(item, category)"
-        ghost
-        class="p-0 m-0 border-none"
-      >
-        <svg
-          v-if="!item.visibleMesh"
-          width="16"
-          height="16"
-          viewBox="0 0 12 12"
-          xmlns="http://www.w3.org/2000/svg"
-          preserveAspectRatio="xMidYMid meet"
-          focusable="false"
-        >
-          <path
-            fill="#888888"
-            d="m1 2.13.64-.63 9.11 9.11-.64.64L9 10.12a5.78 5.78 0 0 1-2.5 1.38 6.23 6.23 0 0 1-4.5-6V3.13l-1-1ZM6.5.5l4.5 2v3a6.24 6.24 0 0 1-.89 3.2L3.33 1.91 6.5.5Z"
-          ></path>
-        </svg>
-        <svg
-          v-else
-          width="16"
-          height="16"
-          viewBox="0 0 12 12"
-          xmlns="http://www.w3.org/2000/svg"
-          preserveAspectRatio="xMidYMid meet"
-          focusable="false"
-        >
-          <path
-            fill="#888888"
-            d="M10.5 5.5a6.23 6.23 0 0 1-4.5 6 6.23 6.23 0 0 1-4.5-6v-3L6 .5l4.5 2v3Z"
-          ></path>
-        </svg>
-      </a-button>
-      <a-button
         @click="onToggleRemoveInventory(item, category)"
         ghost
-        class="p-0 m-0 border-none ml-2"
+        class="p-0 m-0 border-none ml-2 flex items-center"
       >
         <svg
           v-if="item.clip"
@@ -97,15 +63,15 @@
 import { useModelStore } from '@/stores/model';
 import { useChangeImage } from '@/potree/hooks/useChangeImage';
 import * as THREE from 'three';
-import type { InventoryDetail } from '@/potree/hooks/useInitial';
+import type { Device } from '@/services/apis/station';
 
-defineProps<{ item: InventoryDetail; category: string; index: number }>();
+defineProps<{ item: Device; category: string; index: number }>();
 
 const modelStore = useModelStore();
 
 const { onChangeImage } = useChangeImage();
 
-const onClickInventory = (object: InventoryDetail) => {
+const onClickInventory = (object: Device) => {
   if (object.isNewDevice) {
     modelStore.selectedInventory = object;
 
@@ -119,18 +85,22 @@ const onClickInventory = (object: InventoryDetail) => {
     window.potreeViewer.inputHandler.deselectAll();
   }
   modelStore.selectedInventory = object;
-  const image2D = object?.image2D;
+  const image2D = modelStore.images.find((item) =>
+    item.filename.includes(object?.pivot.suggested_img),
+  );
   if (image2D) {
     onChangeImage(image2D);
   } else {
     modelStore.selectedImage = undefined;
     onMoveToInventory(object);
   }
+  modelStore.selectedPole = undefined;
+  modelStore.isSelectedBasePlate = false;
 };
 
-const onMoveToInventory = (object: InventoryDetail) => {
-  if (!object.vertices) return;
-  const vertices = JSON.parse(object.vertices);
+const onMoveToInventory = (object: Device) => {
+  if (!object.pivot.vertices) return;
+  const vertices = JSON.parse(object.pivot.vertices);
   const antennaVertices = vertices.map(
     (item: number[]) => new THREE.Vector3(item[0], item[1], item[2]),
   );
@@ -146,19 +116,7 @@ const onMoveToInventory = (object: InventoryDetail) => {
   }
 };
 
-const onToggleBoxMeshInventory = (object: InventoryDetail, key: string) => {
-  if (!modelStore.objectGroup || !object.boxMesh) return;
-  const nextState = !object.boxMesh.visible;
-  modelStore.objectGroup = {
-    ...modelStore.objectGroup,
-    [key]: modelStore.objectGroup[key].map((item) =>
-      object.id !== item.id ? item : { ...item, visibleMesh: nextState },
-    ),
-  };
-  object.boxMesh.visible = nextState;
-};
-
-const onToggleRemoveInventory = (object: InventoryDetail, key: string) => {
+const onToggleRemoveInventory = (object: Device, key: string) => {
   if (!modelStore.objectGroup || !object.volume) return;
   const nextState = !object.volume.clip;
   modelStore.objectGroup = {

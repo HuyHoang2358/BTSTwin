@@ -22,7 +22,7 @@
           style="color: #f6f6f6; font-size: 14px; margin-bottom: 0"
           class="ml-4"
         >
-          Trạm {{ data?.data?.station }} - {{ data?.data?.updatedAt }}
+          Trạm {{ data?.data?.name }}
         </a-typography-title>
         <IconTickGreen class="ml-1" />
       </div>
@@ -88,7 +88,14 @@
         >
           <ListImages />
         </div>
-        <Suggestion v-if="!modelStore.selectedImage && !modelStore.selectedInventory" />
+        <Suggestion
+          v-if="
+            !modelStore.selectedImage &&
+            !modelStore.selectedInventory &&
+            !modelStore.selectedPole &&
+            !modelStore.isSelectedBasePlate
+          "
+        />
         <Information v-else />
       </div>
     </div>
@@ -97,7 +104,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onUnmounted, ref } from 'vue';
+import { computed, onUnmounted, ref, watch } from 'vue';
 import * as THREE from 'three';
 import ListImages from '@/components/ListImages.vue';
 import MeasurementTool from '@/components/MeasurementTool.vue';
@@ -113,11 +120,12 @@ import IconHome from '@/components/icons/home/IconHome.vue';
 import { HOME_PAGE_PATH } from '@/router/routePath';
 import { useRoute, useRouter } from 'vue-router';
 import IconTickGreen from '@/components/icons/home/IconTickGreen.vue';
-import { useBTSDetail } from '@/services/hooks/useBTS';
 import viVN from 'ant-design-vue/es/locale/vi_VN';
 import { theme } from 'ant-design-vue';
 import { checkRuleActiveTool } from '@/utils/helpers';
 import ModalAddInventory from '@/components/ModalAddInventory.vue';
+import { useBTSDetail } from '@/services/hooks/useStation';
+import type { Device } from '@/services/apis/station';
 
 const pane1Size = ref(50);
 const container = ref<HTMLElement | null>(null);
@@ -127,7 +135,6 @@ let startX = 0;
 let startPane1Size = 0;
 const raycaster = new THREE.Raycaster();
 const INTERSECTED = ref();
-
 const route = useRoute();
 
 const { data } = useBTSDetail(
@@ -194,22 +201,28 @@ const onPointerClick = (evt: any) => {
     const targetObject = intersects[0].object;
 
     if (targetObject.userData.data && targetObject.userData.type === 'camera_pose') {
-      modelStore.selectedInventory = undefined;
       onChangeImage(targetObject.userData.data);
     } else if (targetObject.userData.type === 'inventory') {
-      const selectedInventory = targetObject.userData?.object;
-      modelStore.selectedInventory = selectedInventory;
-      const image2D = selectedInventory?.image2D;
+      const selectedInventory = targetObject.userData?.device as Device;
+      const image2D = modelStore.images.find((item) =>
+        item.filename.includes(selectedInventory?.pivot.suggested_img),
+      );
       if (image2D) {
         onChangeImage(image2D);
       } else {
         modelStore.selectedImage = undefined;
       }
+      modelStore.selectedPole = undefined;
+      modelStore.isSelectedBasePlate = false;
+      modelStore.selectedInventory = selectedInventory;
+    } else if (targetObject.userData.type === 'basePlate') {
+      modelStore.isSelectedBasePlate = true;
     }
   } else {
     modelStore.selectedImage = undefined;
     modelStore.currentMeasurement = undefined;
     modelStore.selectedInventory = undefined;
+    modelStore.isSelectedBasePlate = false;
   }
 };
 
@@ -243,19 +256,17 @@ const onPointerMove = (evt: any) => {
         INTERSECTED.value.currentColor = targetObject.material.color.getHex();
         INTERSECTED.value.material.color.setHex(0xffffff);
 
-        modelStore.hoverInformation = `Ảnh ${targetObject.userData.data?.fileName}`;
+        modelStore.hoverInformation = `Ảnh ${targetObject.userData.data?.filename}`;
       }
-    } else {
-      if (INTERSECTED.value !== targetObject) {
-        if (INTERSECTED.value) {
-          INTERSECTED.value.material.color.setHex(INTERSECTED.value.currentColor);
-        }
+    } else if (targetObject.userData.type === 'inventory') {
+      const deviceData = targetObject.userData.device as Device;
+      modelStore.hoverInformation = `${deviceData?.name} - ${deviceData?.category.name} - ID: ${deviceData?.pivot.id} `;
+    } else if (targetObject.userData.type === 'basePlate') {
+      if (INTERSECTED.value)
+        INTERSECTED.value.material.color.setHex(INTERSECTED.value.currentColor);
 
-        INTERSECTED.value = targetObject;
-        INTERSECTED.value.currentColor = targetObject.material.color.getHex();
-        INTERSECTED.value.material.color.setHex(0x6fe3a6);
-        modelStore.hoverInformation = `Thiết bị: ${targetObject.userData.object?.name} - Model: ${targetObject.userData.object?.model} - Id: ${targetObject.userData.object?.id} `;
-      }
+      INTERSECTED.value = null;
+      modelStore.hoverInformation = '';
     }
   } else {
     if (INTERSECTED.value) INTERSECTED.value.material.color.setHex(INTERSECTED.value.currentColor);
@@ -266,6 +277,38 @@ const onPointerMove = (evt: any) => {
 };
 
 useInitial();
+
+watch(
+  () => modelStore.selectedImage,
+  () => {
+    if (modelStore.selectedImage) {
+      modelStore.selectedPole = undefined;
+      modelStore.isSelectedBasePlate = false;
+    }
+  },
+);
+
+watch(
+  () => modelStore.selectedPole,
+  () => {
+    if (modelStore.selectedPole) {
+      modelStore.selectedInventory = undefined;
+      modelStore.selectedImage = undefined;
+      modelStore.isSelectedBasePlate = false;
+    }
+  },
+);
+
+watch(
+  () => modelStore.isSelectedBasePlate,
+  () => {
+    if (modelStore.isSelectedBasePlate) {
+      modelStore.selectedInventory = undefined;
+      modelStore.selectedImage = undefined;
+      modelStore.selectedPole = undefined;
+    }
+  },
+);
 </script>
 
 <style>

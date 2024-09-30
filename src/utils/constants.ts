@@ -49,9 +49,6 @@ export const provinceIdHaiPhong = '20';
 
 export const maxPageSize = 999;
 
-export const dataTypeSpecLayer = 'ban-do-chuyen-de';
-export const dataTypeVectorLayer = 'vector';
-
 export const viettelLayer = new TileLayer({
   source: new XYZ({
     url: 'https://api-maps.viettel.vn/gateway/mapservice/v1/styles/vtmap/{z}/{x}/{y}.png?access_token=4474ace29cd4d4fa14847303d2a6d6f0',
@@ -64,3 +61,12 @@ export const googleSatelliteLayer = new TileLayer({
   }),
   visible: false,
 });
+
+export const budgetPoint = 30_000_000;
+export const budgetPointValue = 30000000;
+export const pointSizeValue = 1;
+export const EDL = true;
+export const EDLRadius = false;
+
+export const widthBasePlate = 10;
+export const heightBasePlate = 10;

@@ -1,11 +1,11 @@
 import * as THREE from 'three';
 import { useModelStore } from '@/stores/model';
-import type { Image2D } from '@/services/apis/bts';
+import type { Image } from '@/services/apis/station';
 
 export const useChangeImage = () => {
   const modelStore = useModelStore();
 
-  const onChangeImage = (data: Image2D) => {
+  const onChangeImage = (data: Image) => {
     modelStore.selectedImage = data;
     if (!data) return;
 
@@ -14,8 +14,8 @@ export const useChangeImage = () => {
     const length = 5; // Length of the line
     const moveForwardDistance = 0.1; // Distance to move the position forward
 
-    const camCenter = JSON.parse(data.cameraPose.camCent);
-    const eulerAngle = JSON.parse(data.cameraPose.eulerAngle);
+    const camCenter = JSON.parse(data.camera_pose.cent_point);
+    const eulerAngle = JSON.parse(data.camera_pose.euler_angle);
 
     const cameraPosition = new THREE.Vector3(...camCenter);
     const rotation = new THREE.Euler(

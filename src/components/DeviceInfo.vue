@@ -1,0 +1,225 @@
+<template>
+  <div v-if="modelStore.selectedInventory">
+    <a-descriptions
+      layout="horizontal"
+      :column="1"
+      class="ml-4"
+      title="Thông tin chung"
+    >
+      <a-descriptions-item
+        label="Id"
+        :labelStyle="descriptionStyle"
+        :contentStyle="descriptionStyle"
+      >
+        {{ modelStore.selectedInventory.id }}
+      </a-descriptions-item>
+      <a-descriptions-item
+        label="Loại thiết bị"
+        :labelStyle="descriptionStyle"
+        :contentStyle="descriptionStyle"
+      >
+        {{ modelStore.selectedInventory.name }}
+      </a-descriptions-item>
+      <a-descriptions-item
+        label="Nhà cung cấp"
+        :labelStyle="descriptionStyle"
+        :contentStyle="descriptionStyle"
+      >
+        {{ modelStore.selectedInventory.vendor.name }}
+      </a-descriptions-item>
+    </a-descriptions>
+    <a-descriptions
+      layout="horizontal"
+      :column="1"
+      class="ml-4"
+      title="Thông số kỹ thuật"
+    >
+      <a-descriptions-item
+        label="Chiều rộng"
+        :labelStyle="descriptionStyle"
+        :contentStyle="descriptionStyle"
+      >
+        {{ modelStore.selectedInventory?.width || 0 }} mm
+      </a-descriptions-item>
+      <a-descriptions-item
+        label="Chiều dài"
+        :labelStyle="descriptionStyle"
+        :contentStyle="descriptionStyle"
+      >
+        {{ modelStore.selectedInventory?.length || 0 }} mm
+      </a-descriptions-item>
+      <a-descriptions-item
+        label="Chiều sâu"
+        :labelStyle="descriptionStyle"
+        :contentStyle="descriptionStyle"
+      >
+        {{ modelStore.selectedInventory?.depth || 0 }} mm
+      </a-descriptions-item>
+      <a-descriptions-item
+        label="Trọng lượng"
+        :labelStyle="descriptionStyle"
+        :contentStyle="descriptionStyle"
+      >
+        {{ modelStore.selectedInventory?.weight }} kg
+      </a-descriptions-item>
+      <a-descriptions-item
+        :label="item.key"
+        :labelStyle="descriptionStyle"
+        :contentStyle="descriptionStyle"
+        v-for="item in modelStore.selectedInventory.params"
+        :key="item.value"
+      >
+        {{ item.value }}
+      </a-descriptions-item>
+    </a-descriptions>
+    <a-typography-text class="font-semibold">Thông số lắp đặt</a-typography-text>
+    <div class="flex flex-row">
+      <a-form-item
+        name="x"
+        label="x"
+        class="mb-0"
+        :colon="false"
+      >
+        <a-input-number
+          v-model:value="formState.x"
+          class="w-full"
+        />
+      </a-form-item>
+      <a-form-item
+        name="y"
+        label="y"
+        :colon="false"
+        class="mb-0"
+      >
+        <a-input-number
+          v-model:value="formState.y"
+          class="w-full"
+        />
+      </a-form-item>
+      <a-form-item
+        name="z"
+        label="z"
+        class="mb-0"
+        :colon="false"
+      >
+        <a-input-number
+          v-model:value="formState.z"
+          class="w-full"
+        />
+      </a-form-item>
+    </div>
+    <a-form
+      ref="formRef"
+      :model="formState"
+      layout="vertical"
+      class="mt-2"
+    >
+      <a-form-item
+        name="deviceTilt"
+        label="Góc tilt (°)"
+        class="mb-2"
+      >
+        <a-input-number
+          v-model:value="formState.deviceTilt"
+          class="w-full"
+        />
+      </a-form-item>
+      <a-form-item
+        name="deviceAzimuth"
+        label="Góc Azimuth (°)"
+        class="mb-2"
+      >
+        <a-input-number
+          v-model:value="formState.deviceAzimuth"
+          class="w-full"
+        />
+      </a-form-item>
+      <a-form-item
+        name="deviceHeight"
+        label="Độ cao thiết bị (m)"
+        class="mb-2"
+      >
+        <a-input-number
+          v-model:value="formState.deviceHeight"
+          class="w-full"
+        />
+      </a-form-item>
+      <a-form-item
+        name="description"
+        label="Mô tả"
+        class="mb-2"
+      >
+        <a-textarea
+          v-model:value="formState.description"
+          placeholder="Nhập mô tả thiết bị"
+          :allow-clear="true"
+          :rows="3"
+        />
+      </a-form-item>
+      <a-form-item
+        name="status"
+        label="Trạng thái"
+        class="mb-2"
+      >
+        <a-select v-model:value="formState.status">
+          <a-select-option value="active">Hoạt động</a-select-option>
+          <a-select-option value="inactive">Không hoạt động</a-select-option>
+          <a-select-option value="installation">Đang lắp đặt</a-select-option>
+        </a-select>
+      </a-form-item>
+    </a-form>
+  </div>
+</template>
+
+<script lang="ts" setup>
+import { useModelStore } from '@/stores/model';
+import { computed, onMounted, reactive, ref, type UnwrapRef, watch } from 'vue';
+import * as THREE from 'three';
+
+interface FormState {
+  frequencies?: string;
+  deviceTilt?: number;
+  deviceAzimuth?: number;
+  deviceHeight?: number;
+  x?: number;
+  y?: number;
+  z?: number;
+  description?: string;
+  status?: string;
+}
+
+const modelStore = useModelStore();
+
+const formRef = ref();
+const formState: UnwrapRef<FormState> = reactive({
+  status: 'active',
+});
+
+const handleSetForm = () => {
+  if (modelStore.selectedInventory?.pivot.vertices) {
+    const vertices = JSON.parse(modelStore.selectedInventory?.pivot.vertices);
+    // Define vertices of the Antenna
+    const antennaVertices = vertices.map(
+      (item: number[]) => new THREE.Vector3(item[0], item[1], item[2]),
+    );
+
+    // Compute bounding box
+    const box = new THREE.Box3().setFromPoints(antennaVertices);
+    formState.x = box.getCenter(new THREE.Vector3()).x;
+    formState.y = box.getCenter(new THREE.Vector3()).y;
+    formState.z = box.getCenter(new THREE.Vector3()).z;
+  }
+
+  formState.deviceTilt = modelStore.selectedInventory?.pivot.tilt;
+  formState.deviceAzimuth = modelStore.selectedInventory?.pivot.azimuth;
+  formState.deviceHeight = modelStore.selectedInventory?.pivot.height;
+
+  formState.description = modelStore.selectedInventory?.pivot.description;
+};
+
+watch(() => modelStore.selectedInventory, handleSetForm);
+
+onMounted(handleSetForm);
+
+const descriptionStyle = computed(() => ({ color: 'white', fontSize: '12px' }));
+</script>

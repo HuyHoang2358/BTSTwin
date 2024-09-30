@@ -11,7 +11,7 @@
         @wheel="handleWheel"
       >
         <a-image
-          :src="modelStore.selectedImage.imageUrl"
+          :src="modelStore.selectedImage.image_url"
           alt="BTS"
           :preview="false"
           class="object-contain"
@@ -20,7 +20,7 @@
           <template #placeholder>
             <div class="relative h-full">
               <a-image
-                :src="modelStore.selectedImage.previewImageUrl"
+                :src="modelStore.selectedImage.preview_image_url"
                 class="blur-sm object-contain"
                 :preview="false"
                 style="width: 100%; height: calc(100vh - 228px - 84px)"
@@ -34,7 +34,7 @@
         ghost
         class="absolute left-2 w-12 h-12 m-0 p-0 border-none"
         v-if="indexOfSelectedImage > 0"
-        @click="dataImage2D?.data && onChangeImage(dataImage2D?.data[indexOfSelectedImage - 1])"
+        @click="modelStore.images && onChangeImage(modelStore.images[indexOfSelectedImage - 1])"
       >
         <svg
           width="48"
@@ -53,8 +53,8 @@
       <a-button
         ghost
         class="absolute right-2 w-12 h-12 m-0 p-0 border-none"
-        v-if="dataImage2D?.data && indexOfSelectedImage < dataImage2D?.data?.length - 1"
-        @click="dataImage2D?.data && onChangeImage(dataImage2D?.data[indexOfSelectedImage + 1])"
+        v-if="modelStore.images && indexOfSelectedImage < modelStore.images.length - 1"
+        @click="modelStore.images && onChangeImage(modelStore.images[indexOfSelectedImage + 1])"
       >
         <svg
           class="rotate-180"
@@ -147,7 +147,7 @@
           ></path>
         </svg>
         <a-typography-text class="text-[#888] text-sm">
-          &nbsp;{{ modelStore?.selectedImage?.fileName.split('.')[0] }} ({{
+          &nbsp;{{ modelStore?.selectedImage?.filename.split('.')[0] }} ({{
             modelStore?.selectedImage?.id
           }})
         </a-typography-text>
@@ -180,7 +180,7 @@
             ></path>
           </svg>
           <a-typography-text class="text-[#888] text-sm">
-            &nbsp;{{ modelStore.selectedImage?.gimbalPitchDegree }}°
+            &nbsp;{{ modelStore.selectedImage?.gimbal.pitch_degree }}°
           </a-typography-text>
         </div>
       </a-tooltip>
@@ -212,7 +212,7 @@
             ></path>
           </svg>
           <a-typography-text class="text-[#888] text-sm">
-            &nbsp;{{ modelStore.selectedImage?.gimbalYawDegree }}°
+            &nbsp;{{ modelStore.selectedImage?.gimbal.yaw_degree }}°
           </a-typography-text>
         </div>
       </a-tooltip>
@@ -265,14 +265,14 @@
     </div>
     <div class="overflow-auto gap-2 flex flex-row h-[198px] bg-[#303030]">
       <div
-        v-for="item in dataImage2D?.data"
+        v-for="item in modelStore.images"
         :key="item.id"
-        :ref="(el) => (imageRefs[item.fileName] = el)"
+        :ref="(el) => (imageRefs[item.filename] = el)"
         class="cursor-pointer"
       >
         <a-image
           @click="onChangeImage(item)"
-          :src="item.previewImageUrl"
+          :src="item.preview_image_url"
           alt="bts-image"
           style="width: 172px; height: 172px"
           :preview="false"
@@ -292,8 +292,6 @@ import { computed, onMounted, onUnmounted, reactive, ref, watch } from 'vue';
 import { useChangeImage } from '@/potree/hooks/useChangeImage';
 import Panzoom from '@panzoom/panzoom';
 import type { PanzoomObject } from '@panzoom/panzoom/src/types';
-import { useRoute } from 'vue-router';
-import { useGetImage2D } from '@/services/hooks/useBTS';
 import { imageFallback } from '@/utils/constants';
 
 const imageRefs = reactive<any>({});
@@ -301,19 +299,12 @@ const imageRefs = reactive<any>({});
 const modelStore = useModelStore();
 const { onChangeImage } = useChangeImage();
 
-const route = useRoute();
-
 const zoomValue = ref('1');
 
 const indexOfSelectedImage = computed(() =>
-  dataImage2D?.value?.data
-    ? dataImage2D?.value.data?.findIndex((item) => item.id === modelStore.selectedImage?.id) || -1
+  modelStore.images
+    ? modelStore.images?.findIndex((item) => item.id === modelStore.selectedImage?.id) || -1
     : -1,
-);
-
-const { data: dataImage2D } = useGetImage2D(
-  computed(() => route.query.id as string),
-  computed(() => !!route.query.id),
 );
 
 const panzoomContainer = ref<HTMLElement | null>(null);
@@ -358,7 +349,7 @@ const scrollToSelectedImage = (image: any) => {
 watch(
   () => modelStore.selectedImage,
   (newSelectedImage) => {
-    scrollToSelectedImage(newSelectedImage?.fileName);
+    scrollToSelectedImage(newSelectedImage?.filename);
     panzoomInstance?.zoom(1);
     zoomValue.value = '1';
   },
@@ -366,7 +357,7 @@ watch(
 
 onMounted(() => {
   if (modelStore.selectedImage) {
-    scrollToSelectedImage(modelStore.selectedImage.fileName);
+    scrollToSelectedImage(modelStore.selectedImage.filename);
   }
 });
 

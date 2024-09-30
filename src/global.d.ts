@@ -36,7 +36,7 @@ declare namespace Potree {
     clip: boolean;
   }
 
-  function loadPointCloud(a, b, c): any;
+  function loadPointCloud(url: string, name: string, cb: (e: any) => void): void;
 
   namespace PointSizeType {
     const ADAPTIVE: any;

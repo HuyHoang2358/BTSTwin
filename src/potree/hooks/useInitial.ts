@@ -2,8 +2,17 @@ import { computed, onMounted, onUnmounted, watch } from 'vue';
 import * as THREE from 'three';
 import { useModelStore } from '@/stores/model';
 import { useRoute } from 'vue-router';
-import { useBTSDetail, useGetImage2D, useGetInventory } from '@/services/hooks/useBTS';
-import type { Image2D, Inventory } from '@/services/apis/bts';
+import type { Inventory } from '@/services/apis/bts';
+import {
+  budgetPoint,
+  EDL,
+  EDLRadius,
+  heightBasePlate,
+  pointSizeValue,
+  widthBasePlate,
+} from '@/utils/constants';
+import { useBTSDetail } from '@/services/hooks/useStation';
+import type { Device, Image } from '@/services/apis/station';
 
 export type InventoryDetail = {
   boxMesh?: THREE.Mesh<THREE.BoxGeometry, THREE.MeshBasicMaterial, THREE.Object3DEventMap>;
@@ -13,6 +22,9 @@ export type InventoryDetail = {
   clip: boolean;
   isNewDevice: boolean;
   newDevice?: any;
+  x?: number;
+  y?: number;
+  z?: number;
 } & Partial<Inventory>;
 
 export const useInitial = () => {
@@ -25,22 +37,14 @@ export const useInitial = () => {
     computed(() => !!route.query.id),
   );
 
-  const { data: dataInventory } = useGetInventory(
-    computed(() => route.query.id as string),
-    computed(() => !!route.query.id),
-  );
-
-  const { data: dataImage2D } = useGetImage2D(
-    computed(() => route.query.id as string),
-    computed(() => !!route.query.id),
-  );
-
   const resetState = () => {
     modelStore.currentMeasurement = undefined;
     modelStore.measurements = [];
     modelStore.activeTool = undefined;
     modelStore.selectedInventory = undefined;
     modelStore.selectedImage = undefined;
+    modelStore.selectedPole = undefined;
+    modelStore.isSelectedBasePlate = false;
   };
 
   watch(
@@ -56,19 +60,17 @@ export const useInitial = () => {
     modelStore.measurements.push(e.measurement);
   };
 
-  const addCameraToScene = (image2D: Image2D) => {
-    const data = image2D.cameraPose;
-    const camCenter = JSON.parse(data.camCent);
-    const eulerAngle = JSON.parse(data.eulerAngle);
+  const addCameraToScene = (image2D: Image) => {
+    const data = image2D.camera_pose;
+    const camCenter = JSON.parse(data.cent_point);
+    const eulerAngle = JSON.parse(data.euler_angle);
     const position = new THREE.Vector3(...camCenter);
     const rotation = new THREE.Euler(
-      THREE.MathUtils.degToRad(eulerAngle[0]),
-      THREE.MathUtils.degToRad(eulerAngle[1]),
-      THREE.MathUtils.degToRad(eulerAngle[2]),
-      'XYZ',
+      eulerAngle[0] * THREE.MathUtils.DEG2RAD,
+      eulerAngle[1] * THREE.MathUtils.DEG2RAD,
+      eulerAngle[2] * THREE.MathUtils.DEG2RAD,
     );
 
-    // Create a box to represent orientation
     const boxGeometry = new THREE.BoxGeometry(0.1, 0.1, 0.2);
     const boxMaterial = new THREE.MeshBasicMaterial({
       color: 0xffff00,
@@ -78,8 +80,6 @@ export const useInitial = () => {
     });
 
     const box = new THREE.Mesh(boxGeometry, boxMaterial);
-
-    // Set position and rotation
     box.position.copy(position);
     box.rotation.copy(rotation);
 
@@ -88,87 +88,112 @@ export const useInitial = () => {
       type: 'camera_pose',
     };
 
-    // Add to scene
     window.potreeViewer.scene.scene.add(box);
+
+    // const manager = new THREE.LoadingManager();
+    // manager.onProgress = function (item, loaded, total) {
+    //   console.log(item, loaded, total);
+    // };
+    // const loader = new OBJLoader(manager);
+    // loader.load(`/obj/cmae_v6.obj`, function (object) {
+    //   object.position.copy(position);
+    //   object.position.x += 0.2;
+    //   object.rotation.copy(eulerAngle);
+    //   object.scale.multiplyScalar(0.1);
+    //   object.traverse((child) => {
+    //     if (child.isMesh) {
+    //       child.material = new THREE.MeshBasicMaterial({
+    //         color: 0xffff00,
+    //         transparent: true,
+    //         opacity: 0.5,
+    //       });
+    //     }
+    //   });
+    //   window.potreeViewer.scene.scene.add(object);
+    // });
   };
 
   const loadInventory = () => {
-    const boxMeshs =
-      dataInventory.value?.data?.map((object) => {
-        const vertices = JSON.parse(object.vertices);
-        // Define vertices of the Antenna
+    const poles = dataDetail.value?.data?.poles || [];
+    let allDevices: Device[] = [];
+    poles.forEach((pole) => {
+      allDevices = allDevices.concat(pole.devices || []);
+    });
+
+    const boxMeshArray =
+      allDevices.map((device) => {
+        const vertices = JSON.parse(device.pivot.vertices);
         const antennaVertices = vertices.map(
           (item: number[]) => new THREE.Vector3(item[0], item[1], item[2]),
         );
-
-        // Compute bounding box
         const box = new THREE.Box3().setFromPoints(antennaVertices);
-
-        // Create geometry for the bounding box
         const boxSize = box.getSize(new THREE.Vector3());
         const boxGeometry = new THREE.BoxGeometry(boxSize.x, boxSize.y, boxSize.z);
-
-        // Create a material with transparency
         const boxMaterial = new THREE.MeshBasicMaterial({
           color: 0x83bb95,
-          opacity: 0.3, // Độ trong suốt
-          transparent: true, // Bật chế độ trong suốt
-          depthWrite: false, // Ngăn chặn việc ghi vào buffer độ sâu
-          side: THREE.DoubleSide, // Hiển thị cả hai mặt
+          opacity: 0,
+          transparent: true,
+          depthWrite: false,
+          side: THREE.DoubleSide,
         });
-
-        // Create the bounding box mesh
         const boxMesh = new THREE.Mesh(boxGeometry, boxMaterial);
-
-        // Set the position of the bounding box
         const boxCenter = box.getCenter(new THREE.Vector3());
         boxMesh.position.set(boxCenter.x, boxCenter.y, boxCenter.z);
-
         boxMesh.userData = {
           type: 'inventory',
           boxCenter,
-          object,
+          device,
         };
-
         window.potreeViewer.scene.scene.add(boxMesh);
 
-        // Create and configure Potree.BoxVolume
         const volume = new Potree.BoxVolume();
-
-        // Set the position to the center of the bounding box
         volume.position.set(boxCenter.x, boxCenter.y, boxCenter.z);
-
-        // Set the scale to the size of the bounding box
-        volume.scale.set(boxSize.x, boxSize.y, boxSize.z); // Convert vertices to THREE.Vector3
-        // Thêm volume vào cảnh
+        volume.scale.set(boxSize.x, boxSize.y, boxSize.z);
         volume.visible = false;
         window.potreeViewer.scene.addVolume(volume);
 
         return {
-          id: object.id,
+          id: device.id,
           boxMesh,
           volume,
         };
       }) || [];
 
-    modelStore.objectGroup = dataInventory.value?.data?.reduce<Record<string, InventoryDetail[]>>(
-      (acc, object) => {
-        if (!acc[object.name]) {
-          acc[object.name] = [];
+    modelStore.poles = poles.map((pole) => {
+      const deviceCategories: string[] = [];
+      pole.devices.forEach((device) => {
+        if (!deviceCategories.includes(device.category.name)) {
+          deviceCategories.push(device.category.name);
         }
-        acc[object.name].push({
-          ...object,
-          boxMesh: boxMeshs?.find((elem) => elem.id === object.id)?.boxMesh,
-          volume: boxMeshs?.find((elem) => elem.id === object.id)?.volume,
-          visibleMesh: true,
-          visible: true,
-          clip: false,
-          isNewDevice: false,
-        });
-        return acc;
-      },
-      {},
-    );
+      });
+
+      return {
+        ...pole,
+        isExpanded: true,
+        deviceCategories: deviceCategories.map((deviceCategory) => {
+          return {
+            name: deviceCategory,
+            devices: pole.devices
+              .filter((device) => device.category.name === deviceCategory)
+              .map((device) => {
+                const boxMesh = boxMeshArray?.find((elem) => elem.id === device.id);
+
+                return {
+                  ...device,
+                  boxMesh: boxMesh?.boxMesh,
+                  volume: boxMesh?.volume,
+                  visibleMesh: true,
+                  visible: true,
+                  clip: false,
+                  isNewDevice: false,
+                };
+              }),
+          };
+        }),
+      };
+    });
+
+    console.log('modelStore.poles', modelStore.poles);
   };
 
   onMounted(() => {
@@ -177,11 +202,12 @@ export const useInitial = () => {
     if (!viewerElement) return;
     window.potreeViewer = new Potree.Viewer(viewerElement);
 
-    window.potreeViewer.setEDLEnabled(true);
+    window.potreeViewer.setEDLEnabled(EDL);
+    window.potreeViewer.setEDLRadius(EDLRadius);
     window.potreeViewer.setFOV(60);
     window.potreeViewer.loadSettingsFromURL();
     window.potreeViewer.setBackground('black');
-    window.potreeViewer.setPointBudget(1_000_000);
+    window.potreeViewer.setPointBudget(budgetPoint);
     window.potreeViewer.useHQ = false;
     window.potreeViewer.compass.setVisible(true);
 
@@ -196,39 +222,74 @@ export const useInitial = () => {
 
   let loaded = false;
 
-  watch([dataDetail, dataInventory, dataImage2D], () => {
-    if (dataDetail.value && dataInventory.value && dataImage2D.value && !loaded) {
+  const loadPointCloud = () => {
+    const url = dataDetail.value?.data?.models.find((item) => item.type === 'potree')?.url;
+    const name = dataDetail.value?.data?.code;
+
+    if (!url || !name) return;
+
+    Potree.loadPointCloud(url, name, (e: any) => {
+      const scene = window.potreeViewer.scene;
+      const pointCloud = e.pointcloud;
+
+      // Thêm pointCloud vào cảnh
+      scene.addPointCloud(pointCloud);
+
+      const material = e.pointcloud.material;
+      material.size = pointSizeValue;
+
+      scene.view.yaw = 0;
+      scene.view.pitch = 0;
+      window.potreeViewer.fitToScreen(0.6);
+
+      window.potreeViewer.setClipTask(Potree.ClipTask.SHOW_OUTSIDE);
+
+      modelStore.loadingModel = false;
+    });
+  };
+
+  const loadBasePlate = () => {
+    if (!dataDetail.value) return;
+
+    const planeGeometry = new THREE.PlaneGeometry(widthBasePlate, heightBasePlate); // Adjust size as needed
+    const planeMaterial = new THREE.MeshBasicMaterial({
+      color: 0x095888,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 0.8,
+      depthWrite: true, // Add this line
+    });
+    const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+
+    const zPlane = dataDetail.value.data.poles[0].z_plane;
+
+    plane.position.set(0, 0, zPlane);
+    plane.userData = {
+      type: 'basePlate',
+    };
+
+    window.potreeViewer.scene.scene.add(plane);
+
+    modelStore.basePlate = plane;
+    modelStore.zPlaneHistory = zPlane;
+  };
+
+  const loadImages = () => {
+    if (!dataDetail.value) return;
+    const images = dataDetail.value?.data.images;
+    images.forEach((item) => {
+      addCameraToScene(item);
+    });
+    modelStore.images = images;
+  };
+
+  watch([dataDetail], () => {
+    if (dataDetail.value && !loaded) {
       loaded = true;
       loadInventory();
-
-      Potree.loadPointCloud(
-        dataDetail.value?.data?.modelLink,
-        dataDetail.value?.data?.station,
-        (e: any) => {
-          const scene = window.potreeViewer.scene;
-          const pointCloud = e.pointcloud;
-
-          // Thêm pointCloud vào cảnh
-          scene.addPointCloud(pointCloud);
-
-          const material = e.pointcloud.material;
-          material.size = 1;
-
-          // Cài đặt camera
-          scene.view.yaw = 0;
-          scene.view.pitch = 0;
-          window.potreeViewer.fitToScreen(0.6);
-
-          // Set clip task
-          window.potreeViewer.setClipTask(Potree.ClipTask.SHOW_OUTSIDE);
-
-          modelStore.loadingModel = false;
-        },
-      );
-
-      dataImage2D.value?.data.forEach((item) => {
-        addCameraToScene(item);
-      });
+      loadPointCloud();
+      loadImages();
+      loadBasePlate();
     }
   });
 };

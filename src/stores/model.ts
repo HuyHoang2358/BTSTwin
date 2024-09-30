@@ -1,10 +1,13 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import Map from 'ol/Map';
-import type { Image2D, StationItems } from '@/services/apis/bts';
+import type { StationItems } from '@/services/apis/bts';
 import type { InventoryDetail } from '@/potree/hooks/useInitial';
 import { Cesium3DTileset } from 'cesium';
-import type { Station } from '@/services/apis/station';
+import type VectorSource from 'ol/source/Vector';
+import { Mesh } from 'three';
+import { heightBasePlate, widthBasePlate } from '@/utils/constants';
+import type { Device, Image, Pole, Station } from '@/services/apis/station';
 
 export const useModelStore = defineStore('model', () => {
   const mapOl = ref<Map>();
@@ -14,8 +17,9 @@ export const useModelStore = defineStore('model', () => {
   const currentMeasurement = ref<any>();
   const measurements = ref<any[]>([]);
   const activeTool = ref();
-  const selectedInventory = ref<InventoryDetail>();
-  const selectedImage = ref<Image2D>();
+  const selectedInventory = ref<Device>();
+  const selectedPole = ref<Pole>();
+  const selectedImage = ref<Image>();
   const scale = ref<number>(1);
   const tranX = ref<number>(0);
   const tranY = ref<number>(0);
@@ -26,8 +30,17 @@ export const useModelStore = defineStore('model', () => {
   const potreeVolumes = ref<any[]>([]);
   const windyLayerVisible = ref(false);
   const isShowBTSInfo = ref(false);
+  const vectorSource = ref<VectorSource>();
+  const basePlate = ref<Mesh>();
+  const isSelectedBasePlate = ref(false);
   const selectedBTS = ref<Station>();
   const mappingStationWithTileset = ref<Record<number, Cesium3DTileset>>({});
+  const positionValue = ref<number>(0);
+  const widthBasePlateValue = ref<number>(widthBasePlate);
+  const heightBasePlateValue = ref<number>(heightBasePlate);
+  const zPlaneHistory = ref(0);
+  const poles = ref<Pole[]>([]);
+  const images = ref<Image[]>([]);
 
   // Hoangth33
   const stationsData = ref<Station[]>([]);
@@ -59,6 +72,16 @@ export const useModelStore = defineStore('model', () => {
     isShowBTSInfo,
     selectedBTS,
     mappingStationWithTileset,
+    vectorSource,
+    selectedPole,
+    basePlate,
+    isSelectedBasePlate,
+    positionValue,
+    widthBasePlateValue,
+    heightBasePlateValue,
+    zPlaneHistory,
     stationsData,
+    poles,
+    images,
   };
 });

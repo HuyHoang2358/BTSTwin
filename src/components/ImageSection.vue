@@ -7,7 +7,7 @@
       <a-typography-text class="text-base text-[#888]">
         Hình ảnh
         <br />
-        {{ dataImage2D?.data.length }} item(s)
+        {{ modelStore.images.length }} item(s)
       </a-typography-text>
     </div>
     <div class="px-3 mb-4">
@@ -24,7 +24,7 @@
     </div>
     <div class="flex flex-col flex-1 overflow-auto">
       <div
-        v-for="(item, index) in dataImage2D?.data"
+        v-for="(item, index) in modelStore.images"
         :key="index"
         :class="[
           'flex flex-row items-center justify-between cursor-pointer pr-2',
@@ -33,7 +33,7 @@
         @click="onChangeImage(item)"
       >
         <a-typography-text class="text-white text-sm ml-3">
-          {{ item.fileName }}
+          {{ item.filename }}
         </a-typography-text>
         <a-button
           @click="null"
@@ -65,20 +65,11 @@
 
 <script setup lang="ts">
 import { useModelStore } from '@/stores/model';
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 import IconSearchInput from '@/components/icons/home/IconSearchInput.vue';
 import { useChangeImage } from '@/potree/hooks/useChangeImage';
-import { useRoute } from 'vue-router';
-import { useGetImage2D } from '@/services/hooks/useBTS';
 
 const searchValue = ref<string>('');
-
-const route = useRoute();
-
-const { data: dataImage2D } = useGetImage2D(
-  computed(() => route.query.id as string),
-  computed(() => !!route.query.id),
-);
 
 const modelStore = useModelStore();
 const { onChangeImage } = useChangeImage();

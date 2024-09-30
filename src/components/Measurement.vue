@@ -1,7 +1,7 @@
 <template>
   <div
     class="bg-[#303030] w-[260px] overflow-auto"
-    v-if="modelStore.objectGroupArray.length > 0 && modelStore.activeTool === 'measurements'"
+    v-if="modelStore.activeTool === 'measurements'"
   >
     <div class="flex justify-between items-center px-3 py-4">
       <a-typography-text class="text-base text-[#888]">

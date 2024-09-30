@@ -14,16 +14,19 @@
         <a-slider
           v-model:value="pointBudget"
           :min="100000"
-          :max="10000000"
+          :max="50000000"
           :step="100000"
         />
       </div>
-      <a-checkbox
-        v-model:checked="lightingChecked"
-        class="text-white mt-2"
-      >
-        Eye-Dome-Lighting
-      </a-checkbox>
+      <div class="mt-2">
+        <a-typography-text class="text-white">Point size: {{ pointSize }}</a-typography-text>
+        <a-slider
+          v-model:value="pointSize"
+          :min="0.1"
+          :max="10"
+          :step="0.1"
+        />
+      </div>
       <div class="mt-2">
         <a-typography-text class="text-white">Background:</a-typography-text>
         <a-segmented
@@ -44,15 +47,18 @@
           block
         />
       </div>
-      <div class="mt-2">
-        <a-typography-text class="text-white">Point size: {{ pointSize }}</a-typography-text>
-        <a-slider
-          v-model:value="pointSize"
-          :min="0.1"
-          :max="10"
-          :step="0.1"
-        />
-      </div>
+      <a-checkbox
+        v-model:checked="lightingChecked"
+        class="text-white mt-2"
+      >
+        Eye-Dome-Lighting
+      </a-checkbox>
+      <a-checkbox
+        v-model:checked="basePlateChecked"
+        class="text-white mt-2"
+      >
+        Base plate
+      </a-checkbox>
     </div>
   </div>
 </template>
@@ -61,10 +67,12 @@
 import { useModelStore } from '@/stores/model';
 import { reactive, ref, watch } from 'vue';
 import { formatNumber } from '@/utils/helpers';
+import { budgetPointValue, EDLRadius, pointSizeValue } from '@/utils/constants';
 
-const pointBudget = ref<number>(1000000);
-const pointSize = ref<number>(1);
-const lightingChecked = ref(true);
+const pointBudget = ref<number>(budgetPointValue);
+const pointSize = ref<number>(pointSizeValue);
+const lightingChecked = ref(EDLRadius);
+const basePlateChecked = ref(true);
 const backgroundData = reactive(['skybox', 'gradient', 'black', 'white']);
 const background = ref('black');
 const splatData = reactive(['Thấp', 'Cao']);
@@ -96,5 +104,14 @@ watch(pointSize, () => {
   if (window.potreeViewer.scene.pointclouds) {
     window.potreeViewer.scene.pointclouds[0].material.size = pointSize.value;
   }
+});
+
+watch(basePlateChecked, (newValute) => {
+  if (!newValute) {
+    modelStore.isSelectedBasePlate = false;
+  }
+
+  if (!modelStore.basePlate) return;
+  modelStore.basePlate.visible = newValute;
 });
 </script>

@@ -159,21 +159,18 @@ const handleChangeDevice = (value: string, option: any) => {
 };
 
 const onSubmit = () => {
+  const dataDevice = optionsDevice.value.find((item) => item.id?.toString() === formState.device);
+  if (!dataDevice) return;
+
   window.potreeViewer.volumeTool.startInsertion();
   const newDevice = window.potreeViewer.scene.volumes[window.potreeViewer.scene.volumes.length - 1];
-  const dataDevice = optionsDevice.value.find((item) => item.id?.toString() === formState.device);
-
   newDevice.material.opacity = 0.8;
-
-  if (!dataDevice) return;
 
   newDevice.scale.set(
     dataDevice.depth ? dataDevice.depth / 1000 : 1,
     dataDevice.width ? dataDevice.width / 1000 : 1,
     dataDevice.length ? dataDevice.length / 1000 : 1,
   );
-
-  if (!modelStore.objectGroup) return;
 
   const newInventory: InventoryDetail = {
     visibleMesh: true,
@@ -186,14 +183,15 @@ const onSubmit = () => {
     newDevice,
   };
 
-  modelStore.objectGroup = {
-    ...modelStore.objectGroup,
-    [dataDevice.category.name]: modelStore.objectGroup[dataDevice.category.name]
-      ? modelStore.objectGroup[dataDevice.category.name].concat([newInventory])
-      : [newInventory],
-  };
+  // modelStore.objectGroup = {
+  //   ...modelStore.objectGroup,
+  //   [dataDevice.category.name]: modelStore.objectGroup[dataDevice.category.name]
+  //     ? modelStore.objectGroup[dataDevice.category.name].concat([newInventory])
+  //     : [newInventory],
+  // };
 
   modelStore.selectedInventory = newInventory;
+  modelStore.activeTool = 'add-inventory';
 
   newDevice.addEventListener('volume_select_changed', () => {
     const modelStore = useModelStore();

@@ -1,11 +1,13 @@
 <template>
   <header class="bg-[#212121] flex flex-row justify-between items-center w-full pl-3.5 pr-2.5 py-3">
-    <img
-      src="/icons/ViettelAI-2023.svg"
-      :width="105"
-      :height="37"
-      alt="logo-viettel"
-    />
+    <div style="width: 200px">
+      <img
+        src="/icons/ViettelAI-2023.svg"
+        :width="105"
+        :height="37"
+        alt="logo-viettel"
+      />
+    </div>
     <div>
       <h1
         class="text-[#D0002D] m-0 font-bold text-lg lg:text-xl whitespace-nowrap font-magistral text-center uppercase"
@@ -14,7 +16,10 @@
       </h1>
     </div>
 
-    <div class="flex flex-row items-center dark-form">
+    <div
+      class="flex flex-row items-center justify-end dark-form"
+      style="width: 200px"
+    >
       <a-popover
         title="Danh sách thông báo"
         trigger="click"

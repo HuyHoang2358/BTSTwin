@@ -53589,11 +53589,11 @@
 			0, 0, 0,
 		]);
 
-		let lineMaterial = new LineMaterial({ 
-			color: 0x00ff00, 
-			dashSize: 5, 
+		let lineMaterial = new LineMaterial({
+			color: 0x00ff00,
+			dashSize: 5,
 			gapSize: 2,
-			linewidth: 2, 
+			linewidth: 2,
 			resolution:  new Vector2(1000, 1000),
 		});
 
@@ -53602,7 +53602,7 @@
 		heightEdge.visible = false;
 
 		//this.add(this.heightEdge);
-		
+
 		return heightEdge;
 	}
 
@@ -53630,7 +53630,7 @@
 		areaLabel.material.depthTest = false;
 		areaLabel.material.opacity = 1;
 		areaLabel.visible = false;
-		
+
 		return areaLabel;
 	}
 
@@ -53644,7 +53644,7 @@
 		circleRadiusLabel.material.depthTest = false;
 		circleRadiusLabel.material.opacity = 1;
 		circleRadiusLabel.visible = false;
-		
+
 		return circleRadiusLabel;
 	}
 
@@ -53656,9 +53656,9 @@
 			0, 0, 0,
 		]);
 
-		const lineMaterial = new LineMaterial({ 
-			color: 0xff0000, 
-			linewidth: 2, 
+		const lineMaterial = new LineMaterial({
+			color: 0xff0000,
+			linewidth: 2,
 			resolution:  new Vector2(1000, 1000),
 			gapSize: 1,
 			dashed: true,
@@ -53681,14 +53681,14 @@
 			let u1 = 2 * Math.PI * (i + 1) / n;
 
 			let p0 = new Vector3(
-				Math.cos(u0), 
-				Math.sin(u0), 
+				Math.cos(u0),
+				Math.sin(u0),
 				0
 			);
 
 			let p1 = new Vector3(
-				Math.cos(u1), 
-				Math.sin(u1), 
+				Math.cos(u1),
+				Math.sin(u1),
 				0
 			);
 
@@ -53701,11 +53701,11 @@
 		const geometry = new LineGeometry();
 		geometry.setPositions(coordinates);
 
-		const material = new LineMaterial({ 
-			color: 0xff0000, 
-			dashSize: 5, 
+		const material = new LineMaterial({
+			color: 0xff0000,
+			dashSize: 5,
 			gapSize: 2,
-			linewidth: 2, 
+			linewidth: 2,
 			resolution:  new Vector2(1000, 1000),
 		});
 
@@ -53721,7 +53721,7 @@
 	function createCircleCenter(){
 		const sg = new SphereGeometry(1, 32, 32);
 		const sm = new MeshNormalMaterial();
-		
+
 		const circleCenter = new Mesh(sg, sm);
 		circleCenter.visible = false;
 
@@ -53736,9 +53736,9 @@
 			0, 0, 0,
 		]);
 
-		const material = new LineMaterial({ 
-			color: 0xff0000, 
-			linewidth: 2, 
+		const material = new LineMaterial({
+			color: 0xff0000,
+			linewidth: 2,
 			resolution:  new Vector2(1000, 1000),
 			gapSize: 1,
 			dashed: true,
@@ -53761,14 +53761,14 @@
 			let u1 = 2 * Math.PI * (i + 1) / n;
 
 			let p0 = new Vector3(
-				Math.cos(u0), 
-				Math.sin(u0), 
+				Math.cos(u0),
+				Math.sin(u0),
 				0
 			);
 
 			let p1 = new Vector3(
-				Math.cos(u1), 
-				Math.sin(u1), 
+				Math.cos(u1),
+				Math.sin(u1),
 				0
 			);
 
@@ -53781,11 +53781,11 @@
 		const geometry = new LineGeometry();
 		geometry.setPositions(coordinates);
 
-		const material = new LineMaterial({ 
-			color: 0xff0000, 
-			dashSize: 5, 
+		const material = new LineMaterial({
+			color: 0xff0000,
+			dashSize: 5,
 			gapSize: 2,
-			linewidth: 2, 
+			linewidth: 2,
 			resolution:  new Vector2(1000, 1000),
 		});
 
@@ -53939,8 +53939,8 @@
 				]);
 
 				let lineMaterial = new LineMaterial({
-					color: 0xff0000, 
-					linewidth: 2, 
+					color: 0xff0000,
+					linewidth: 2,
 					resolution:  new Vector2(1000, 1000),
 				});
 
@@ -53991,9 +53991,9 @@
 			{ // Event Listeners
 				let drag = (e) => {
 					let I = Utils.getMousePointCloudIntersection(
-						e.drag.end, 
-						e.viewer.scene.getActiveCamera(), 
-						e.viewer, 
+						e.drag.end,
+						e.viewer.scene.getActiveCamera(),
+						e.viewer,
 						e.viewer.scene.pointclouds,
 						{pickClipped: true});
 
@@ -54001,7 +54001,7 @@
 						let i = this.spheres.indexOf(e.drag.object);
 						if (i !== -1) {
 							let point = this.points[i];
-							
+
 							// loop through current keys and cleanup ones that will be orphaned
 							for (let key of Object.keys(point)) {
 								if (!I.point[key]) {
@@ -54175,7 +54175,7 @@
 		// 	// const [p0, p1] = this.points;
 
 		// 	// const r = p0.position.distanceTo(p1.position);
-			
+
 		// }
 
 		update () {
@@ -54188,7 +54188,7 @@
 
 				{ // coordinate labels
 					let coordinateLabel = this.coordinateLabels[0];
-					
+
 					let msg = position.toArray().map(p => Utils.addCommas(p.toFixed(2))).join(" / ");
 					coordinateLabel.setText(msg);
 
@@ -54238,7 +54238,7 @@
 					edge.geometry.computeBoundingSphere();
 					edge.computeLineDistances();
 					edge.visible = index < lastIndex || this.closed;
-					
+
 					if(!this.showEdges){
 						edge.visible = false;
 					}
@@ -54293,14 +54293,14 @@
 
 				if (this.showHeight) {
 					let sorted = this.points.slice().sort((a, b) => a.position.z - b.position.z);
-					let lowPoint = sorted[0].position.clone();
-					let highPoint = sorted[sorted.length - 1].position.clone();
+					let highPoint = sorted[0].position.clone();
+					let lowPoint= sorted[sorted.length - 1].position.clone();
 					let min = lowPoint.z;
 					let max = highPoint.z;
 					let height = max - min;
 
 					let start = new Vector3(highPoint.x, highPoint.y, min);
-					let end = new Vector3(highPoint.x, highPoint.y, max);
+					let end  = new Vector3(highPoint.x, highPoint.y, max);
 
 					heightEdge.position.copy(lowPoint);
 
@@ -54323,14 +54323,15 @@
 					let heightLabelPosition = start.clone().add(end).multiplyScalar(0.5);
 					this.heightLabel.position.copy(heightLabelPosition);
 
-					let suffix = "";
-					if(this.lengthUnit != null && this.lengthUnitDisplay != null){
-						height = height / this.lengthUnit.unitspermeter * this.lengthUnitDisplay.unitspermeter;  //convert to meters then to the display unit
-						suffix = this.lengthUnitDisplay.code;
-					}
+					// console.log("highPoint", highPoint)
+					// console.log("lowPoint", lowPoint)
 
-					let txtHeight = Utils.addCommas(height.toFixed(2));
-					let msg = `${txtHeight} ${suffix}`;
+					const a = Math.abs(height);
+					const b = Math.abs(highPoint.x - lowPoint.x);
+
+					const angleB = Math.atan(b / a) * (180 / Math.PI); // góc B
+
+					let msg = `${angleB.toFixed(2)}°`;
 					this.heightLabel.setText(msg);
 				}
 			}
@@ -54382,7 +54383,7 @@
 					circleLine.position.copy(center);
 					circleLine.scale.set(radius, radius, radius);
 					circleLine.lookAt(target);
-					
+
 					circleRadiusLabel.visible = true;
 					circleRadiusLabel.position.copy(center.clone().add(B).multiplyScalar(0.5));
 					circleRadiusLabel.setText(`${radius.toFixed(3)}`);
@@ -70058,7 +70059,9 @@ void main() {
 
 			this.viewer.inputHandler.addEventListener('delete', e => {
 				let volumes = e.selection.filter(e => (e instanceof Volume));
-				volumes.forEach(e => this.viewer.scene.removeVolume(e));
+				volumes.forEach(e => {
+					this.viewer.scene.removeVolume(e);
+				});
 			});
 
 			viewer.addEventListener("update", this.update.bind(this));
@@ -79264,11 +79267,11 @@ ENDSEC
 			this.initFilters();
 			this.initClippingTool();
 			this.initSettings();
-
+			
 			$('#potree_version_number').html(Potree.version.major + "." + Potree.version.minor + Potree.version.suffix);
 		}
 
-
+			
 
 		initToolbar(){
 
@@ -79427,7 +79430,7 @@ ENDSEC
 				Potree.resourcePath + '/icons/volume.svg',
 				'[title]tt.volume_measurement',
 				() => {
-					let volume = this.volumeTool.startInsertion();
+					let volume = this.volumeTool.startInsertion(); 
 
 					let measurementsRoot = $("#jstree_scene").jstree().get_json("measurements");
 					let jsonNode = measurementsRoot.children.find(child => child.data.uuid === volume.uuid);
@@ -79440,8 +79443,8 @@ ENDSEC
 			elToolbar.append(this.createToolIcon(
 				Potree.resourcePath + '/icons/sphere_distances.svg',
 				'[title]tt.volume_measurement',
-				() => {
-					let volume = this.volumeTool.startInsertion({type: SphereVolume});
+				() => { 
+					let volume = this.volumeTool.startInsertion({type: SphereVolume}); 
 
 					let measurementsRoot = $("#jstree_scene").jstree().get_json("measurements");
 					let jsonNode = measurementsRoot.children.find(child => child.data.uuid === volume.uuid);
@@ -79509,7 +79512,7 @@ ENDSEC
 			let elScene = $("#menu_scene");
 			let elObjects = elScene.next().find("#scene_objects");
 			let elProperties = elScene.next().find("#scene_object_properties");
-
+			
 
 			{
 				let elExport = elScene.next().find("#scene_export");
@@ -79570,7 +79573,7 @@ ENDSEC
 
 			let propertiesPanel = new PropertiesPanel(elProperties, this.viewer);
 			propertiesPanel.setScene(this.viewer.scene);
-
+			
 			localStorage.removeItem('jstree');
 
 			let tree = $(`<div id="jstree_scene"></div>`);
@@ -79595,13 +79598,13 @@ ENDSEC
 			});
 
 			let createNode = (parent, text, icon, object) => {
-				let nodeID = tree.jstree('create_node', parent, {
-						"text": text,
+				let nodeID = tree.jstree('create_node', parent, { 
+						"text": text, 
 						"icon": icon,
 						"data": object
-					},
+					}, 
 					"last", false, false);
-
+				
 				if(object.visible){
 					tree.jstree('check_node', nodeID);
 				}else {
@@ -79683,7 +79686,7 @@ ENDSEC
 						this.viewer.zoomTo(node, 1, 500);
 					}
 				}else if(object instanceof Volume){
-
+					
 					let box = object.boundingBox.clone().applyMatrix4(object.matrixWorld);
 
 					if(box.getSize(new Vector3()).length() > 0){
@@ -79706,14 +79709,14 @@ ENDSEC
 						target = new Vector3().addVectors(object.camera.position, dir);
 						this.viewer.setCameraMode(CameraMode.PERSPECTIVE);
 					}
-
+					
 					this.viewer.scene.view.position.copy(object.camera.position);
 					this.viewer.scene.view.lookAt(target);
 				}else if(object.type === "SpotLight"){
 					let distance = (object.distance > 0) ? object.distance / 4 : 5 * 1000;
 					let position = object.position;
 					let target = new Vector3().addVectors(
-						position,
+						position, 
 						object.getWorldDirection(new Vector3()).multiplyScalar(distance));
 
 					this.viewer.scene.view.position.copy(object.position);
@@ -79792,12 +79795,6 @@ ENDSEC
 						tree.jstree('uncheck_node', node);
 					}
 				});
-				volume.addEventListener("volume_select_changed", (e) => {
-					console.log("volume_select_changed", e);
-				});
-				volume.addEventListener("volume_deselect_changed", (e) => {
-					console.log("volume_deselect_changed", e);
-				});
 			};
 
 			let onProfileAdded = (e) => {
@@ -79817,7 +79814,7 @@ ENDSEC
 				annotation.addEventListener("annotation_changed", (e) => {
 					let annotationsRoot = $("#jstree_scene").jstree().get_json("annotations");
 					let jsonNode = annotationsRoot.children.find(child => child.data.uuid === annotation.uuid);
-
+					
 					$.jstree.reference(jsonNode.id).rename_node(jsonNode.id, annotation.title);
 				});
 			};
@@ -79869,12 +79866,12 @@ ENDSEC
 				for(const layer of geopackage.node.children){
 					const name = layer.name;
 
-					let shpPointsID = tree.jstree('create_node', parentNode, {
-							"text": name,
+					let shpPointsID = tree.jstree('create_node', parentNode, { 
+							"text": name, 
 							"icon": geopackageIcon,
 							"object": layer,
 							"data": layer,
-						},
+						}, 
 						"last", false, false);
 					tree.jstree(layer.visible ? "check_node" : "uncheck_node", shpPointsID);
 				}
@@ -79895,28 +79892,28 @@ ENDSEC
 			let onMeasurementRemoved = (e) => {
 				let measurementsRoot = $("#jstree_scene").jstree().get_json("measurements");
 				let jsonNode = measurementsRoot.children.find(child => child.data.uuid === e.measurement.uuid);
-
+				
 				tree.jstree("delete_node", jsonNode.id);
 			};
 
 			let onVolumeRemoved = (e) => {
 				let measurementsRoot = $("#jstree_scene").jstree().get_json("measurements");
 				let jsonNode = measurementsRoot.children.find(child => child.data.uuid === e.volume.uuid);
-
+				
 				tree.jstree("delete_node", jsonNode.id);
 			};
 
 			let onPolygonClipVolumeRemoved = (e) => {
 				let measurementsRoot = $("#jstree_scene").jstree().get_json("measurements");
 				let jsonNode = measurementsRoot.children.find(child => child.data.uuid === e.volume.uuid);
-
+				
 				tree.jstree("delete_node", jsonNode.id);
 			};
 
 			let onProfileRemoved = (e) => {
 				let measurementsRoot = $("#jstree_scene").jstree().get_json("measurements");
 				let jsonNode = measurementsRoot.children.find(child => child.data.uuid === e.profile.uuid);
-
+				
 				tree.jstree("delete_node", jsonNode.id);
 			};
 
@@ -79927,7 +79924,7 @@ ENDSEC
 
 			{
 				let annotationIcon = `${Potree.resourcePath}/icons/annotation.svg`;
-				this.annotationMapping = new Map();
+				this.annotationMapping = new Map(); 
 				this.annotationMapping.set(this.viewer.scene.annotations, annotationsID);
 				this.viewer.scene.annotations.traverseDescendants(annotation => {
 					let parentID = this.annotationMapping.get(annotation.parent);
@@ -80037,7 +80034,7 @@ ENDSEC
 				Potree.resourcePath + '/icons/clip_volume.svg',
 				'[title]tt.clip_volume',
 				() => {
-					let item = this.volumeTool.startInsertion({clip: true});
+					let item = this.volumeTool.startInsertion({clip: true}); 
 
 					let measurementsRoot = $("#jstree_scene").jstree().get_json("measurements");
 					let jsonNode = measurementsRoot.children.find(child => child.data.uuid === item.uuid);
@@ -80068,11 +80065,11 @@ ENDSEC
 					"[title]tt.screen_clip_box",
 					() => {
 						if(!(this.viewer.scene.getActiveCamera() instanceof OrthographicCamera)){
-							this.viewer.postMessage(`Switch to Orthographic Camera Mode before using the Screen-Box-Select tool.`,
+							this.viewer.postMessage(`Switch to Orthographic Camera Mode before using the Screen-Box-Select tool.`, 
 								{duration: 2000});
 							return;
 						}
-
+						
 						let item = boxSelectTool.startInsertion();
 
 						let measurementsRoot = $("#jstree_scene").jstree().get_json("measurements");
@@ -80173,7 +80170,7 @@ ENDSEC
 				let initialized = false;
 
 				let initialize = () => {
-
+					
 					let elRangeContainer = $("#gpstime_multilevel_range_container");
 					elRangeContainer[0].prepend(slider.element);
 
@@ -80200,7 +80197,7 @@ ENDSEC
 
 
 			{
-
+				
 				const txtGpsTime = elGPSTimeFilterPanel.find("#txtGpsTime");
 				const btnFindGpsTime = elGPSTimeFilterPanel.find("#btnFindGpsTime");
 
@@ -80223,7 +80220,7 @@ ENDSEC
 				});
 
 				btnFindGpsTime.click( () => {
-
+					
 					if(targetTime !== null){
 						viewer.moveToGpsTimeVicinity(targetTime);
 					}
@@ -80262,7 +80259,7 @@ ENDSEC
 
 						slider.setValues(extent);
 					}
-
+					
 				});
 			}
 
@@ -80371,7 +80368,7 @@ ENDSEC
 				elClassificationList.append(element);
 			};
 
-			const addInvertButton = () => {
+			const addInvertButton = () => { 
 				const element = $(`
 				<li>
 					<input type="button" value="invert" />
@@ -80382,7 +80379,7 @@ ENDSEC
 
 				elInput.click( () => {
 					const classifications = this.viewer.classifications;
-
+		
 					for(let key of Object.keys(classifications)){
 						let value = classifications[key];
 						this.viewer.setClassificationVisibility(key, !value.visible);
@@ -80471,11 +80468,11 @@ ENDSEC
 				if(i === 0){
 					element.css("margin-left", "30px");
 				}
-
+				
 				elLanguages.append(element);
 
 				if(i < languages.length - 1){
-					elLanguages.append($(document.createTextNode(' - ')));
+					elLanguages.append($(document.createTextNode(' - ')));	
 				}
 			}
 
@@ -80564,7 +80561,7 @@ ENDSEC
 			$('#lblEDLRadius')[0].innerHTML = this.viewer.getEDLRadius().toFixed(1);
 			$('#lblEDLStrength')[0].innerHTML = this.viewer.getEDLStrength().toFixed(1);
 			$('#chkEDLEnabled')[0].checked = this.viewer.getEDLEnabled();
-
+			
 			{
 				let elBackground = $(`#background_options`);
 				elBackground.selectgroup();
@@ -80605,7 +80602,7 @@ ENDSEC
 			elNavigation.append(this.createToolIcon(
 				Potree.resourcePath + '/icons/helicopter_controls.svg',
 				'[title]tt.heli_control',
-				() => {
+				() => { 
 					this.viewer.setControls(this.viewer.fpControls);
 					this.viewer.fpControls.lockElevation = true;
 				}
