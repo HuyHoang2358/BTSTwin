@@ -1,12 +1,12 @@
 <template>
-  <div class="flex flex-col bg-[#303030] rounded-full py-3">
+  <div class="flex flex-col bg-[#303030] rounded-full py-1">
     <a-tooltip
       title="Xem thông tin"
       placement="right"
       color="#212121"
     >
       <a-button
-        :class="['w-8 h-8 p-0 m-0 rounded-t rounded-b-none']"
+        class="w-8 h-8 p-0 m-0 rounded-t rounded-b-none flex flex-row items-center justify-center"
         type="ghost"
         @click="modelStore.activeSubTool = null"
       >
@@ -21,7 +21,7 @@
       color="#212121"
     >
       <a-button
-        :class="['w-8 h-8 p-0 m-0 rounded-t rounded-b-none']"
+        class="w-8 h-8 p-0 m-0 rounded-t rounded-b-none flex flex-row items-center justify-center"
         type="ghost"
         @click="onMeasureAngle"
       >
@@ -36,7 +36,7 @@
       color="#212121"
     >
       <a-button
-        :class="['w-8 h-8 p-0 m-0 rounded-t rounded-b-none']"
+        class="w-8 h-8 p-0 m-0 rounded-t rounded-b-none flex flex-row items-center justify-center"
         type="ghost"
         @click="onMeasureDistance"
       >
@@ -51,7 +51,7 @@
       color="#212121"
     >
       <a-button
-        :class="['w-8 h-8 p-0 m-0 rounded-t rounded-b-none']"
+        class="w-8 h-8 p-0 m-0 rounded-t rounded-b-none flex flex-row items-center justify-center"
         type="ghost"
         @click="onMeasureHeight"
       >
@@ -66,7 +66,7 @@
       color="#212121"
     >
       <a-button
-        :class="['w-8 h-8 p-0 m-0 rounded-t rounded-b-none']"
+        class="w-8 h-8 p-0 m-0 rounded-t rounded-b-none flex flex-row items-center justify-center"
         type="ghost"
         @click="onMeasureCircle"
       >
@@ -81,7 +81,7 @@
       color="#212121"
     >
       <a-button
-        :class="['w-8 h-8 p-0 m-0 rounded-t rounded-b-none']"
+        class="w-8 h-8 p-0 m-0 rounded-t rounded-b-none flex flex-row items-center justify-center"
         type="ghost"
         @click="onMeasureAzimuth"
       >
@@ -96,7 +96,7 @@
       color="#212121"
     >
       <a-button
-        :class="['w-8 h-8 p-0 m-0 rounded-t rounded-b-none']"
+        class="w-8 h-8 p-0 m-0 rounded-t rounded-b-none flex flex-row items-center justify-center"
         type="ghost"
         @click="onMeasureArea"
       >
@@ -111,7 +111,7 @@
       color="#212121"
     >
       <a-button
-        :class="['w-8 h-8 p-0 m-0 rounded-t rounded-b-none']"
+        class="w-8 h-8 p-0 m-0 rounded-t rounded-b-none flex flex-row items-center justify-center"
         type="ghost"
         @click="onRemoveAllMeasurements"
       >

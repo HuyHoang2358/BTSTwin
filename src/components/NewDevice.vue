@@ -158,17 +158,19 @@ onUnmounted(() => {
 });
 
 const onRemoveDevice = () => {
-  if (!modelStore.selectedInventory || !modelStore.objectGroup || !modelStore.selectedInventory) {
+  if (!modelStore.selectedInventory) {
     return;
   }
 
-  const category = modelStore.selectedInventory.name as string;
-  modelStore.objectGroup = {
-    ...modelStore.objectGroup,
-    [category]: modelStore.objectGroup[category].filter(
-      (item) => item.id !== modelStore.selectedInventory?.id,
-    ),
-  };
+  modelStore.poles = modelStore.poles.map((item) => ({
+    ...item,
+    deviceCategories: item.deviceCategories.map((category) => ({
+      ...category,
+      devices: category.devices.filter(
+        (device) => device.pivot.id !== modelStore.selectedInventory.pivot.id,
+      ),
+    })),
+  }));
   window.potreeViewer.scene.removeVolume(toRaw(modelStore.selectedInventory?.newDevice));
   window.potreeViewer.inputHandler.deselectAll();
   modelStore.selectedInventory = undefined;

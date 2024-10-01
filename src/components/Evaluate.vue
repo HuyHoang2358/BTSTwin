@@ -19,7 +19,7 @@
         block
       />
       <div
-        class="flex justify-between items-center px-3 py-3"
+        class="flex justify-between items-center px-3 pt-3"
         v-if="splat === splatData[1]"
       >
         <a-button
@@ -31,7 +31,7 @@
         </a-button>
       </div>
       <div
-        class="mx-3 my-2"
+        class="mx-3"
         v-else
       >
         <a-upload-dragger
@@ -176,7 +176,7 @@ watch(jsonData, () => {
 
     newDevice.addEventListener('volume_select_changed', () => {
       const modelStore = useModelStore();
-      modelStore.activeTool = 'add-inventory';
+      modelStore.activeSubTool = 'add-inventory';
       modelStore.selectedImage = undefined;
       modelStore.selectedInventory = newInventory;
     });
@@ -198,7 +198,7 @@ watch(jsonData, () => {
             category.name && mappingByModel[category.name]
               ? {
                   ...category,
-                  devices: item.devices.concat(mappingByModel[category.name]),
+                  devices: category.devices.concat(mappingByModel[category.name]),
                 }
               : category,
           ),

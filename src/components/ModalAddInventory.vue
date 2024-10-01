@@ -232,11 +232,11 @@ const onSubmit = () => {
   );
 
   modelStore.selectedInventory = newInventory;
-  modelStore.activeTool = 'add-inventory';
+  modelStore.activeSubTool = 'add-inventory';
 
   newDevice.addEventListener('volume_select_changed', () => {
     const modelStore = useModelStore();
-    modelStore.activeTool = 'add-inventory';
+    modelStore.activeSubTool = 'add-inventory';
     modelStore.selectedImage = undefined;
     modelStore.selectedInventory = newInventory;
   });

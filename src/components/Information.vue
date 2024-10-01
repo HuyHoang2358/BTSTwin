@@ -11,7 +11,7 @@
       <div>
         <a-button
           type="ghost"
-          @click="modelStore.selectedInventory = null"
+          @click="onCloseDeviceInformation"
         >
           <IconClose />
         </a-button>
@@ -39,4 +39,9 @@ import DeviceInfo from '@/components/DeviceInfo.vue';
 import IconClose from '@/components/icon/IconClose.vue';
 
 const modelStore = useModelStore();
+
+const onCloseDeviceInformation = () => {
+  modelStore.selectedInventory = undefined;
+  window.potreeViewer.inputHandler.deselectAll();
+};
 </script>

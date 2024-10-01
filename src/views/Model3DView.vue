@@ -25,10 +25,14 @@
         <a-typography-text
           style="color: #f6f6f6; font-size: 14px; margin-bottom: 0"
           class="ml-4"
+          v-if="data?.data?.name"
         >
           Trạm {{ data?.data?.name }}
         </a-typography-text>
-        <IconTickGreen class="ml-1" />
+        <IconTickGreen
+          class="ml-1"
+          v-if="data?.data?.name"
+        />
       </div>
 
       <div
@@ -51,7 +55,7 @@
             class="flex relative"
           />
           <MeasurementTool class="absolute top-[82px] right-6 z-10" />
-          <BottomTool />
+          <!--          <BottomTool />-->
 
           <div
             class="absolute inset-0 flex items-center justify-center z-10"

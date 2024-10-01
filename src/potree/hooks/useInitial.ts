@@ -95,8 +95,10 @@ export const useInitial = () => {
       new THREE.ConeGeometry(0.09, 0.15, 24),
       new THREE.MeshBasicMaterial({
         color: 0xffff00,
+        opacity: 0.5,
+        transparent: true,
         wireframe: true,
-        wireframeLinewidth: 5,
+        wireframeLinewidth: 2,
       }),
     );
     coneX.rotation.copy(rotation);
