@@ -17,6 +17,7 @@ export const useModelStore = defineStore('model', () => {
   const currentMeasurement = ref<any>();
   const measurements = ref<any[]>([]);
   const activeTool = ref();
+  const activeSubTool = ref();
   const selectedInventory = ref<Device>();
   const selectedPole = ref<Pole>();
   const selectedImage = ref<Image>();
@@ -30,6 +31,7 @@ export const useModelStore = defineStore('model', () => {
   const potreeVolumes = ref<any[]>([]);
   const windyLayerVisible = ref(false);
   const isShowBTSInfo = ref(false);
+  const isShowPoleInfo = ref(false);
   const vectorSource = ref<VectorSource>();
   const basePlate = ref<Mesh>();
   const isSelectedBasePlate = ref(false);
@@ -41,6 +43,7 @@ export const useModelStore = defineStore('model', () => {
   const zPlaneHistory = ref(0);
   const poles = ref<Pole[]>([]);
   const images = ref<Image[]>([]);
+  const activePole = ref<number>();
 
   // Hoangth33
   const stationsData = ref<Station[]>([]);
@@ -55,6 +58,7 @@ export const useModelStore = defineStore('model', () => {
     currentMeasurement,
     measurements,
     activeTool,
+    activeSubTool,
     selectedInventory,
     selectedImage,
     tranX,
@@ -70,6 +74,7 @@ export const useModelStore = defineStore('model', () => {
     potreeVolumes,
     windyLayerVisible,
     isShowBTSInfo,
+    isShowPoleInfo,
     selectedBTS,
     mappingStationWithTileset,
     vectorSource,
@@ -83,5 +88,6 @@ export const useModelStore = defineStore('model', () => {
     stationsData,
     poles,
     images,
+    activePole,
   };
 });

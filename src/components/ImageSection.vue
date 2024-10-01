@@ -4,27 +4,27 @@
     class="flex flex-col bg-[#303030] w-[260px]"
   >
     <div class="flex justify-between items-center px-3 py-4">
-      <a-typography-text class="text-base text-[#888]">
-        Hình ảnh
-        <br />
-        {{ modelStore.images.length }} item(s)
-      </a-typography-text>
+      <a-typography-text class="text-lg font-semibold text-[#E3E3E3]">Ảnh 2D</a-typography-text>
     </div>
-    <div class="px-3 mb-4">
+    <div class="px-3 flex flex-row items-center gap-1">
       <a-input
         :placeholder="$t('search')"
         v-model:value="searchValue"
         allow-clear
-        style="border: 1px solid #424242"
+        style="background: #424242; border-radius: 2px; border-width: 0; height: 26px"
       >
         <template #prefix>
           <IconSearchInput />
         </template>
       </a-input>
+      <a-button class="m-0 p-0 w-[26px] h-[26px] border-none bg-[#424242] rounded-sm">
+        <IconFilter />
+      </a-button>
     </div>
-    <div class="flex flex-col flex-1 overflow-auto">
+
+    <div class="flex flex-col flex-1 overflow-auto mt-4">
       <div
-        v-for="(item, index) in modelStore.images"
+        v-for="(item, index) in filteredImages"
         :key="index"
         :class="[
           'flex flex-row items-center justify-between cursor-pointer pr-2',
@@ -64,13 +64,17 @@
 </template>
 
 <script setup lang="ts">
+import { computed, ref } from 'vue';
 import { useModelStore } from '@/stores/model';
-import { ref } from 'vue';
-import IconSearchInput from '@/components/icons/home/IconSearchInput.vue';
 import { useChangeImage } from '@/potree/hooks/useChangeImage';
+import IconFilter from '@/components/icons/home/IconFilter.vue';
+import IconSearchInput from '@/components/icons/home/IconSearchInput.vue';
 
-const searchValue = ref<string>('');
-
-const modelStore = useModelStore();
 const { onChangeImage } = useChangeImage();
+const searchValue = ref<string>('');
+const modelStore = useModelStore();
+
+const filteredImages = computed(() =>
+  modelStore.images.filter((image) => image.filename.includes(searchValue.value)),
+);
 </script>

@@ -135,22 +135,30 @@ body,
 
 .ant-tabs .ant-tabs-tab-btn {
   color: #717171;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 400;
   font-family: 'Sarabun', 'sans-serif';
 }
 
 .ant-tabs .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
-  color: #d0002d;
-  font-size: 12px;
+  color: white;
+  font-size: 14px;
   font-weight: 500;
   font-family: 'Sarabun', 'sans-serif';
   border-bottom: none;
 }
 
+.ant-tabs .ant-tabs-ink-bar{
+  background: white;
+}
+
 .ant-tabs > .ant-tabs-nav .ant-tabs-nav-list,
 .ant-tabs > div > .ant-tabs-nav .ant-tabs-nav-list {
   padding-left: 20px;
+}
+
+.ant-tabs-top > .ant-tabs-nav, .ant-tabs-bottom > .ant-tabs-nav, .ant-tabs-top > div > .ant-tabs-nav, .ant-tabs-bottom > div > .ant-tabs-nav{
+  margin-bottom: 8px !important;
 }
 
 .ant-tabs-top > .ant-tabs-nav,

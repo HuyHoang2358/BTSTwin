@@ -27,7 +27,7 @@
       :labelStyle="descriptionStyle"
       :contentStyle="descriptionStyle"
     >
-      {{ modelStore.selectedInventory?.name }}
+      {{ modelStore.selectedInventory?.model }}
     </a-descriptions-item>
   </a-descriptions>
   <a-descriptions
@@ -128,6 +128,10 @@ const onUpdate = (e: any) => {
 
     const point = findVolume.position;
 
+    const x = Potree.Utils.addCommas(point.x.toFixed(3));
+    const y = Potree.Utils.addCommas(point.y.toFixed(3));
+    const z = Potree.Utils.addCommas(point.z.toFixed(3));
+
     properties.value = {
       ...properties.value,
       elLength: dimensions[0] * 1000,
@@ -136,9 +140,9 @@ const onUpdate = (e: any) => {
       elAlpha: angles[0],
       elBetta: angles[1],
       elGamma: angles[2],
-      x: Potree.Utils.addCommas(point.x.toFixed(3)),
-      y: Potree.Utils.addCommas(point.y.toFixed(3)),
-      z: Potree.Utils.addCommas(point.z.toFixed(3)),
+      x,
+      y,
+      z,
     };
   }
 };

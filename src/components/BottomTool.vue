@@ -49,6 +49,7 @@
       @click="onBottomView"
     />
   </div>
+
   <div
     class="absolute flex flex-row bottom-4 left-[220px] z-10 bg-[#212121] rounded-l-2xl rounded-r-2xl"
   >
@@ -72,7 +73,7 @@
     </a-button>
     <a-button
       class="p-0 w-8 flex items-center justify-center border-none bg-transparent"
-      @click="null"
+      @click="onZoomIn"
     >
       <svg
         width="16"
@@ -99,7 +100,10 @@ const onTopView = () => window.potreeViewer.setTopView();
 const onBottomView = () => window.potreeViewer.setBottomView();
 
 const onZoomOut = () => {
-  // console.log('window.potreeViewer.getPov()', window.potreeViewer.getFOV());
-  // window.potreeViewer.setFOV(window.potreeViewer.getFOV() - 10);
+  window.potreeViewer.setFOV(window.potreeViewer.getFOV() + 10);
+};
+
+const onZoomIn = () => {
+  window.potreeViewer.setFOV(window.potreeViewer.getFOV() - 10);
 };
 </script>

@@ -1,110 +1,123 @@
 <template>
-  <div class="flex flex-col">
-    <a-button
-      :class="[
-        'w-8 h-8 p-0 m-0 rounded-t rounded-b-none',
-        !checkRuleActiveTool() ? 'bg-[#38536d]' : 'bg-[#19282c]',
-      ]"
-      style="border-color: #7a8184"
-      @click="modelStore.activeTool = null"
+  <div class="flex flex-col bg-[#303030] rounded-full py-3">
+    <a-tooltip
+      title="Xem thông tin"
+      placement="right"
+      color="#212121"
     >
-      <svg
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
-        preserveAspectRatio="xMidYMid meet"
-        focusable="false"
+      <a-button
+        :class="['w-8 h-8 p-0 m-0 rounded-t rounded-b-none']"
+        type="ghost"
+        @click="modelStore.activeSubTool = null"
       >
-        <path
-          fill="white"
-          d="M9.07 14.03a.997.997 0 0 1 1.33.48l2.3 4.99 1.8-.85-2.31-4.98a.993.993 0 0 1 .48-1.33l.28-.08 2.3-.45L7 4.88v10.78l1.82-1.47.25-.16Zm3.57 7.7a.99.99 0 0 1-1.33-.47l-2.18-4.74-2.51 2.02a.957.957 0 0 1-.62.22 1 1 0 0 1-1-1v-15a1 1 0 0 1 1.64-.77l.01-.01 11.49 9.64a1 1 0 0 1-.44 1.75l-3.16.62 2.2 4.73a.967.967 0 0 1-.48 1.32l-3.62 1.69Z"
-        ></path>
-      </svg>
-    </a-button>
-    <img
-      src="/icons/angle.png"
-      style="width: 32px; height: 32px"
-      :class="['button-measure-icon', modelStore.activeTool === 'angle' && 'bg-[#38536d]']"
+        <select-icon v-if="checkRuleActiveTool()" />
+        <select-active-icon v-else />
+      </a-button>
+    </a-tooltip>
+
+    <a-tooltip
       title="Đo góc"
-      @click="onMeasureAngle"
-      alt="angle"
-    />
-    <img
-      src="/icons/distance.svg"
-      style="width: 32px; height: 32px"
-      :class="['button-measure-icon', modelStore.activeTool === 'distance' && 'bg-[#38536d]']"
+      placement="right"
+      color="#212121"
+    >
+      <a-button
+        :class="['w-8 h-8 p-0 m-0 rounded-t rounded-b-none']"
+        type="ghost"
+        @click="onMeasureAngle"
+      >
+        <angle-active-icon v-if="modelStore.activeSubTool === 'angle'" />
+        <angle-icon v-else />
+      </a-button>
+    </a-tooltip>
+
+    <a-tooltip
       title="Đo khoảng cách"
-      @click="onMeasureDistance"
-      alt="distance"
-    />
-    <img
-      src="/icons/height.svg"
-      style="width: 32px; height: 32px"
-      :class="['button-measure-icon', modelStore.activeTool === 'height' && 'bg-[#38536d]']"
-      title="Đo Tilt cơ"
-      @click="onMeasureHeight"
-      alt="height"
-    />
-    <img
-      src="/icons/circle.svg"
-      style="width: 32px; height: 32px"
-      :class="['button-measure-icon', modelStore.activeTool === 'circle' && 'bg-[#38536d]']"
-      title="Đo vòng tròn"
-      @click="onMeasureCircle"
-      alt="circle"
-    />
-    <img
-      src="/icons/azimuth.svg"
-      style="width: 32px; height: 32px"
-      title="Phương vị"
-      :class="['button-measure-icon', modelStore.activeTool === 'azimuth' && 'bg-[#38536d]']"
-      @click="onMeasureAzimuth"
-      alt="azimuth"
-    />
-    <img
-      src="/icons/area.svg"
-      style="width: 32px; height: 32px"
-      :class="['button-measure-icon', modelStore.activeTool === 'area' && 'bg-[#38536d]']"
+      placement="right"
+      color="#212121"
+    >
+      <a-button
+        :class="['w-8 h-8 p-0 m-0 rounded-t rounded-b-none']"
+        type="ghost"
+        @click="onMeasureDistance"
+      >
+        <distance-active-icon v-if="modelStore.activeSubTool === 'distance'" />
+        <distance-icon v-else />
+      </a-button>
+    </a-tooltip>
+
+    <a-tooltip
+      title="Đo góc Tilt"
+      placement="right"
+      color="#212121"
+    >
+      <a-button
+        :class="['w-8 h-8 p-0 m-0 rounded-t rounded-b-none']"
+        type="ghost"
+        @click="onMeasureHeight"
+      >
+        <height-active-icon v-if="modelStore.activeSubTool === 'height'" />
+        <height-icon v-else />
+      </a-button>
+    </a-tooltip>
+
+    <a-tooltip
+      title="Đo Bán kính"
+      placement="right"
+      color="#212121"
+    >
+      <a-button
+        :class="['w-8 h-8 p-0 m-0 rounded-t rounded-b-none']"
+        type="ghost"
+        @click="onMeasureCircle"
+      >
+        <circle-active-icon v-if="modelStore.activeSubTool === 'circle'" />
+        <circle-icon v-else />
+      </a-button>
+    </a-tooltip>
+
+    <a-tooltip
+      title="Đo Phương vị"
+      placement="right"
+      color="#212121"
+    >
+      <a-button
+        :class="['w-8 h-8 p-0 m-0 rounded-t rounded-b-none']"
+        type="ghost"
+        @click="onMeasureAzimuth"
+      >
+        <angle-active-icon v-if="modelStore.activeSubTool === 'azimuth'" />
+        <angle-icon v-else />
+      </a-button>
+    </a-tooltip>
+
+    <a-tooltip
       title="Đo diện tích"
-      @click="onMeasureArea"
-      alt="area"
-    />
-    <!--    <img-->
-    <!--      src="/icons/annotation.svg"-->
-    <!--      style="width: 32px; height: 32px"-->
-    <!--      :class="['button-measure-icon', modelStore.activeTool === 'annotation' && 'bg-[#38536d]']"-->
-    <!--      title="Ghi chú"-->
-    <!--      @click="onInsertAnnotation"-->
-    <!--      alt="annotation"-->
-    <!--    />-->
-    <!--    <img-->
-    <!--      src="/icons/clip_volume.svg"-->
-    <!--      style="width: 32px; height: 32px"-->
-    <!--      :class="[-->
-    <!--        'button-measure-icon',-->
-    <!--        modelStore.activeTool === 'clip_volume_inside' && 'bg-[#38536d]',-->
-    <!--      ]"-->
-    <!--      title="Clip volume inside box"-->
-    <!--      @click="onInsertClipVolumeInside"-->
-    <!--      alt="clip_volume"-->
-    <!--    />-->
-    <!--        <img-->
-    <!--          src="/icons/add-inventory.svg"-->
-    <!--          style="width: 32px; height: 32px"-->
-    <!--          :class="['button-measure-icon', modelStore.activeTool === 'add-inventory' && 'bg-[#38536d]']"-->
-    <!--          title="Thêm thiết bị mới"-->
-    <!--          @click="onAddInventory"-->
-    <!--          alt="clip_volume"-->
-    <!--        />-->
-    <img
-      src="/icons/reset_tools.svg"
-      style="width: 32px; height: 32px"
-      class="button-measure-icon rounded-b"
+      placement="right"
+      color="#212121"
+    >
+      <a-button
+        :class="['w-8 h-8 p-0 m-0 rounded-t rounded-b-none']"
+        type="ghost"
+        @click="onMeasureArea"
+      >
+        <area-active-icon v-if="modelStore.activeSubTool === 'area'" />
+        <area-icon v-else />
+      </a-button>
+    </a-tooltip>
+
+    <a-tooltip
       title="Xóa toàn bộ công cụ đo"
-      @click="onRemoveAllMeasurements"
-      alt="reset_tools"
-    />
+      placement="right"
+      color="#212121"
+    >
+      <a-button
+        :class="['w-8 h-8 p-0 m-0 rounded-t rounded-b-none']"
+        type="ghost"
+        @click="onRemoveAllMeasurements"
+      >
+        <icon-close-active class="w-full h-full p-1.5" />
+      </a-button>
+    </a-tooltip>
   </div>
 </template>
 
@@ -112,54 +125,73 @@
 import { useModelStore } from '@/stores/model';
 import { checkRuleActiveTool } from '@/utils/helpers';
 
+import SelectIcon from '@/components/icon/tools/selectIcon.vue';
+import SelectActiveIcon from '@/components/icon/tools/selectActiveIcon.vue';
+import AngleIcon from '@/components/icon/tools/angleIcon.vue';
+import AngleActiveIcon from '@/components/icon/tools/angleActiveIcon.vue';
+import DistanceActiveIcon from '@/components/icon/tools/distanceActiveIcon.vue';
+import DistanceIcon from '@/components/icon/tools/distanceIcon.vue';
+import HeightActiveIcon from '@/components/icon/tools/heightActiveIcon.vue';
+import HeightIcon from '@/components/icon/tools/heightIcon.vue';
+import CircleActiveIcon from '@/components/icon/tools/circleActiveIcon.vue';
+import CircleIcon from '@/components/icon/tools/circleIcon.vue';
+import AreaActiveIcon from '@/components/icon/tools/areaActiveIcon.vue';
+import AreaIcon from '@/components/icon/tools/areaIcon.vue';
+import IconCloseActive from '@/components/icon/IconCloseActive.vue';
+
 const modelStore = useModelStore();
 
 const onMeasureAngle = () => {
-  modelStore.activeTool = 'angle';
+  initMeasurement();
+  modelStore.activeSubTool = 'angle';
   window.potreeViewer.measuringTool.startInsertion({
     showDistances: false,
     showAngles: true,
     showArea: false,
     closed: true,
     maxMarkers: 3,
-    name: 'Angle',
+    name: 'Góc',
   });
 };
 
 const onMeasureDistance = () => {
-  modelStore.activeTool = 'distance';
+  initMeasurement();
+  modelStore.activeSubTool = 'distance';
   window.potreeViewer.measuringTool.startInsertion({
     showDistances: true,
     showArea: false,
     closed: false,
-    name: 'Distance',
+    name: 'Khoảng cách',
   });
 };
 
 const onMeasureArea = () => {
-  modelStore.activeTool = 'area';
+  initMeasurement();
+  modelStore.activeSubTool = 'area';
   window.potreeViewer.measuringTool.startInsertion({
     showDistances: true,
     showArea: true,
     closed: true,
-    name: 'Area',
+    name: 'Diện tích',
   });
 };
 
 const onMeasureHeight = () => {
-  modelStore.activeTool = 'height';
+  initMeasurement();
+  modelStore.activeSubTool = 'height';
   window.potreeViewer.measuringTool.startInsertion({
     showDistances: false,
     showHeight: true,
     showArea: false,
     closed: false,
     maxMarkers: 2,
-    name: 'Tilt',
+    name: 'Góc Tilt',
   });
 };
 
 const onMeasureCircle = () => {
-  modelStore.activeTool = 'circle';
+  initMeasurement();
+  modelStore.activeSubTool = 'circle';
   window.potreeViewer.measuringTool.startInsertion({
     showDistances: false,
     showHeight: false,
@@ -168,12 +200,13 @@ const onMeasureCircle = () => {
     showEdges: false,
     closed: false,
     maxMarkers: 3,
-    name: 'Circle',
+    name: 'Đường Kính',
   });
 };
 
 const onMeasureAzimuth = () => {
-  modelStore.activeTool = 'azimuth';
+  initMeasurement();
+  modelStore.activeSubTool = 'azimuth';
   window.potreeViewer.measuringTool.startInsertion({
     showDistances: false,
     showHeight: false,
@@ -183,11 +216,14 @@ const onMeasureAzimuth = () => {
     showAzimuth: true,
     closed: false,
     maxMarkers: 2,
-    name: 'Azimuth',
+    name: 'Góc Azimuth',
   });
 };
+const initMeasurement = () => {
+  modelStore.activeTool = 'measurements';
+};
 
-const onInsertAnnotation = () => {
+/*const onInsertAnnotation = () => {
   modelStore.activeTool = 'annotation';
   window.potreeViewer.annotationTool.startInsertion();
 };
@@ -195,19 +231,11 @@ const onInsertAnnotation = () => {
 const onInsertClipVolumeInside = () => {
   modelStore.activeTool = 'clip_volume_inside';
   window.potreeViewer.volumeTool.startInsertion({ clip: true });
-};
+};*/
 
 const onRemoveAllMeasurements = () => {
   window.potreeViewer.scene.removeAllMeasurements();
   modelStore.measurements = [];
-};
-
-const onAddInventory = () => {
-  modelStore.openModalAddInventory = true;
-  modelStore.activeTool = 'add-inventory';
-  modelStore.selectedImage = undefined;
-  modelStore.selectedInventory = undefined;
-  modelStore.selectedPole = undefined;
-  modelStore.isSelectedBasePlate = false;
+  modelStore.activeSubTool = null;
 };
 </script>

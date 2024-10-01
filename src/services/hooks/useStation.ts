@@ -1,7 +1,8 @@
-import { useQuery } from '@tanstack/vue-query';
+import { useMutation, useQuery } from '@tanstack/vue-query';
 
-import { fetchBTSById, fetchStations } from '@/services/apis/station';
-import type { ComputedRef } from 'vue';
+import { fetchBTSById, fetchReport, fetchStations } from '@/services/apis/station';
+import type { ComputedRef, Ref } from 'vue';
+import { downloadUserList } from '@/services/apis/user';
 
 export const STATION_QUERY_KEY = 'STATION_QUERY_KEY';
 export const BTS_DETAIL_QUERY_KEY = 'BTS_DETAIL_QUERY_KEY';
@@ -18,3 +19,9 @@ export const useBTSDetail = (idComputed: ComputedRef<string>, enabled: ComputedR
     queryFn: () => fetchBTSById(idComputed.value),
     enabled,
   });
+
+export const useDownloadUserList = () => useMutation({ mutationFn: downloadUserList });
+
+
+export const useStationReport =  () =>
+  useMutation({ mutationFn: (id:string)=> fetchReport(id) });

@@ -25,11 +25,11 @@
             />
             <div>
               <a-typography-text class="text-[#F4F4F4] font-medium text-[49px]">
-                Welcome
+                Xin chào
               </a-typography-text>
               <br />
               <a-typography-text class="text-[#F4F4F4] text-[25px] font-medium">
-                Công cụ khảo sát và thiết kế mạng tự động
+                Công cụ Khảo sát hạ tầng & Đánh giá thiết kế vô tuyến cho cột viễn thông
               </a-typography-text>
             </div>
             <div class="logo" />

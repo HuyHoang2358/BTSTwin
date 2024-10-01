@@ -61,6 +61,7 @@ export const useInitial = () => {
   };
 
   const addCameraToScene = (image2D: Image) => {
+    //console.log('cameraPose', image2D.camera_pose);
     const data = image2D.camera_pose;
     const camCenter = JSON.parse(data.cent_point);
     const eulerAngle = JSON.parse(data.euler_angle);
@@ -153,7 +154,7 @@ export const useInitial = () => {
         window.potreeViewer.scene.addVolume(volume);
 
         return {
-          id: device.id,
+          id: device.pivot.id,
           boxMesh,
           volume,
         };
@@ -176,7 +177,7 @@ export const useInitial = () => {
             devices: pole.devices
               .filter((device) => device.category.name === deviceCategory)
               .map((device) => {
-                const boxMesh = boxMeshArray?.find((elem) => elem.id === device.id);
+                const boxMesh = boxMeshArray?.find((elem) => elem.id === device.pivot.id);
 
                 return {
                   ...device,
@@ -277,6 +278,7 @@ export const useInitial = () => {
   const loadImages = () => {
     if (!dataDetail.value) return;
     const images = dataDetail.value?.data.images;
+    // addCameraToScene(images[0]);
     images.forEach((item) => {
       addCameraToScene(item);
     });

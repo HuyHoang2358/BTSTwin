@@ -10,27 +10,34 @@
   >
     <div class="flex flex-col h-screen w-screen overflow-hidden">
       <HeaderHome />
-      <div class="bg-[#212121] h-[28px] flex items-center">
+
+      <!-- breadcrumb -->
+      <div
+        class="bg-[#212121] flex items-center pb-2 mt-[-2px]"
+        style="border-bottom: 1px solid #353535"
+      >
         <a-button
           class="m-0 p-0 w-6 h-6 bg-transparent border-none ml-2"
           @click="router.push(HOME_PAGE_PATH)"
         >
           <IconHome />
         </a-button>
-        <a-typography-title
-          :level="3"
+        <a-typography-text
           style="color: #f6f6f6; font-size: 14px; margin-bottom: 0"
           class="ml-4"
         >
           Trạm {{ data?.data?.name }}
-        </a-typography-title>
+        </a-typography-text>
         <IconTickGreen class="ml-1" />
       </div>
+
       <div
         ref="container"
         class="flex flex-1 flex-row"
       >
         <LeftMenu />
+
+        <!-- Right tool -->
         <div
           class="overflow-auto h-full flex flex-col relative"
           :style="{ flex: pane1Size + ' 0 0' }"
@@ -45,6 +52,7 @@
           />
           <MeasurementTool class="absolute top-[82px] right-6 z-10" />
           <BottomTool />
+
           <div
             class="absolute inset-0 flex items-center justify-center z-10"
             v-if="modelStore.loadingModel"
@@ -60,27 +68,19 @@
             </a-typography-text>
           </div>
         </div>
+
+        <!-- Resize button -->
         <div
           @mousedown="startResize"
           v-if="modelStore.selectedImage"
           class="bg-[#101010] flex flex-col justify-center items-center relative hover:bg-blue-600 w-1.5 cursor-ew-resize h-full"
         >
           <div class="absolute bg-[#212121] w-6 h-6 z-10 rounded rotate-90">
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-              preserveAspectRatio="xMidYMid meet"
-              focusable="false"
-            >
-              <path
-                fill="white"
-                d="M12 5.83 15.17 9l1.41-1.41L12 3 7.41 7.59 8.83 9 12 5.83Zm0 12.34L8.83 15l-1.41 1.41L12 21l4.59-4.59L15.17 15 12 18.17Z"
-              ></path>
-            </svg>
+            <icon-resize-width />
           </div>
         </div>
+
+        <!-- List images -->
         <div
           class="overflow-auto flex flex-col bg-[#212121]"
           :style="{ flex: 100 - pane1Size + ' 0 0' }"
@@ -88,6 +88,8 @@
         >
           <ListImages />
         </div>
+
+        <!-- Information -->
         <Suggestion
           v-if="
             !modelStore.selectedImage &&
@@ -126,6 +128,7 @@ import { checkRuleActiveTool } from '@/utils/helpers';
 import ModalAddInventory from '@/components/ModalAddInventory.vue';
 import { useBTSDetail } from '@/services/hooks/useStation';
 import type { Device } from '@/services/apis/station';
+import IconResizeWidth from '@/components/icon/IconResizeWidth.vue';
 
 const pane1Size = ref(50);
 const container = ref<HTMLElement | null>(null);

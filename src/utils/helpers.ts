@@ -97,20 +97,20 @@ export function formatNumber(num: number) {
 
 export function checkRuleActiveTool(except?: string[]) {
   const modelStore = useModelStore();
-  if (except && except.includes(modelStore.activeTool)) {
+  if (except && except.includes(modelStore.activeSubTool)) {
     return false;
   }
 
   return (
-    modelStore.activeTool === 'angle' ||
-    modelStore.activeTool === 'distance' ||
-    modelStore.activeTool === 'area' ||
-    modelStore.activeTool === 'height' ||
-    modelStore.activeTool === 'circle' ||
-    modelStore.activeTool === 'azimuth' ||
-    modelStore.activeTool === 'clip_volume_inside' ||
-    modelStore.activeTool === 'add-inventory' ||
-    modelStore.activeTool === 'annotation'
+    modelStore.activeSubTool === 'angle' ||
+    modelStore.activeSubTool === 'distance' ||
+    modelStore.activeSubTool === 'area' ||
+    modelStore.activeSubTool === 'height' ||
+    modelStore.activeSubTool === 'circle' ||
+    modelStore.activeSubTool === 'azimuth' ||
+    modelStore.activeSubTool === 'clip_volume_inside' ||
+    modelStore.activeSubTool === 'add-inventory' ||
+    modelStore.activeSubTool === 'annotation'
   );
 }
 

@@ -20,6 +20,7 @@
       <a-form-item
         name="template"
         label="Loại thiết bị"
+        class="mb-2"
       >
         <a-select
           v-model:value="formState.template"
@@ -32,6 +33,7 @@
       <a-form-item
         name="device"
         label="Thiết bị"
+        class="mb-2"
       >
         <a-select
           v-model:value="formState.device"
@@ -43,7 +45,23 @@
           @change="handleChangeDevice"
         />
       </a-form-item>
-      <a-form-item label="Chiều rộng (mm)">
+      <div v-if="image">
+        <a-typography-text>Hình ảnh</a-typography-text>
+        <div class="flex flex-row justify-center my-2">
+          <a-image
+            :src="image"
+            alt="image"
+            :fallback="imageFallback"
+            :width="100"
+            :height="100"
+            class="object-contain"
+          />
+        </div>
+      </div>
+      <a-form-item
+        label="Chiều rộng (mm)"
+        class="mb-2"
+      >
         <a-input-number
           :min="0"
           class="w-full"
@@ -52,7 +70,10 @@
           readonly
         />
       </a-form-item>
-      <a-form-item label="Chiều cao (mm)">
+      <a-form-item
+        label="Chiều cao (mm)"
+        class="mb-2"
+      >
         <a-input-number
           :min="0"
           class="w-full"
@@ -61,7 +82,10 @@
           readonly
         />
       </a-form-item>
-      <a-form-item label="Chiều dài (mm)">
+      <a-form-item
+        label="Chiều dài (mm)"
+        class="mb-2"
+      >
         <a-input-number
           :min="0"
           class="w-full"
@@ -79,10 +103,10 @@ import { computed, reactive, ref, watch } from 'vue';
 import { useModelStore } from '@/stores/model';
 import { useCategoryDevices } from '@/services/hooks/useCategoryDevice';
 import { useDevices } from '@/services/hooks/useDevice';
-import { maxPageSize } from '@/utils/constants';
+import { imageFallback, maxPageSize } from '@/utils/constants';
 import { compareString } from '@/utils/helpers';
 import { generateUUID } from 'three/src/math/MathUtils';
-import type { InventoryDetail } from '@/potree/hooks/useInitial';
+import type { Device } from '@/services/apis/station';
 
 export type FormStateData = {
   template: string;
@@ -95,6 +119,8 @@ export type FormStateData = {
 const modelStore = useModelStore();
 
 const formRef = ref();
+const image = ref();
+const storageUrl = import.meta.env.VITE_STORAGE_DOMAIN;
 
 const formState: Partial<FormStateData> = reactive({
   width: 0,
@@ -143,6 +169,7 @@ const optionsDevice = computed(
 
 const handleChangeCategoryDevice = () => {
   formState.device = undefined;
+  image.value = undefined;
   formState.width = 0;
   formState.height = 0;
   formState.depth = 0;
@@ -156,6 +183,8 @@ const handleChangeDevice = (value: string, option: any) => {
   formState.height = option.length;
   formState.width = option.width;
   formState.depth = option.depth;
+
+  image.value = option.images ? storageUrl + option.images : undefined;
 };
 
 const onSubmit = () => {
@@ -172,23 +201,34 @@ const onSubmit = () => {
     dataDevice.length ? dataDevice.length / 1000 : 1,
   );
 
-  const newInventory: InventoryDetail = {
+  const newInventory: Device = {
     visibleMesh: true,
     visible: true,
     clip: false,
-    id: generateUUID(),
-    model: dataDevice.name,
+    pivot: {
+      id: generateUUID(),
+    },
+    model: dataDevice.category.name,
     isNewDevice: true,
-    name: dataDevice.category.name,
+    name: dataDevice.name,
     newDevice,
   };
 
-  // modelStore.objectGroup = {
-  //   ...modelStore.objectGroup,
-  //   [dataDevice.category.name]: modelStore.objectGroup[dataDevice.category.name]
-  //     ? modelStore.objectGroup[dataDevice.category.name].concat([newInventory])
-  //     : [newInventory],
-  // };
+  modelStore.poles = modelStore.poles.map((item, index) =>
+    index === 0
+      ? {
+          ...item,
+          deviceCategories: item.deviceCategories.map((category) =>
+            category.name === dataDevice.category.name
+              ? {
+                  ...category,
+                  devices: item.devices.concat([newInventory]),
+                }
+              : category,
+          ),
+        }
+      : item,
+  );
 
   modelStore.selectedInventory = newInventory;
   modelStore.activeTool = 'add-inventory';

@@ -1,15 +1,19 @@
 <template>
   <div>
-    <div class="flex flex-row justify-between items-center cursor-pointer">
+    <div
+      class="flex flex-row justify-between items-center cursor-pointer"
+      v-if="modelStore.activeTool === 'inventory'"
+    >
       <a-typography-text
         :class="[
-          'text-base px-3',
-          pole.pivot.id === modelStore.selectedPole?.pivot.id ? 'text-main' : 'text-white',
+          'text-base px-3 font-semibold',
+          pole.pivot.id === modelStore.selectedPole?.pivot.id ? 'text-white' : 'text-white',
         ]"
         @click="onShowInfoPole"
       >
         {{ pole.name }}
       </a-typography-text>
+
       <a-button
         type="ghost"
         @click="onToggleExpand"
@@ -20,20 +24,26 @@
         />
       </a-button>
     </div>
+
     <div
       class="px-3 my-2"
       v-if="pole.isExpanded"
     >
-      <a-input
-        :placeholder="$t('search')"
-        v-model:value="searchValue"
-        allow-clear
-        style="border: 1px solid #424242"
-      >
-        <template #prefix>
-          <IconSearchInput />
-        </template>
-      </a-input>
+      <div class="mt-4 flex flex-row items-center gap-1">
+        <a-input
+          :placeholder="$t('search')"
+          v-model:value="searchValue"
+          allow-clear
+          style="background: #424242; border-radius: 2px; border-width: 0; height: 26px"
+        >
+          <template #prefix>
+            <IconSearchInput />
+          </template>
+        </a-input>
+        <a-button class="m-0 p-0 w-[26px] h-[26px] border-none bg-[#424242] rounded-sm">
+          <IconFilter />
+        </a-button>
+      </div>
     </div>
     <div
       class="flex flex-1 overflow-auto mt-2"
@@ -51,18 +61,26 @@
             style="color: white"
           />
         </template>
+
         <a-collapse-panel
-          :header="`${deviceCategory.name} (${deviceCategory.devices.length} thiết bị)`"
           v-for="deviceCategory in pole.deviceCategories"
           :key="deviceCategory.name"
         >
+          <template #header>
+            <div class="flex justify-between items-center">
+              <span>{{ deviceCategory.name }}</span>
+              <span class="text-[#8C8C8C] text-xs">
+                {{ deviceCategory.devices.length }} thiết bị
+              </span>
+            </div>
+          </template>
+
           <InventoryItem
             v-for="(item, index) in deviceCategory.devices.filter(() =>
               compareString(deviceCategory.name, searchValue),
             )"
             :key="index"
             :item="item"
-            :category="deviceCategory.name"
             :index="index"
           />
         </a-collapse-panel>
@@ -118,6 +136,7 @@ import { useBTSDetail } from '@/services/hooks/useStation';
 import { useRoute } from 'vue-router';
 import { useCalculate } from '@/services/hooks/useBTS';
 import IconSearchInput from '@/components/icons/home/IconSearchInput.vue';
+import IconFilter from '@/components/icons/home/IconFilter.vue';
 
 const props = defineProps<{
   pole: Pole;
@@ -146,6 +165,7 @@ onMounted(() => {
 
 const onShowInfoPole = () => {
   modelStore.selectedPole = props.pole;
+  modelStore.isShowPoleInfo = true;
 };
 
 const descriptionStyle = computed(() => ({ color: 'white', fontSize: '14px' }));

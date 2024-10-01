@@ -1,17 +1,18 @@
 <template>
   <div v-if="modelStore.selectedInventory">
+    <h5 class="text-white font-semibold mt-4">Thông tin chung</h5>
     <a-descriptions
       layout="horizontal"
       :column="1"
-      class="ml-4"
-      title="Thông tin chung"
+      class="mt-2 p-2 rounded-lg"
+      style="border: 1px solid #404040"
     >
       <a-descriptions-item
-        label="Id"
+        label="Danh mục"
         :labelStyle="descriptionStyle"
         :contentStyle="descriptionStyle"
       >
-        {{ modelStore.selectedInventory.id }}
+        {{ modelStore.selectedInventory.category.name }}
       </a-descriptions-item>
       <a-descriptions-item
         label="Loại thiết bị"
@@ -28,39 +29,41 @@
         {{ modelStore.selectedInventory.vendor.name }}
       </a-descriptions-item>
     </a-descriptions>
+
+    <h5 class="text-white font-semibold mt-4">Thông số kỹ thuật</h5>
     <a-descriptions
       layout="horizontal"
       :column="1"
-      class="ml-4"
-      title="Thông số kỹ thuật"
+      class="mt-2 p-2 rounded-lg"
+      style="border: 1px solid #404040"
     >
       <a-descriptions-item
         label="Chiều rộng"
         :labelStyle="descriptionStyle"
         :contentStyle="descriptionStyle"
       >
-        {{ modelStore.selectedInventory?.width || 0 }} mm
+        {{ modelStore.selectedInventory?.width || 0 }} (mm)
       </a-descriptions-item>
       <a-descriptions-item
         label="Chiều dài"
         :labelStyle="descriptionStyle"
         :contentStyle="descriptionStyle"
       >
-        {{ modelStore.selectedInventory?.length || 0 }} mm
+        {{ modelStore.selectedInventory?.length || 0 }} (mm)
       </a-descriptions-item>
       <a-descriptions-item
         label="Chiều sâu"
         :labelStyle="descriptionStyle"
         :contentStyle="descriptionStyle"
       >
-        {{ modelStore.selectedInventory?.depth || 0 }} mm
+        {{ modelStore.selectedInventory?.depth || 0 }} (mm)
       </a-descriptions-item>
       <a-descriptions-item
         label="Trọng lượng"
         :labelStyle="descriptionStyle"
         :contentStyle="descriptionStyle"
       >
-        {{ modelStore.selectedInventory?.weight }} kg
+        {{ modelStore.selectedInventory?.weight }} (kg)
       </a-descriptions-item>
       <a-descriptions-item
         :label="item.key"
@@ -72,68 +75,42 @@
         {{ item.value }}
       </a-descriptions-item>
     </a-descriptions>
-    <a-typography-text class="font-semibold">Thông số lắp đặt</a-typography-text>
-    <div class="flex flex-row">
-      <a-form-item
-        name="x"
-        label="x"
-        class="mb-0"
-        :colon="false"
-      >
-        <a-input-number
-          v-model:value="formState.x"
-          class="w-full"
-        />
-      </a-form-item>
-      <a-form-item
-        name="y"
-        label="y"
-        :colon="false"
-        class="mb-0"
-      >
-        <a-input-number
-          v-model:value="formState.y"
-          class="w-full"
-        />
-      </a-form-item>
-      <a-form-item
-        name="z"
-        label="z"
-        class="mb-0"
-        :colon="false"
-      >
-        <a-input-number
-          v-model:value="formState.z"
-          class="w-full"
-        />
-      </a-form-item>
-    </div>
+    <h5 class="text-white font-semibold mt-4">Thông số lắp đặt</h5>
+
     <a-form
       ref="formRef"
       :model="formState"
       layout="vertical"
-      class="mt-2"
+      class="mt-2 p-2 rounded-lg"
+      style="border: 1px solid #404040"
     >
-      <a-form-item
-        name="deviceTilt"
-        label="Góc tilt (°)"
-        class="mb-2"
-      >
-        <a-input-number
-          v-model:value="formState.deviceTilt"
-          class="w-full"
-        />
-      </a-form-item>
-      <a-form-item
-        name="deviceAzimuth"
-        label="Góc Azimuth (°)"
-        class="mb-2"
-      >
-        <a-input-number
-          v-model:value="formState.deviceAzimuth"
-          class="w-full"
-        />
-      </a-form-item>
+      <a-row gutter="16">
+        <a-col :span="12">
+          <a-form-item
+            name="deviceTilt"
+            label="Góc tilt (°)"
+            class="mb-2"
+          >
+            <a-input-number
+              v-model:value="formState.deviceTilt"
+              class="w-full rounded bg-[#424242]"
+            />
+          </a-form-item>
+        </a-col>
+        <a-col :span="12">
+          <a-form-item
+            name="deviceAzimuth"
+            label="Góc Azimuth (°)"
+            class="mb-2"
+          >
+            <a-input-number
+              v-model:value="formState.deviceAzimuth"
+              class="w-full rounded bg-[#424242]"
+            />
+          </a-form-item>
+        </a-col>
+      </a-row>
+
       <a-form-item
         name="deviceHeight"
         label="Độ cao thiết bị (m)"
@@ -141,33 +118,74 @@
       >
         <a-input-number
           v-model:value="formState.deviceHeight"
-          class="w-full"
+          class="w-full rounded bg-[#424242]"
         />
       </a-form-item>
-      <a-form-item
-        name="description"
-        label="Mô tả"
-        class="mb-2"
-      >
-        <a-textarea
-          v-model:value="formState.description"
-          placeholder="Nhập mô tả thiết bị"
-          :allow-clear="true"
-          :rows="3"
-        />
-      </a-form-item>
-      <a-form-item
-        name="status"
-        label="Trạng thái"
-        class="mb-2"
-      >
-        <a-select v-model:value="formState.status">
-          <a-select-option value="active">Hoạt động</a-select-option>
-          <a-select-option value="inactive">Không hoạt động</a-select-option>
-          <a-select-option value="installation">Đang lắp đặt</a-select-option>
-        </a-select>
-      </a-form-item>
+
+      <div class="flex flex-row gap-2 mb-2">
+        <a-form-item
+          name="x"
+          label="x"
+          class="mb-0"
+          :colon="false"
+        >
+          <a-input-number
+            v-model:value="formState.x"
+            class="w-full rounded bg-[#424242]"
+          />
+        </a-form-item>
+        <a-form-item
+          name="y"
+          label="y"
+          :colon="false"
+          class="mb-0"
+        >
+          <a-input-number
+            v-model:value="formState.y"
+            class="w-full rounded bg-[#424242]"
+          />
+        </a-form-item>
+        <a-form-item
+          name="z"
+          label="z"
+          class="mb-0"
+          :colon="false"
+        >
+          <a-input-number
+            v-model:value="formState.z"
+            class="w-full rounded bg-[#424242]"
+          />
+        </a-form-item>
+      </div>
     </a-form>
+
+    <h5 class="text-white font-semibold mt-4">Mô tả</h5>
+    <a-form-item
+      name="description"
+      class="mb-2"
+    >
+      <a-textarea
+        v-model:value="formState.description"
+        placeholder="Nhập mô tả thiết bị"
+        :allow-clear="true"
+        :rows="3"
+      />
+    </a-form-item>
+
+    <a-form-item
+      name="status"
+      label="Trạng thái"
+      class="mb-2"
+    >
+      <a-select
+        v-model:value="formState.status"
+        class="bg-[#424242]"
+      >
+        <a-select-option value="active">Hoạt động</a-select-option>
+        <a-select-option value="inactive">Không hoạt động</a-select-option>
+        <a-select-option value="installation">Đang lắp đặt</a-select-option>
+      </a-select>
+    </a-form-item>
   </div>
 </template>
 
@@ -223,3 +241,9 @@ onMounted(handleSetForm);
 
 const descriptionStyle = computed(() => ({ color: 'white', fontSize: '12px' }));
 </script>
+<style>
+.ant-select-selector {
+  background-color: #424242 !important;
+  border-radius: 2px;
+}
+</style>

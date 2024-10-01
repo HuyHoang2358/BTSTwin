@@ -27,7 +27,7 @@
           @click="onAddBox"
           type="primary"
         >
-          Thêm thiết bị
+          Thêm thiết bị cho cột
         </a-button>
       </div>
       <div
@@ -49,17 +49,26 @@
             <IconUploadForm />
             <a-typography-text class="text-white text-sm font-normal ml-2">
               Tải hoặc kéo thả file
+              <br />
+              thiết kế của cột
             </a-typography-text>
           </div>
         </a-upload-dragger>
       </div>
     </div>
     <div class="flex flex-col overflow-auto">
-      <PoleItem
-        v-for="pole in modelStore.poles"
-        :pole="pole"
-        :key="pole.pivot.id"
-      />
+      <a-tabs
+        v-model:activeKey="modelStore.activePole"
+        @change="onChangeTab"
+      >
+        <a-tab-pane
+          v-for="pole in modelStore.poles"
+          :key="pole.pivot.id"
+          :tab="pole.name"
+        >
+          <PoleItem :pole="pole" />
+        </a-tab-pane>
+      </a-tabs>
     </div>
   </div>
 </template>
@@ -67,16 +76,32 @@
 <script setup lang="ts">
 import { useModelStore } from '@/stores/model';
 import PoleItem from '@/components/PoleItem.vue';
-import { reactive, ref } from 'vue';
+import { reactive, ref, watch } from 'vue';
 import IconTrash from '@/components/icons/IconTrash.vue';
 import IconUploadForm from '@/components/icons/IconUploadForm.vue';
 import type { UploadChangeParam, UploadProps } from 'ant-design-vue';
+
+const modelStore = useModelStore();
 
 const splatData = reactive(['Danh định', 'Thủ công']);
 const splat = ref(splatData[0]);
 const files = ref([]);
 
-const modelStore = useModelStore();
+const onChangeTab = (value: number) => {
+  modelStore.selectedPole = modelStore.poles.find((item) => item.pivot.id === value);
+};
+
+let isSetActivePole = false;
+
+watch(
+  () => modelStore.poles,
+  () => {
+    if (!isSetActivePole && modelStore.poles.length > 0) {
+      isSetActivePole = true;
+      modelStore.activePole = modelStore.poles[0].pivot.id;
+    }
+  },
+);
 
 const beforeUpload: UploadProps['beforeUpload'] = (file) => {
   if (!file) {

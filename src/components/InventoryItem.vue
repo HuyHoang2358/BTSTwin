@@ -11,7 +11,7 @@
     >
       <div class="w-1 h-[28px] bg-[#69f0ae] mr-7" />
       <a-typography-text class="text-white text-sm">
-        {{ item.name }} ({{ index + 1 }})
+        {{ item.name }} ({{ item.pivot.id }})
       </a-typography-text>
     </div>
     <div
@@ -19,7 +19,7 @@
       v-if="!item.isNewDevice"
     >
       <a-button
-        @click="onToggleRemoveInventory(item, category)"
+        @click="onToggleRemoveInventory(item)"
         ghost
         class="p-0 m-0 border-none ml-2 flex items-center"
       >
@@ -65,7 +65,7 @@ import { useChangeImage } from '@/potree/hooks/useChangeImage';
 import * as THREE from 'three';
 import type { Device } from '@/services/apis/station';
 
-defineProps<{ item: Device; category: string; index: number }>();
+defineProps<{ item: Device; index: number }>();
 
 const modelStore = useModelStore();
 
@@ -116,15 +116,23 @@ const onMoveToInventory = (object: Device) => {
   }
 };
 
-const onToggleRemoveInventory = (object: Device, key: string) => {
-  if (!modelStore.objectGroup || !object.volume) return;
+const onToggleRemoveInventory = (object: Device) => {
+  if (!modelStore.poles || !object.volume) return;
   const nextState = !object.volume.clip;
-  modelStore.objectGroup = {
-    ...modelStore.objectGroup,
-    [key]: modelStore.objectGroup[key].map((item) =>
-      object.id !== item.id ? item : { ...item, clip: nextState },
-    ),
-  };
+  modelStore.poles = modelStore.poles.map((item) => ({
+    ...item,
+    deviceCategories: item.deviceCategories.map((category) => ({
+      ...category,
+      devices: category.devices.map((device) =>
+        device.pivot.id === object.pivot.id
+          ? {
+              ...device,
+              clip: nextState,
+            }
+          : device,
+      ),
+    })),
+  }));
   object.volume.clip = nextState;
 };
 </script>

@@ -210,6 +210,7 @@ export interface Device {
   id: number;
   name: string;
   slug: string;
+  model?: string;
   images: any;
   model_url: any;
   length: number;
@@ -262,6 +263,7 @@ export interface Image {
   gps: Gps;
   camera_pose: CameraPose;
   gimbal: Gimbal;
+  take_date: string;
 }
 
 export interface Gps {
@@ -313,3 +315,10 @@ export const fetchStations = (): WrapperResponse<Station[]> => client.get(API_ST
 
 export const fetchBTSById = (id: string): WrapperResponse<BtsDetail> =>
   client.get(`${API_STATION}/${id}`);
+
+export const fetchReport = (id: string) =>
+  client.get(`${API_STATION}/excel/export`, {
+    params: {
+      stations: [id],
+    },
+  });

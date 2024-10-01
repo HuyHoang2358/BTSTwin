@@ -132,53 +132,28 @@
       </div>
     </div>
     <div class="pl-2 h-[30px] flex flex-row items-center">
-      <div class="flex flex-row items-center">
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-          preserveAspectRatio="xMidYMid meet"
-          focusable="false"
-        >
-          <path
-            fill="#888"
-            d="M20 5h-3.17L15 3H9L7.17 5H4a2.006 2.006 0 0 0-2 2v12a2.006 2.006 0 0 0 2 2h16a2.006 2.006 0 0 0 2-2V7a2.006 2.006 0 0 0-2-2Zm0 14H4V7h4.05l1.83-2h4.24l1.83 2H20v12ZM12 8a5 5 0 1 0 0 10 5 5 0 0 0 0-10Zm0 8a3 3 0 1 1 3-3 3.008 3.008 0 0 1-3 3Z"
-          ></path>
-        </svg>
-        <a-typography-text class="text-[#888] text-sm">
-          &nbsp;{{ modelStore?.selectedImage?.filename.split('.')[0] }} ({{
+      <a-tooltip
+        title="Tên ảnh"
+        placement="top"
+        color="#212121"
+      >
+        <div class="flex flex-row gap-2 items-center">
+          <icon-camera />
+          <a-typography-text class="text-[#888] text-sm">
+            &nbsp;{{ modelStore?.selectedImage?.filename.split('.')[0] }}
+            <!--({{
             modelStore?.selectedImage?.id
-          }})
-        </a-typography-text>
-      </div>
+          }})-->
+          </a-typography-text>
+        </div>
+      </a-tooltip>
       <a-tooltip
         title="Gimbal Pitch"
         placement="top"
         color="#212121"
       >
-        <div class="flex flex-row items-center ml-2">
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-            preserveAspectRatio="xMidYMid meet"
-            focusable="false"
-          >
-            <path
-              fill="#888"
-              d="m19 2-3 4h2c0 .49-.136 12-12 12v-2l-4 3 4 3v-2C19.84 20 20 6.14 20 6h2l-3-4Z"
-            ></path>
-            <path
-              fill="#888"
-              d="M4 14h5a2 2 0 0 0 2-2h2V6h-2a2 2 0 0 0-2-2H8v3.011a2.5 2.5 0 1 1-3 0V4H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2Z"
-            ></path>
-            <path
-              fill="#888"
-              d="M6.5 10.5A1.497 1.497 0 0 0 7 7.592V2H6v5.592a1.496 1.496 0 0 0 .5 2.908Z"
-            ></path>
-          </svg>
+        <div class="flex flex-row gap-1 items-center ml-2">
+          <icon-gimbal-pitch />
           <a-typography-text class="text-[#888] text-sm">
             &nbsp;{{ modelStore.selectedImage?.gimbal.pitch_degree }}°
           </a-typography-text>
@@ -189,79 +164,38 @@
         placement="top"
         color="#212121"
       >
-        <div class="flex flex-row items-center ml-2">
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-            preserveAspectRatio="xMidYMid meet"
-            focusable="false"
-          >
-            <path
-              fill="#888"
-              d="M4 7V2h1l2 3V2h1v5H7L5 4v3H4Z"
-            ></path>
-            <path
-              fill="#888"
-              d="m19 13.74-1.17-1.62-6.76 4.47a5.15 5.15 0 0 0-4.54-2.68 2.428 2.428 0 0 0-.47 0V9H4v13h2.54L19 13.74ZM6.06 15.92c.156-.02.314-.02.47 0a3 3 0 0 1 2.84 1.84l-3.31 2.2v-4.04Z"
-            ></path>
-            <path
-              fill="#888"
-              d="M16.41 7.59a17 17 0 0 0-6.17-3l-.29 1a15.84 15.84 0 0 1 5.74 2.8L14 10h4V6l-1.59 1.59Z"
-            ></path>
-          </svg>
+        <div class="flex flex-row gap-1 items-center ml-2">
+          <icon-gimbal-yaw />
           <a-typography-text class="text-[#888] text-sm">
             &nbsp;{{ modelStore.selectedImage?.gimbal.yaw_degree }}°
           </a-typography-text>
         </div>
       </a-tooltip>
-      <div class="flex flex-row items-center ml-2">
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 16 16"
-          xmlns="http://www.w3.org/2000/svg"
-          preserveAspectRatio="xMidYMid meet"
-          focusable="false"
-        >
-          <path
-            fill="#888"
-            d="M13 5v8H3V5h10Zm0-1H3a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1Z"
-          ></path>
-          <path
-            fill="#888"
-            d="M6 2H4v2h2V2Z"
-          ></path>
-          <path
-            fill="#888"
-            d="M12 2h-2v2h2V2Z"
-          ></path>
-          <path
-            fill="#888"
-            d="M7 7H5v2h2V7Z"
-          ></path>
-          <path
-            fill="#888"
-            d="M11 7H9v2h2V7Z"
-          ></path>
-          <path
-            fill="#888"
-            d="M7 10H5v2h2v-2Z"
-          ></path>
-          <path
-            fill="#888"
-            d="M11 10H9v2h2v-2Z"
-          ></path>
-          <path
-            fill="#888"
-            d="M13 5H3v1h10V5Z"
-          ></path>
-        </svg>
-        <a-typography-text class="text-[#888] text-sm">
-          &nbsp;{{ modelStore.selectedImage?.updatedAt }}
+      <a-tooltip
+        title="Ngày chụp ảnh"
+        placement="top"
+        color="#212121"
+      >
+        <div class="flex flex-row gap-2 items-center ml-2">
+          <icon-date />
+          <a-typography-text class="text-[#888] text-sm">
+            {{ modelStore.selectedImage?.take_date }}
+          </a-typography-text>
+        </div>
+      </a-tooltip>
+
+      <a-button
+        type="ghost"
+        class="flex flex-row gap-1 items-center ml-4"
+        @click="
+          downloadImage(modelStore.selectedImage?.image_url, modelStore.selectedImage?.filename)
+        "
+      >
+        <icon-download />
+        <a-typography-text class="text-[#888] hover:text-red-600 text-sm">
+          Tải xuống
         </a-typography-text>
-      </div>
+      </a-button>
     </div>
     <div class="overflow-auto gap-2 flex flex-row h-[198px] bg-[#303030]">
       <div
@@ -293,6 +227,11 @@ import { useChangeImage } from '@/potree/hooks/useChangeImage';
 import Panzoom from '@panzoom/panzoom';
 import type { PanzoomObject } from '@panzoom/panzoom/src/types';
 import { imageFallback } from '@/utils/constants';
+import IconDate from '@/components/icon/IconDate.vue';
+import IconGimbalYaw from '@/components/icon/IconGimbalYaw.vue';
+import IconGimbalPitch from '@/components/icon/IconGimbalPitch.vue';
+import IconCamera from '@/components/icon/IconCamera.vue';
+import IconDownload from '@/components/icon/IconDownload.vue';
 
 const imageRefs = reactive<any>({});
 
@@ -388,6 +327,13 @@ const onZoomIn = () => {
   if (scale) {
     zoomValue.value = scale.toFixed(1).toString();
   }
+};
+
+const downloadImage = (url: string, filename: string) => {
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  link.click();
 };
 </script>
 

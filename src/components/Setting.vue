@@ -3,13 +3,15 @@
     v-if="modelStore.activeTool === 'setting'"
     class="bg-[#303030] w-[260px] overflow-auto"
   >
-    <div class="flex justify-between items-center px-3 py-4">
-      <a-typography-text class="text-base text-[#888]">Cài đặt</a-typography-text>
+    <div class="flex justify-between items-center px-3 pt-4">
+      <a-typography-text class="text-lg font-semibold text-[#E3E3E3]">Cài đặt</a-typography-text>
     </div>
-    <div class="px-3">
+    <a-divider class="mt-1 mb-0 border-[#404040]" />
+
+    <div class="p-3">
       <div>
         <a-typography-text class="text-white">
-          Point budget: {{ formatNumber(pointBudget) }}
+          Số lượng điểm: {{ formatNumber(pointBudget) }}
         </a-typography-text>
         <a-slider
           v-model:value="pointBudget"
@@ -19,7 +21,9 @@
         />
       </div>
       <div class="mt-2">
-        <a-typography-text class="text-white">Point size: {{ pointSize }}</a-typography-text>
+        <a-typography-text class="text-white">
+          Kích thước điểm: {{ pointSize }} px
+        </a-typography-text>
         <a-slider
           v-model:value="pointSize"
           :min="0.1"
@@ -28,7 +32,7 @@
         />
       </div>
       <div class="mt-2">
-        <a-typography-text class="text-white">Background:</a-typography-text>
+        <a-typography-text class="text-white">Màu nền:</a-typography-text>
         <a-segmented
           v-model:value="background"
           :options="backgroundData"
@@ -38,7 +42,7 @@
         />
       </div>
       <div class="mt-2">
-        <a-typography-text class="text-white">Splat Quality:</a-typography-text>
+        <a-typography-text class="text-white">Chất lượng:</a-typography-text>
         <a-segmented
           v-model:value="splat"
           :options="splatData"
@@ -51,7 +55,7 @@
         v-model:checked="lightingChecked"
         class="text-white mt-2"
       >
-        Eye-Dome-Lighting
+        Bật chiếu sáng
       </a-checkbox>
       <a-checkbox
         v-model:checked="basePlateChecked"
@@ -106,12 +110,12 @@ watch(pointSize, () => {
   }
 });
 
-watch(basePlateChecked, (newValute) => {
-  if (!newValute) {
+watch(basePlateChecked, (newValue) => {
+  if (!newValue) {
     modelStore.isSelectedBasePlate = false;
   }
 
   if (!modelStore.basePlate) return;
-  modelStore.basePlate.visible = newValute;
+  modelStore.basePlate.visible = newValue;
 });
 </script>

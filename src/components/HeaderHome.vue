@@ -63,8 +63,8 @@
         <a-button class="bg-transparent m-0 p-0 border-none">
           <div class="flex items-center">
             <IconProfile class="text-white mr-2" />
-            <div class="flex flex-col">
-              <a-typography-text class="text-white text-xs font-medium">
+            <div class="flex flex-col justify-start">
+              <a-typography-text class="text-white text-xs font-bold text-start">
                 {{ profileData?.data?.name || 'Tên người dùng' }}
               </a-typography-text>
               <a-typography-text

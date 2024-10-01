@@ -4,17 +4,26 @@
     v-if="modelStore.activeTool === 'measurements'"
   >
     <div class="flex justify-between items-center px-3 py-4">
-      <a-typography-text class="text-base text-[#888]">
-        Đo đạc
-        <br />
-        {{ modelStore.measurements.length }} item(s)
-      </a-typography-text>
+      <a-typography-text class="text-lg font-semibold text-[#E3E3E3]">Đo lường</a-typography-text>
+    </div>
+
+    <div class="px-3 my-2">
+      <a-input
+        :placeholder="$t('search')"
+        v-model:value="searchValue"
+        allow-clear
+        class="bg-[#424242] text-white focus:outline-0"
+      >
+        <template #prefix>
+          <IconSearchInput />
+        </template>
+      </a-input>
     </div>
     <div
       v-for="(item, index) in modelStore.measurements"
       :key="index"
       :class="[
-        'flex flex-row items-center justify-between cursor-pointer pr-2',
+        'flex flex-row items-center justify-between cursor-pointer pr-2 hover:bg-[#2A2A2A] mt-2',
         item.id === modelStore.currentMeasurement && 'bg-[#38536d]',
       ]"
       @click="onMoveToMeasurement(item)"
@@ -74,6 +83,8 @@
 <script setup lang="ts">
 import { useModelStore } from '@/stores/model';
 import * as THREE from 'three';
+import IconSearchInput from '@/components/icons/home/IconSearchInput.vue';
+import { ref } from 'vue';
 
 const modelStore = useModelStore();
 
@@ -90,4 +101,11 @@ const onMoveToMeasurement = (object: any) => {
 const onToggleMeasurement = (object: any) => {
   object.visible = !object.visible;
 };
+
+const searchValue = ref<string>();
 </script>
+<style>
+.ant-input {
+  background-color: #424242 !important;
+}
+</style>
