@@ -133,6 +133,7 @@ watch(
   () => {
     formState.template = undefined;
     formState.device = undefined;
+    image.value = undefined;
     formState.width = 0;
     formState.height = 0;
     formState.depth = 0;
@@ -196,9 +197,9 @@ const onSubmit = () => {
   newDevice.material.opacity = 0.8;
 
   newDevice.scale.set(
-    dataDevice.depth ? dataDevice.depth / 1000 : 1,
-    dataDevice.width ? dataDevice.width / 1000 : 1,
-    dataDevice.length ? dataDevice.length / 1000 : 1,
+    dataDevice.depth ? dataDevice.depth / 1000 / modelStore.gpsRatio : 1,
+    dataDevice.width ? dataDevice.width / 1000 / modelStore.gpsRatio : 1,
+    dataDevice.length ? dataDevice.length / 1000 / modelStore.gpsRatio : 1,
   );
 
   const newInventory: Device = {
@@ -214,8 +215,8 @@ const onSubmit = () => {
     newDevice,
   };
 
-  modelStore.poles = modelStore.poles.map((item, index) =>
-    index === 0
+  modelStore.poles = modelStore.poles.map((item) =>
+    item.pivot.id === modelStore.activePole
       ? {
           ...item,
           deviceCategories: item.deviceCategories.map((category) =>

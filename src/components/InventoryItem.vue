@@ -10,9 +10,11 @@
       @click="onClickInventory(item)"
     >
       <div class="w-1 h-[28px] bg-[#69f0ae] mr-7" />
-      <a-typography-text class="text-white text-sm">
-        {{ item.name }} ({{ item.pivot.id }})
-      </a-typography-text>
+      <a-typography-text
+        class="text-white text-sm w-[190px]"
+        :ellipsis="{ tooltip: `${item.name} (${item.pivot.id})` }"
+        :content="`${item.name} (${item.pivot.id})`"
+      />
     </div>
     <div
       class="pr-2"

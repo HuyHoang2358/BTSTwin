@@ -124,7 +124,9 @@ const onUpdate = (e: any) => {
     angles = angles.map((a: number) => a.toFixed(1) + '\u00B0');
 
     let dimensions = findVolume.scale.toArray();
-    dimensions = dimensions.map((v: number) => Potree.Utils.addCommas(v.toFixed(2)));
+    dimensions = dimensions.map((v: number) =>
+      Potree.Utils.addCommas((v * modelStore.gpsRatio).toFixed(2)),
+    );
 
     const point = findVolume.position;
 

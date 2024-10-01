@@ -44,6 +44,7 @@ export const useModelStore = defineStore('model', () => {
   const poles = ref<Pole[]>([]);
   const images = ref<Image[]>([]);
   const activePole = ref<number>();
+  const gpsRatio = ref<number>(1);
 
   // Hoangth33
   const stationsData = ref<Station[]>([]);
@@ -89,5 +90,6 @@ export const useModelStore = defineStore('model', () => {
     poles,
     images,
     activePole,
+    gpsRatio,
   };
 });

@@ -13,6 +13,7 @@ import {
 } from '@/utils/constants';
 import { useBTSDetail } from '@/services/hooks/useStation';
 import type { Device, Image } from '@/services/apis/station';
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 
 export type InventoryDetail = {
   boxMesh?: THREE.Mesh<THREE.BoxGeometry, THREE.MeshBasicMaterial, THREE.Object3DEventMap>;
@@ -61,7 +62,6 @@ export const useInitial = () => {
   };
 
   const addCameraToScene = (image2D: Image) => {
-    //console.log('cameraPose', image2D.camera_pose);
     const data = image2D.camera_pose;
     const camCenter = JSON.parse(data.cent_point);
     const eulerAngle = JSON.parse(data.euler_angle);
@@ -72,7 +72,7 @@ export const useInitial = () => {
       eulerAngle[2] * THREE.MathUtils.DEG2RAD,
     );
 
-    const boxGeometry = new THREE.BoxGeometry(0.1, 0.1, 0.2);
+    /* const boxGeometry = new THREE.BoxGeometry(0.1, 0.1, 0.2);
     const boxMaterial = new THREE.MeshBasicMaterial({
       color: 0xffff00,
       transparent: true,
@@ -89,34 +89,61 @@ export const useInitial = () => {
       type: 'camera_pose',
     };
 
-    window.potreeViewer.scene.scene.add(box);
+    window.potreeViewer.scene.scene.add(box);*/
+    // TODO try new camera
+    const coneX = new THREE.Mesh(
+      new THREE.ConeGeometry(0.09, 0.15, 24),
+      new THREE.MeshBasicMaterial({
+        color: 0xffff00,
+        wireframe: true,
+        wireframeLinewidth: 5,
+      }),
+    );
+    coneX.rotation.copy(rotation);
+    coneX.rotateX(-Math.PI / 2);
+    coneX.position.copy(position);
+    coneX.userData = {
+      data: image2D,
+      type: 'camera_pose',
+    };
+    window.potreeViewer.scene.scene.add(coneX);
 
-    // const manager = new THREE.LoadingManager();
-    // manager.onProgress = function (item, loaded, total) {
-    //   console.log(item, loaded, total);
-    // };
-    // const loader = new OBJLoader(manager);
-    // loader.load(`/obj/cmae_v6.obj`, function (object) {
-    //   object.position.copy(position);
-    //   object.position.x += 0.2;
-    //   object.rotation.copy(eulerAngle);
-    //   object.scale.multiplyScalar(0.1);
-    //   object.traverse((child) => {
-    //     if (child.isMesh) {
-    //       child.material = new THREE.MeshBasicMaterial({
-    //         color: 0xffff00,
-    //         transparent: true,
-    //         opacity: 0.5,
-    //       });
-    //     }
-    //   });
-    //   window.potreeViewer.scene.scene.add(object);
-    // });
+    /*    const manager = new THREE.LoadingManager();
+    manager.onProgress = function (item, loaded, total) {
+      console.log(item, loaded, total);
+    };
+    const loader = new OBJLoader(manager);
+    loader.load(`/obj/cmae_v6.obj`, function (object) {
+      object.position.copy(position);
+      object.rotation.copy(rotation);
+      object.scale.multiplyScalar(0.1);
+      object.traverse((child) => {
+        if (child.isMesh) {
+          child.material = new THREE.MeshBasicMaterial({
+            color: 0xffff00,
+            /!* transparent: true,
+            opacity: 0.5,*!/
+          });
+        }
+      });
+      object.rotateX(Math.PI / 2);
+      object.userData = {
+        data: image2D,
+        type: 'camera_pose',
+      };
+      window.potreeViewer.scene.scene.add(object);
+    });*/
   };
 
   const loadInventory = () => {
     const poles = dataDetail.value?.data?.poles || [];
     let allDevices: Device[] = [];
+    if (poles[0].gps_ratio) {
+      const gpsRatio = Number(poles[0].gps_ratio) / 1000 / modelStore.gpsRatio;
+      modelStore.gpsRatio = gpsRatio;
+      window.potreeViewer.setGPSRatio(gpsRatio);
+    }
+
     poles.forEach((pole) => {
       allDevices = allDevices.concat(pole.devices || []);
     });
@@ -244,6 +271,7 @@ export const useInitial = () => {
       window.potreeViewer.fitToScreen(0.6);
 
       window.potreeViewer.setClipTask(Potree.ClipTask.SHOW_OUTSIDE);
+      window.potreeViewer.renderer.setPixelRatio(2);
 
       modelStore.loadingModel = false;
     });
@@ -278,7 +306,7 @@ export const useInitial = () => {
   const loadImages = () => {
     if (!dataDetail.value) return;
     const images = dataDetail.value?.data.images;
-    // addCameraToScene(images[0]);
+    //addCameraToScene(images[0]);
     images.forEach((item) => {
       addCameraToScene(item);
     });

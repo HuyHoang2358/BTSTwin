@@ -51,6 +51,16 @@
           block
         />
       </div>
+      <div class="mt-2">
+        <a-typography-text class="text-white">Đơn vị đo:</a-typography-text>
+        <a-segmented
+          v-model:value="unit"
+          :options="unitData"
+          size="small"
+          class="mt-2"
+          block
+        />
+      </div>
       <a-checkbox
         v-model:checked="lightingChecked"
         class="text-white mt-2"
@@ -81,6 +91,8 @@ const backgroundData = reactive(['skybox', 'gradient', 'black', 'white']);
 const background = ref('black');
 const splatData = reactive(['Thấp', 'Cao']);
 const splat = ref(splatData[0]);
+const unitData = reactive(['m', 'cm', 'mm']);
+const unit = ref(unitData[2]);
 
 const modelStore = useModelStore();
 
@@ -108,6 +120,11 @@ watch(pointSize, () => {
   if (window.potreeViewer.scene.pointclouds) {
     window.potreeViewer.scene.pointclouds[0].material.size = pointSize.value;
   }
+});
+
+
+watch(unit, (newValue) => {
+  window.potreeViewer.setLengthDisplayUnit(newValue);
 });
 
 watch(basePlateChecked, (newValue) => {

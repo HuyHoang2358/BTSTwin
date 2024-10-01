@@ -31,7 +31,8 @@
     "three": "^0.168.0",
     "vue": "^3.5.8",
     "vue-i18n": "^10.0.3",
-    "vue-router": "^4.4.5"
+    "vue-router": "^4.4.5",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@intlify/unplugin-vue-i18n": "^5.2.0",

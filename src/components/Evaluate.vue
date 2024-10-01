@@ -39,7 +39,6 @@
           name="upload"
           :before-upload="beforeUpload"
           @change="handleChange"
-          :max-count="1"
           :custom-request="() => {}"
         >
           <template #removeIcon>
@@ -79,13 +78,18 @@ import PoleItem from '@/components/PoleItem.vue';
 import { reactive, ref, watch } from 'vue';
 import IconTrash from '@/components/icons/IconTrash.vue';
 import IconUploadForm from '@/components/icons/IconUploadForm.vue';
-import type { UploadChangeParam, UploadProps } from 'ant-design-vue';
+import type { UploadChangeParam } from 'ant-design-vue';
+import * as XLSX from 'xlsx';
+import type { Device } from '@/services/apis/station';
+import { generateUUID } from 'three/src/math/MathUtils';
 
 const modelStore = useModelStore();
 
 const splatData = reactive(['Danh định', 'Thủ công']);
 const splat = ref(splatData[0]);
 const files = ref([]);
+
+const jsonData = ref();
 
 const onChangeTab = (value: number) => {
   modelStore.selectedPole = modelStore.poles.find((item) => item.pivot.id === value);
@@ -103,16 +107,20 @@ watch(
   },
 );
 
-const beforeUpload: UploadProps['beforeUpload'] = (file) => {
-  if (!file) {
-    return;
-  }
+const beforeUpload = (file: any) => {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const data = new Uint8Array(e.target.result);
+    const workbook = XLSX.read(data, { type: 'array' });
+    const firstSheetName = workbook.SheetNames[0];
+    const worksheet = workbook.Sheets[firstSheetName];
 
-  // if (!checkValid(file.name)) {
-  //   message.error(`Vui lòng tải lên ${activeIndexTab.value}!`);
-  //   return false;
-  // }
-  return true;
+    // Chuyển đổi dữ liệu thành JSON
+    jsonData.value = XLSX.utils.sheet_to_json(worksheet);
+  };
+
+  reader.readAsArrayBuffer(file);
+  return false; // Ngăn không cho file được upload
 };
 
 const handleChange = (info: UploadChangeParam<any>) => {
@@ -133,4 +141,69 @@ const onAddBox = () => {
   modelStore.selectedPole = undefined;
   modelStore.isSelectedBasePlate = false;
 };
+
+watch(jsonData, () => {
+  console.log('jsonData', jsonData);
+  const mappingByModel: Record<string, any[]> = {};
+  jsonData.value.forEach((device) => {
+    const newDevice = new Potree.BoxVolume();
+    newDevice.position.set(device.x, device.y, device.z);
+    newDevice.scale.set(
+      device.width / 1000 / modelStore.gpsRatio,
+      device.depth / 1000 / modelStore.gpsRatio,
+      device.length / 1000 / modelStore.gpsRatio,
+    );
+    const azimuthRadians = (device.azimuth * Math.PI) / 180; // Chuyển đổi từ độ sang radian
+    const tiltRadians = (device.tilt * Math.PI) / 180;
+
+    // Thay đổi rotation
+    newDevice.rotation.set(0, tiltRadians, azimuthRadians);
+
+    window.potreeViewer.scene.addVolume(newDevice);
+
+    const newInventory: Device = {
+      visibleMesh: true,
+      visible: true,
+      clip: false,
+      pivot: {
+        id: generateUUID(),
+      },
+      model: device.model,
+      isNewDevice: true,
+      name: device.name,
+      newDevice,
+    };
+
+    newDevice.addEventListener('volume_select_changed', () => {
+      const modelStore = useModelStore();
+      modelStore.activeTool = 'add-inventory';
+      modelStore.selectedImage = undefined;
+      modelStore.selectedInventory = newInventory;
+    });
+    newDevice.addEventListener('volume_deselect_changed', () => {
+      const modelStore = useModelStore();
+      modelStore.selectedInventory = undefined;
+    });
+
+    mappingByModel[device.model] = !mappingByModel[device.model]
+      ? [newInventory]
+      : mappingByModel[device.model]?.concat([newInventory]);
+  });
+
+  modelStore.poles = modelStore.poles.map((item) =>
+    item.pivot.id === modelStore.activePole
+      ? {
+          ...item,
+          deviceCategories: item.deviceCategories.map((category) =>
+            category.name && mappingByModel[category.name]
+              ? {
+                  ...category,
+                  devices: item.devices.concat(mappingByModel[category.name]),
+                }
+              : category,
+          ),
+        }
+      : item,
+  );
+});
 </script>

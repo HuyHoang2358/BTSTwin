@@ -31,6 +31,7 @@ declare namespace Potree {
 
   class BoxVolume {
     position: any;
+    rotation: any;
     scale: any;
     visible: boolean;
     clip: boolean;
