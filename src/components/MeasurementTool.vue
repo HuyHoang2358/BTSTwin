@@ -8,7 +8,7 @@
       <a-button
         class="w-8 h-8 p-0 m-0 rounded-t rounded-b-none flex flex-row items-center justify-center"
         type="ghost"
-        @click="modelStore.activeSubTool = null"
+        @click="modelStore.activeSubTool = undefined"
       >
         <select-icon v-if="checkRuleActiveTool()" />
         <select-active-icon v-else />
@@ -21,12 +21,17 @@
       color="#212121"
     >
       <a-button
-        class="w-8 h-8 p-0 m-0 rounded-t rounded-b-none flex flex-row items-center justify-center"
+        class="w-8 h-8 p-0 m-0 rounded-t rounded-b-none flex flex-row items-center justify-center group"
         type="ghost"
         @click="onMeasureAngle"
       >
-        <angle-active-icon v-if="modelStore.activeSubTool === 'angle'" />
-        <angle-icon v-else />
+        <angle-icon
+          :class="[
+            modelStore.activeSubTool === 'angle'
+              ? 'text-[#FF0000]'
+              : 'group-hover:text-[#FF0000] text-white',
+          ]"
+        />
       </a-button>
     </a-tooltip>
 
@@ -36,12 +41,17 @@
       color="#212121"
     >
       <a-button
-        class="w-8 h-8 p-0 m-0 rounded-t rounded-b-none flex flex-row items-center justify-center"
+        class="w-8 h-8 p-0 m-0 rounded-t rounded-b-none flex flex-row items-center justify-center group"
         type="ghost"
         @click="onMeasureDistance"
       >
-        <distance-active-icon v-if="modelStore.activeSubTool === 'distance'" />
-        <distance-icon v-else />
+        <distance-icon
+          :class="[
+            modelStore.activeSubTool === 'distance'
+              ? 'text-[#FF0000]'
+              : 'group-hover:text-[#FF0000] text-white',
+          ]"
+        />
       </a-button>
     </a-tooltip>
 
@@ -51,12 +61,17 @@
       color="#212121"
     >
       <a-button
-        class="w-8 h-8 p-0 m-0 rounded-t rounded-b-none flex flex-row items-center justify-center"
+        class="w-8 h-8 p-0 m-0 rounded-t rounded-b-none flex flex-row items-center justify-center group"
         type="ghost"
         @click="onMeasureHeight"
       >
-        <height-active-icon v-if="modelStore.activeSubTool === 'height'" />
-        <height-icon v-else />
+        <IconTilt
+          :class="[
+            modelStore.activeSubTool === 'height'
+              ? 'text-[#FF0000]'
+              : 'group-hover:text-[#FF0000] text-white',
+          ]"
+        />
       </a-button>
     </a-tooltip>
 
@@ -66,12 +81,17 @@
       color="#212121"
     >
       <a-button
-        class="w-8 h-8 p-0 m-0 rounded-t rounded-b-none flex flex-row items-center justify-center"
+        class="w-8 h-8 p-0 m-0 rounded-t rounded-b-none flex flex-row items-center justify-center group"
         type="ghost"
         @click="onMeasureCircle"
       >
-        <circle-active-icon v-if="modelStore.activeSubTool === 'circle'" />
-        <circle-icon v-else />
+        <circle-icon
+          :class="[
+            modelStore.activeSubTool === 'circle'
+              ? 'text-[#FF0000]'
+              : 'group-hover:text-[#FF0000] text-white',
+          ]"
+        />
       </a-button>
     </a-tooltip>
 
@@ -81,12 +101,17 @@
       color="#212121"
     >
       <a-button
-        class="w-8 h-8 p-0 m-0 rounded-t rounded-b-none flex flex-row items-center justify-center"
+        class="w-8 h-8 p-0 m-0 rounded-t rounded-b-none flex flex-row items-center justify-center group"
         type="ghost"
         @click="onMeasureAzimuth"
       >
-        <angle-active-icon v-if="modelStore.activeSubTool === 'azimuth'" />
-        <angle-icon v-else />
+        <IconAzimuth
+          :class="[
+            modelStore.activeSubTool === 'azimuth'
+              ? 'text-[#FF0000]'
+              : 'group-hover:text-[#FF0000] text-white',
+          ]"
+        />
       </a-button>
     </a-tooltip>
 
@@ -96,12 +121,17 @@
       color="#212121"
     >
       <a-button
-        class="w-8 h-8 p-0 m-0 rounded-t rounded-b-none flex flex-row items-center justify-center"
+        class="w-8 h-8 p-0 m-0 rounded-t rounded-b-none flex flex-row items-center justify-center group"
         type="ghost"
         @click="onMeasureArea"
       >
-        <area-active-icon v-if="modelStore.activeSubTool === 'area'" />
-        <area-icon v-else />
+        <area-icon
+          :class="[
+            modelStore.activeSubTool === 'area'
+              ? 'text-[#FF0000]'
+              : 'group-hover:text-[#FF0000] text-white',
+          ]"
+        />
       </a-button>
     </a-tooltip>
 
@@ -138,6 +168,8 @@ import CircleIcon from '@/components/icon/tools/circleIcon.vue';
 import AreaActiveIcon from '@/components/icon/tools/areaActiveIcon.vue';
 import AreaIcon from '@/components/icon/tools/areaIcon.vue';
 import IconCloseActive from '@/components/icon/IconCloseActive.vue';
+import IconTilt from '@/components/icon/tools/IconTilt.vue';
+import IconAzimuth from '@/components/icon/tools/IconAzimuth.vue';
 
 const modelStore = useModelStore();
 
@@ -220,7 +252,7 @@ const onMeasureAzimuth = () => {
   });
 };
 const initMeasurement = () => {
-  modelStore.activeTool = 'measurements';
+  // modelStore.activeTool = 'measurements';
 };
 
 /*const onInsertAnnotation = () => {

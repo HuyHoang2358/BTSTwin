@@ -55,7 +55,7 @@
             class="flex relative"
           />
           <MeasurementTool class="absolute top-[82px] right-6 z-10" />
-          <!--          <BottomTool />-->
+          <BottomTool />
 
           <div
             class="absolute inset-0 flex items-center justify-center z-10"
@@ -98,7 +98,7 @@
           v-if="
             !modelStore.selectedImage &&
             !modelStore.selectedInventory &&
-            !modelStore.selectedPole &&
+            !modelStore.isShowPoleInfo &&
             !modelStore.isSelectedBasePlate
           "
         />
@@ -211,9 +211,11 @@ const onPointerClick = (evt: any) => {
       onChangeImage(targetObject.userData.data);
     } else if (targetObject.userData.type === 'inventory') {
       const selectedInventory = targetObject.userData?.device as Device;
-      const image2D = modelStore.images.find((item) =>
-        item.filename.includes(selectedInventory?.pivot.suggested_img),
-      );
+      const image2D = selectedInventory?.pivot.suggested_img
+        ? modelStore.images.find((item) =>
+            item.filename.includes(selectedInventory?.pivot.suggested_img),
+          )
+        : null;
       if (image2D) {
         onChangeImage(image2D);
       } else {

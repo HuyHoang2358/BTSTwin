@@ -140,7 +140,7 @@ export const useInitial = () => {
   const loadInventory = () => {
     const poles = dataDetail.value?.data?.poles || [];
     let allDevices: Device[] = [];
-    if (poles[0].gps_ratio) {
+    if (poles[0]?.gps_ratio) {
       const gpsRatio = Number(poles[0].gps_ratio) / 1000 / modelStore.gpsRatio;
       modelStore.gpsRatio = gpsRatio;
       window.potreeViewer.setGPSRatio(gpsRatio);
@@ -222,8 +222,6 @@ export const useInitial = () => {
         }),
       };
     });
-
-    console.log('modelStore.poles', modelStore.poles);
   };
 
   onMounted(() => {
@@ -292,7 +290,7 @@ export const useInitial = () => {
     });
     const plane = new THREE.Mesh(planeGeometry, planeMaterial);
 
-    const zPlane = dataDetail.value.data.poles[0].z_plane;
+    const zPlane = dataDetail.value.data.poles[0]?.z_plane;
 
     plane.position.set(0, 0, zPlane);
     plane.userData = {

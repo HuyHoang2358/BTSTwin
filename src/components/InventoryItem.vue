@@ -87,9 +87,9 @@ const onClickInventory = (object: Device) => {
     window.potreeViewer.inputHandler.deselectAll();
   }
   modelStore.selectedInventory = object;
-  const image2D = modelStore.images.find((item) =>
-    item.filename.includes(object?.pivot.suggested_img),
-  );
+  const image2D = object?.pivot.suggested_img
+    ? modelStore.images.find((item) => item.filename.includes(object?.pivot.suggested_img))
+    : undefined;
   if (image2D) {
     onChangeImage(image2D);
   } else {

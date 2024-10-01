@@ -173,41 +173,52 @@ const descriptionStyle = computed(() => ({ color: 'white', fontSize: '14px' }));
 const onCalculate = () => {
   if (!dataBTS.value?.data) return;
 
-  const zPlane = dataBTS.value.data.poles[0].z_plane;
-
   const inventories: Device[] = [];
 
-  modelStore.objectGroupArray.forEach((category) => {
-    if (modelStore.objectGroup && modelStore.objectGroup[category]) {
-      modelStore.objectGroup[category].forEach((item) => {
+  const pole = modelStore.poles.find((pole) => pole.pivot.id === modelStore.activePole);
+  if (!pole) return;
+
+  modelStore.poles.forEach((pole) => {
+    pole.deviceCategories.forEach((category) => {
+      category.devices.forEach((item) => {
         if (item.isNewDevice) {
           let dimensions = item.newDevice.scale.toArray();
           dimensions = dimensions.map((v: number) => Potree.Utils.addCommas(v.toFixed(2)));
           inventories.push({
-            name: item.model as string,
+            name: item.name as string,
             depth: Number(dimensions[0]),
             width: Number(dimensions[1]),
             height: Number(dimensions[2]),
-            DC: item.newDevice ? Math.round(item.newDevice.position.z - zPlane) : 0,
+            DC: Math.abs(
+              item.newDevice
+                ? (item.newDevice.position.z - (modelStore.positionValue || pole.z_plane)) *
+                    modelStore.gpsRatio
+                : 0,
+            ),
           });
         } else {
-          if (item.visible) {
+          if (!item.clip) {
             inventories.push({
-              name: item.model as string,
-              depth: Number(item.modelDepth) / 1000,
-              width: Number(item.modelWidth) / 1000,
-              height: Number(item.modelHeight) / 1000,
-              DC: item.boxMesh ? Math.round(item.boxMesh.position.z - zPlane) : 0,
+              name: item.name as string,
+              depth: Number(item.depth) / 1000,
+              width: Number(item.width) / 1000,
+              height: Number(item.length) / 1000,
+              DC: Math.abs(
+                item.boxMesh
+                  ? (item.boxMesh.position.z - (modelStore.positionValue || pole.z_plane)) *
+                      modelStore.gpsRatio
+                  : 0,
+              ),
             });
           }
         }
       });
-    }
+    });
   });
 
   mutate(
     {
-      station_code: dataBTS.value?.data?.name,
+      pole_id: pole?.id,
       devices: inventories,
     },
     {

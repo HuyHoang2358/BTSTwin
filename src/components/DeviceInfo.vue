@@ -26,7 +26,7 @@
         :labelStyle="descriptionStyle"
         :contentStyle="descriptionStyle"
       >
-        {{ modelStore.selectedInventory.vendor.name }}
+        {{ modelStore.selectedInventory?.vendor?.name }}
       </a-descriptions-item>
     </a-descriptions>
 
@@ -84,7 +84,7 @@
       class="mt-2 p-2 rounded-lg"
       style="border: 1px solid #404040"
     >
-      <a-row gutter="16">
+      <a-row :gutter="16">
         <a-col :span="12">
           <a-form-item
             name="deviceTilt"

@@ -93,6 +93,7 @@ const jsonData = ref();
 
 const onChangeTab = (value: number) => {
   modelStore.selectedPole = modelStore.poles.find((item) => item.pivot.id === value);
+  modelStore.isShowPoleInfo = true;
 };
 
 let isSetActivePole = false;

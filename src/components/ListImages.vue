@@ -186,7 +186,7 @@
 
       <a-button
         type="ghost"
-        class="flex flex-row gap-1 items-center ml-4"
+        class="flex flex-row gap-1 items-center"
         @click="
           downloadImage(modelStore.selectedImage?.image_url, modelStore.selectedImage?.filename)
         "
@@ -329,11 +329,23 @@ const onZoomIn = () => {
   }
 };
 
-const downloadImage = (url: string, filename: string) => {
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = filename;
-  link.click();
+const downloadImage = async (imageUrl: string, filename: string) => {
+  const response = await fetch(imageUrl);
+
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+
+  const blob = await response.blob();
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.style.display = 'none';
+  a.href = url;
+  a.download = filename; // Tên file khi tải về
+  document.body.appendChild(a);
+  a.click();
+  window.URL.revokeObjectURL(url);
+  document.body.removeChild(a);
 };
 </script>
 
