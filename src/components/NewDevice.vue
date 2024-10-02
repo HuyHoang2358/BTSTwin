@@ -124,9 +124,7 @@ const onUpdate = (e: any) => {
     angles = angles.map((a: number) => a.toFixed(1) + '\u00B0');
 
     let dimensions = findVolume.scale.toArray();
-    dimensions = dimensions.map((v: number) =>
-      Potree.Utils.addCommas((v * modelStore.gpsRatio).toFixed(2)),
-    );
+    dimensions = dimensions.map((v: number) => Potree.Utils.addCommas(v));
 
     const point = findVolume.position;
 
@@ -136,9 +134,9 @@ const onUpdate = (e: any) => {
 
     properties.value = {
       ...properties.value,
-      elLength: dimensions[0] * 1000,
-      elWidth: dimensions[1] * 1000,
-      elHeight: dimensions[2] * 1000,
+      elLength: (dimensions[0] * 1000 * modelStore.gpsRatio).toFixed(2),
+      elWidth: (dimensions[1] * 1000 * modelStore.gpsRatio).toFixed(2),
+      elHeight: (dimensions[2] * 1000 * modelStore.gpsRatio).toFixed(2),
       elAlpha: angles[0],
       elBetta: angles[1],
       elGamma: angles[2],

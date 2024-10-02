@@ -115,7 +115,7 @@
           :labelStyle="descriptionStyle"
           :contentStyle="descriptionStyle"
         >
-          {{ stressValue ? (stressValue < 0.95 ? 'Phù hợp' : 'Không phù hợp') : 'Chưa có giá trị' }}
+          {{ stressValue ? (stressValue < 90 ? 'Phù hợp' : 'Không phù hợp') : 'Chưa có giá trị' }}
         </a-descriptions-item>
       </a-descriptions>
     </div>

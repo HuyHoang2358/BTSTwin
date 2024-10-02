@@ -223,7 +223,7 @@ const onSubmit = () => {
             category.name === dataDevice.category.name
               ? {
                   ...category,
-                  devices: item.devices.concat([newInventory]),
+                  devices: category.devices.concat([newInventory]),
                 }
               : category,
           ),
