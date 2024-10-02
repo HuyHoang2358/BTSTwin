@@ -113,7 +113,7 @@
 
       <a-form-item
         name="deviceHeight"
-        label="Độ cao thiết bị (m)"
+        label="Độ cao thiết bị so với chân cột (m)"
         class="mb-2"
       >
         <a-input-number
@@ -122,7 +122,7 @@
         />
       </a-form-item>
 
-      <div class="flex flex-row gap-2 mb-2">
+      <!--      <div class="flex flex-row gap-2 mb-2">
         <a-form-item
           name="x"
           label="x"
@@ -156,7 +156,7 @@
             class="w-full rounded bg-[#424242]"
           />
         </a-form-item>
-      </div>
+      </div>-->
     </a-form>
 
     <h5 class="text-white font-semibold mt-4">Mô tả</h5>

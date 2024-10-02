@@ -56,12 +56,22 @@
           {{ convertToDMS(Number(modelStore.selectedBTS?.location?.latitude)) }}
         </a-descriptions-item>
         <a-descriptions-item
-          label="Vận hành"
+          label="Đơn vị vận hành"
           :labelStyle="descriptionStyle"
           :contentStyle="descriptionStyle"
         >
           {{ 'VTNET' }}
         </a-descriptions-item>
+        <a-descriptions-item
+          label="Dự án"
+          :labelStyle="descriptionStyle"
+          :contentStyle="descriptionStyle"
+        ></a-descriptions-item>
+        <a-descriptions-item
+          label="Nguời quản lý trạm"
+          :labelStyle="descriptionStyle"
+          :contentStyle="descriptionStyle"
+        ></a-descriptions-item>
         <a-descriptions-item
           label="Ngày chụp gần nhất"
           :labelStyle="descriptionStyle"

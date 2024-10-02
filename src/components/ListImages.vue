@@ -186,15 +186,15 @@
 
       <a-button
         type="ghost"
-        class="flex flex-row gap-1 items-center"
+        class="flex flex-row gap-1 items-center p-1"
         @click="
-          downloadImage(modelStore.selectedImage?.image_url, modelStore.selectedImage?.filename)
+          downloadImage(
+            modelStore.selectedImage?.image_url || '',
+            modelStore.selectedImage?.filename || '',
+          )
         "
       >
         <icon-download />
-        <a-typography-text class="text-[#888] hover:text-red-600 text-sm">
-          Tải xuống
-        </a-typography-text>
       </a-button>
     </div>
     <div class="overflow-auto gap-2 flex flex-row h-[198px] bg-[#303030]">

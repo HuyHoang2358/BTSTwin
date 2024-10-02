@@ -114,9 +114,7 @@ onMounted(() => {
 
         content.innerHTML = `<div>
                                    <p class="font-medium">Thông tin vùng gió</p>
-                                   <p class="text-sm">Tên xã: ${properties.tenxa || 'Không có xã'}</p>
-                                   <p class="text-sm">Tên huyện: ${properties.tenhuyen}</p>
-                                   <p class="text-sm">Tên tỉnh: ${properties.tentinh}</p>
+                                   <p class="text-sm">${properties.tenxa || ''}, ${properties.tenhuyen}, ${properties.tentinh}</p>
                                    <p class="text-sm">Vùng gió: ${properties.vunggio}</p>
                                 </div>`;
         overlay.setPosition(coordinate);

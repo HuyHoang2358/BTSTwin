@@ -34,14 +34,12 @@
 
       <div class="flex flex-row items-center absolute z-10 bottom-3 left-4">
         <a-button
-          class="w-[54px] h-[54px] bg-transparent m-0 p-0 border-none"
+          class="w-[54px] h-[54px] bg-transparent m-0 p-0 border-none rounded-full"
           @click="onToggleBaseLayer"
         >
           <a-image
-            :width="54"
-            :height="54"
-            src="/images/home/layer-map.png"
-            class="object-contain"
+            :src="layer_icon"
+            class="object-contain rounded-full border-2 border-white w-full h-full"
             :preview="false"
             alt="layer"
           />
@@ -131,6 +129,7 @@ const { data: dataWindy } = useWindyAreas({
   perPage: ref(maxPageSize),
 });
 
+let layer_icon = ref<string>('/images/home/layer-viettel.png');
 watch(
   () => modelStore.is2DMode,
   () => {
@@ -155,9 +154,11 @@ const onToggleBaseLayer = () => {
   if (isViettelLayer.value) {
     layers[0].setVisible(true);
     layers[1].setVisible(false);
+    layer_icon.value = '/images/home/layer-map.png';
   } else {
     layers[0].setVisible(false);
     layers[1].setVisible(true);
+    layer_icon.value = '/images/home/layer-viettel.png';
   }
 
   isViettelLayer.value = !isViettelLayer.value;

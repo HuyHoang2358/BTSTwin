@@ -16,6 +16,46 @@
     </a-tooltip>
 
     <a-tooltip
+      title="Đo chiều dài"
+      placement="right"
+      color="#212121"
+    >
+      <a-button
+        class="w-8 h-8 p-0 m-0 rounded-t rounded-b-none flex flex-row items-center justify-center group"
+        type="ghost"
+        @click="onMeasureDistance"
+      >
+        <distance-icon
+          :class="[
+            modelStore.activeSubTool === 'distance'
+              ? 'text-[#FF0000]'
+              : 'group-hover:text-[#FF0000] text-white',
+          ]"
+        />
+      </a-button>
+    </a-tooltip>
+
+    <a-tooltip
+      title="Đo diện tích"
+      placement="right"
+      color="#212121"
+    >
+      <a-button
+        class="w-8 h-8 p-0 m-0 rounded-t rounded-b-none flex flex-row items-center justify-center group"
+        type="ghost"
+        @click="onMeasureArea"
+      >
+        <area-icon
+          :class="[
+            modelStore.activeSubTool === 'area'
+              ? 'text-[#FF0000]'
+              : 'group-hover:text-[#FF0000] text-white',
+          ]"
+        />
+      </a-button>
+    </a-tooltip>
+
+    <a-tooltip
       title="Đo góc"
       placement="right"
       color="#212121"
@@ -28,26 +68,6 @@
         <angle-icon
           :class="[
             modelStore.activeSubTool === 'angle'
-              ? 'text-[#FF0000]'
-              : 'group-hover:text-[#FF0000] text-white',
-          ]"
-        />
-      </a-button>
-    </a-tooltip>
-
-    <a-tooltip
-      title="Đo khoảng cách"
-      placement="right"
-      color="#212121"
-    >
-      <a-button
-        class="w-8 h-8 p-0 m-0 rounded-t rounded-b-none flex flex-row items-center justify-center group"
-        type="ghost"
-        @click="onMeasureDistance"
-      >
-        <distance-icon
-          :class="[
-            modelStore.activeSubTool === 'distance'
               ? 'text-[#FF0000]'
               : 'group-hover:text-[#FF0000] text-white',
           ]"
@@ -76,27 +96,7 @@
     </a-tooltip>
 
     <a-tooltip
-      title="Đo Bán kính"
-      placement="right"
-      color="#212121"
-    >
-      <a-button
-        class="w-8 h-8 p-0 m-0 rounded-t rounded-b-none flex flex-row items-center justify-center group"
-        type="ghost"
-        @click="onMeasureCircle"
-      >
-        <circle-icon
-          :class="[
-            modelStore.activeSubTool === 'circle'
-              ? 'text-[#FF0000]'
-              : 'group-hover:text-[#FF0000] text-white',
-          ]"
-        />
-      </a-button>
-    </a-tooltip>
-
-    <a-tooltip
-      title="Đo Phương vị"
+      title="Đo góc Azimuth"
       placement="right"
       color="#212121"
     >
@@ -116,18 +116,18 @@
     </a-tooltip>
 
     <a-tooltip
-      title="Đo diện tích"
+      title="Đo Bán kính"
       placement="right"
       color="#212121"
     >
       <a-button
         class="w-8 h-8 p-0 m-0 rounded-t rounded-b-none flex flex-row items-center justify-center group"
         type="ghost"
-        @click="onMeasureArea"
+        @click="onMeasureCircle"
       >
-        <area-icon
+        <circle-icon
           :class="[
-            modelStore.activeSubTool === 'area'
+            modelStore.activeSubTool === 'circle'
               ? 'text-[#FF0000]'
               : 'group-hover:text-[#FF0000] text-white',
           ]"
@@ -158,14 +158,8 @@ import { checkRuleActiveTool } from '@/utils/helpers';
 import SelectIcon from '@/components/icon/tools/selectIcon.vue';
 import SelectActiveIcon from '@/components/icon/tools/selectActiveIcon.vue';
 import AngleIcon from '@/components/icon/tools/angleIcon.vue';
-import AngleActiveIcon from '@/components/icon/tools/angleActiveIcon.vue';
-import DistanceActiveIcon from '@/components/icon/tools/distanceActiveIcon.vue';
 import DistanceIcon from '@/components/icon/tools/distanceIcon.vue';
-import HeightActiveIcon from '@/components/icon/tools/heightActiveIcon.vue';
-import HeightIcon from '@/components/icon/tools/heightIcon.vue';
-import CircleActiveIcon from '@/components/icon/tools/circleActiveIcon.vue';
 import CircleIcon from '@/components/icon/tools/circleIcon.vue';
-import AreaActiveIcon from '@/components/icon/tools/areaActiveIcon.vue';
 import AreaIcon from '@/components/icon/tools/areaIcon.vue';
 import IconCloseActive from '@/components/icon/IconCloseActive.vue';
 import IconTilt from '@/components/icon/tools/IconTilt.vue';
