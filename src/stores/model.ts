@@ -45,15 +45,15 @@ export const useModelStore = defineStore('model', () => {
   const images = ref<Image[]>([]);
   const activePole = ref<number>();
   const gpsRatio = ref<number>(1);
-
-  // Hoangth33
-  const stationsData = ref<Station[]>([]);
-
   const objectGroupArray = computed(() =>
     objectGroup.value ? Object.keys(objectGroup.value) : [],
   );
 
+  const stationsData = ref<Station[]>([]);
+
   return {
+    stationsData,
+
     objectGroup,
     objectGroupArray,
     currentMeasurement,
@@ -86,7 +86,6 @@ export const useModelStore = defineStore('model', () => {
     widthBasePlateValue,
     heightBasePlateValue,
     zPlaneHistory,
-    stationsData,
     poles,
     images,
     activePole,

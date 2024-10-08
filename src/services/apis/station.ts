@@ -1,16 +1,11 @@
 import type { Point, WrapperResponse } from '@/services/services.types';
 import client from '@/services/client';
-import {
-  API_BTS,
-  API_CALCULATE,
-  API_CAMERA_POSE,
-  API_INVENTORY,
-  API_MEDIA_MANAGER,
-  API_STATION,
-} from '@/services/apiPath';
-import type { Address } from '@/services/apis/stationCategory';
+import { API_STATION, API_STATION_SCAN, API_STATION_SCAN_IMAGE } from '@/services/apiPath';
 import * as THREE from 'three';
 import type { Vendor } from '@/services/apis/vendor';
+import type { Commune, Country, District, Province } from '@/services/apis/address';
+import type { PoleCategory } from '@/services/apis/polecategory';
+import type { DeviceCategory } from '@/services/apis/devicecategory';
 
 export type Bts = {
   id: number;
@@ -90,11 +85,21 @@ export interface CalculateResType {
 }
 
 // TODO: Define types
-export interface LocationPoint {
+export interface Location {
   id: number;
-  latitude: string;
-  longitude: string;
-  height: string;
+  latitude: number;
+  longitude: number;
+  height: number;
+}
+
+export interface Address {
+  id: number;
+  detail: string | null;
+  address_detail?: string;
+  country: Country;
+  province: Province;
+  district: District;
+  commune: Commune;
 }
 
 export interface Station {
@@ -102,14 +107,165 @@ export interface Station {
   name: string;
   code: string;
   description: string;
-  scans_count: number;
   scans: Scan[];
-  location: LocationPoint;
+  location: Location;
   address: Address;
   expanded?: boolean;
+  stress_value?: number;
+  pole_category?: PoleCategory;
+}
+
+export interface Scan {
+  id: number;
+  name: string;
+  status: string;
+  is_active: number;
+  date: string;
+  station_id: number;
+  models?: Model3D[];
+  poles?: Pole[];
 }
 
 export interface Model3D {
+  id: number;
+  scan_id: number;
+  filename: string;
+  preview_img: string;
+  url: string;
+  file_path: string;
+  type: string;
+}
+
+export interface Image {
+  id: number;
+  image_url: string;
+  preview_image_url: string;
+  filename: string;
+  width: number;
+  height: number;
+  take_date: string;
+  gps: Gps;
+  camera_pose: CameraPose;
+  gimbal: Gimbal;
+}
+
+export interface Gps {
+  id: number;
+  image_id: number;
+  latitude: string;
+  longitude: string;
+  altitude: string;
+  latitude_ref: string;
+  longitude_ref: string;
+  altitude_ref: string;
+}
+
+export interface CameraPose {
+  id: number;
+  image_id: number;
+  geometry_cone_id: number;
+  w2c: string;
+  tvec: string;
+  qvec: string;
+  intrinsic_mtx: string;
+  geometry_cone: GeometryCone;
+}
+
+export interface GeometryCone {
+  id: number;
+  radius: number;
+  height: number;
+  radial_segments: number;
+  pos_x: number;
+  pos_y: number;
+  pos_z: number;
+  rotate_x: number;
+  rotate_y: number;
+  rotate_z: number;
+}
+
+export interface Gimbal {
+  id: number;
+  image_id: number;
+  yaw_degree: string;
+  pitch_degree: string;
+  roll_degree: string;
+}
+
+export interface Pole {
+  id: number;
+  scan_id: number;
+  pole_category_id: number;
+  name: string;
+  z_plane: number;
+  plane_altitude: number;
+  gps_ratio: number;
+  stress_value: number;
+  category: PoleCategory;
+  pole_devices: PoleDevice[];
+  pole_param: PoleParam;
+}
+
+export interface PoleDevice {
+  id: number;
+  pole_id: number;
+  device_id: number;
+  geometry_box_id: number;
+  rotation: string;
+  translation: string;
+  vertices: string;
+  tilt: any;
+  azimuth?: number;
+  ai_device_width: number;
+  ai_device_height: number;
+  ai_device_depth: number;
+  suggested_img: string;
+  user_id: number;
+  is_active: number;
+  device: Device;
+  geometry_box: GeometryBox;
+  boxMesh?: THREE.Mesh<THREE.BoxGeometry, THREE.MeshBasicMaterial, THREE.Object3DEventMap>;
+  volume?: Potree.BoxVolume;
+  visibleMesh: boolean;
+  visible: boolean;
+  clip: boolean;
+  isNewDevice: boolean;
+  newDevice?: any;
+}
+
+export interface GeometryBox {
+  id: number;
+  depth: number;
+  width: number;
+  height: number;
+  pos_x: number;
+  pos_y: number;
+  pos_z: number;
+  rotate_x: number;
+  rotate_y: number;
+  rotate_z: number;
+}
+
+export interface Device {
+  id: number;
+  name: string;
+  slug: string;
+  images?: string;
+  model_url: any;
+  length?: number;
+  width?: number;
+  depth: number;
+  weight: number;
+  diameter?: number;
+  description?: string;
+  device_category_id: number;
+  vendor_id?: number;
+  vendor?: Vendor;
+  category: DeviceCategory;
+  params: { key: string; value: string }[];
+}
+
+export interface Model {
   id: number;
   filename: string;
   preview_img: string;
@@ -117,15 +273,28 @@ export interface Model3D {
   file_path: string;
   type: string;
 }
-export interface Scan {
+
+export interface PoleParam {
   id: number;
-  name: string;
-  code: string;
-  station_category_id: number | null;
-  date: string;
-  status: number;
-  models: Model3D[];
+  pole_id: number;
+  height: number;
+  is_roof: number;
+  house_height: number;
+  diameter_body_tube: string;
+  diameter_strut_tube: any;
+  diameter_top_tube: string;
+  diameter_bottom_tube: string;
+  tilt_angle: any;
+  is_shielded: number;
+  size: any;
+  foot_size: any;
+  top_size: any;
+  is_active: number;
+  user_id: number;
+  description: string;
 }
+
+// end
 
 export interface BtsDetail {
   id: number;
@@ -135,9 +304,9 @@ export interface BtsDetail {
   date: string;
   status: number;
   detail: Detail;
-  poles: Pole[];
-  images: Image[];
-  models: Model[];
+  poles?: Pole[];
+  images?: Image[];
+  models?: Model[];
 }
 
 export interface Detail {
@@ -151,167 +320,13 @@ export interface Detail {
   address: Address;
 }
 
-export interface Location {
-  id: number;
-  latitude: string;
-  longitude: string;
-  height: string;
-}
-
-export interface Pole {
-  id: number;
-  name: string;
-  height: number;
-  is_roof: number;
-  isExpanded: boolean;
-  house_height: number;
-  pole_category_id: number;
-  size: any;
-  diameter_body_tube: any;
-  diameter_strut_tube: any;
-  diameter_top_tube: any;
-  diameter_bottom_tube: any;
-  foot_size: any;
-  top_size: any;
-  structure: any;
-  z_plane: number;
-  is_shielded: number;
-  north_direction: string;
-  gps_ratio: string;
-  tilt_angle: any;
-  param_a: string;
-  param_b: string;
-  description: any;
-  station_code: any;
-  stress_value: any;
-  pivot: Pivot;
-  category: Category;
-  devices: Device[];
-  deviceCategories: {
-    name: string;
-    devices: Device[];
-  }[];
-}
-
-export interface Pivot {
-  station_id: number;
-  pole_id: number;
-  id: number;
-}
-
-export interface Category {
-  id: number;
-  name: string;
-  code: string;
-  description: string;
-}
-
-export interface Device {
-  id: number;
-  name: string;
-  slug: string;
-  model?: string;
-  images: any;
-  model_url: any;
-  length: number;
-  width: number;
-  depth: number;
-  weight: number;
-  diameter: any;
-  description: string;
-  device_category_id: number;
-  params: { key: string; value: string }[];
-  vendor_id: number;
-  pivot: Pivot2;
-  boxMesh?: THREE.Mesh<THREE.BoxGeometry, THREE.MeshBasicMaterial, THREE.Object3DEventMap>;
-  volume?: Potree.BoxVolume;
-  visibleMesh: boolean;
-  visible: boolean;
-  clip: boolean;
-  isNewDevice: boolean;
-  newDevice?: any;
-  category: Category;
-  vendor: Vendor;
-}
-
-export interface Pivot2 {
-  pole_id: number;
-  device_id: number;
-  id: number;
-  attached_at: any;
-  x: any;
-  y: any;
-  z: number;
-  alpha: any;
-  beta: any;
-  gama: any;
-  vertices: string;
-  suggested_img: string;
-  tilt: number;
-  azimuth: number;
-  height: number;
-  description: string;
-}
-
-export interface Image {
-  id: number;
-  image_url: string;
-  preview_image_url: string;
-  filename: string;
-  width: number;
-  height: number;
-  gps: Gps;
-  camera_pose: CameraPose;
-  gimbal: Gimbal;
-  take_date: string;
-}
-
-export interface Gps {
-  id: number;
-  image_id: number;
-  latitude: string;
-  longitude: string;
-  altitude: string;
-  latitude_ref: string;
-  longitude_ref: string;
-  altitude_ref: string;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface CameraPose {
-  id: number;
-  image_id: number;
-  w2c: string;
-  tvec: string;
-  qvec: string;
-  cent_point: string;
-  euler_angle: string;
-  intrinsic_mtx: string;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface Gimbal {
-  id: number;
-  image_id: number;
-  yaw_degree: string;
-  pitch_degree: string;
-  roll_degree: string;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface Model {
-  id: number;
-  filename: string;
-  preview_img: string;
-  url: string;
-  file_path: string;
-  type: string;
-}
-
 export const fetchStations = (): WrapperResponse<Station[]> => client.get(API_STATION);
+
+export const fetchScanDetail = (id: string): WrapperResponse<Scan> =>
+  client.get(`${API_STATION_SCAN}/${id}`);
+
+export const fetchScanImages = (id: string): WrapperResponse<Image[]> =>
+  client.get(API_STATION_SCAN_IMAGE.replace(':id', id));
 
 export const fetchBTSById = (id: string): WrapperResponse<BtsDetail> =>
   client.get(`${API_STATION}/${id}`);

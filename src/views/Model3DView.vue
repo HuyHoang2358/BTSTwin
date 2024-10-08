@@ -130,7 +130,7 @@ import viVN from 'ant-design-vue/es/locale/vi_VN';
 import { theme } from 'ant-design-vue';
 import { checkRuleActiveTool } from '@/utils/helpers';
 import ModalAddInventory from '@/components/ModalAddInventory.vue';
-import { useBTSDetail } from '@/services/hooks/useStation';
+import { useStationScan } from '@/services/hooks/useStation';
 import type { Device } from '@/services/apis/station';
 import IconResizeWidth from '@/components/icon/IconResizeWidth.vue';
 
@@ -144,7 +144,7 @@ const raycaster = new THREE.Raycaster();
 const INTERSECTED = ref();
 const route = useRoute();
 
-const { data } = useBTSDetail(
+const { data } = useStationScan(
   computed(() => route.query.id as string),
   computed(() => !!route.query.id),
 );
