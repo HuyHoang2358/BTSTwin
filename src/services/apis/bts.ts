@@ -86,7 +86,7 @@ export interface CameraPose {
 }
 
 export interface CalculateData {
-  station_code: string;
+  pole_id: number;
   devices: Device[];
 }
 

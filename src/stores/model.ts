@@ -8,15 +8,16 @@ import type VectorSource from 'ol/source/Vector';
 import { Mesh } from 'three';
 import { heightBasePlate, widthBasePlate } from '@/utils/constants';
 import type { Device, Image, Pole, Station } from '@/services/apis/station';
+import { ACTIVE_TOOL } from '@/utils/enums';
 
 export const useModelStore = defineStore('model', () => {
   const mapOl = ref<Map>();
   const is2DMode = ref<boolean>(true);
   const objectGroup = ref<Record<string, InventoryDetail[]>>();
   const newInventories = ref<any>([]);
-  const currentMeasurement = ref<any>();
+  const selectedMeasurement = ref<any>();
   const measurements = ref<any[]>([]);
-  const activeTool = ref();
+  const activeTool = ref<ACTIVE_TOOL>();
   const activeSubTool = ref();
   const selectedInventory = ref<Device>();
   const selectedPole = ref<Pole>();
@@ -31,7 +32,6 @@ export const useModelStore = defineStore('model', () => {
   const potreeVolumes = ref<any[]>([]);
   const windyLayerVisible = ref(false);
   const isShowBTSInfo = ref(false);
-  const isShowPoleInfo = ref(false);
   const vectorSource = ref<VectorSource>();
   const basePlate = ref<Mesh>();
   const isSelectedBasePlate = ref(false);
@@ -41,22 +41,25 @@ export const useModelStore = defineStore('model', () => {
   const widthBasePlateValue = ref<number>(widthBasePlate);
   const heightBasePlateValue = ref<number>(heightBasePlate);
   const zPlaneHistory = ref(0);
-  const poles = ref<Pole[]>([]);
+  const poles = ref<any[]>([]);
   const images = ref<Image[]>([]);
   const activePole = ref<number>();
   const gpsRatio = ref<number>(1);
+  const isDrawing = ref(false);
+  const fieldHover = ref<Record<string, string | number>>({});
+  const basePlateChecked = ref(true);
+
+  // Hoangth33
+  const stationsData = ref<Station[]>([]);
+
   const objectGroupArray = computed(() =>
     objectGroup.value ? Object.keys(objectGroup.value) : [],
   );
 
-  const stationsData = ref<Station[]>([]);
-
   return {
-    stationsData,
-
     objectGroup,
     objectGroupArray,
-    currentMeasurement,
+    selectedMeasurement,
     measurements,
     activeTool,
     activeSubTool,
@@ -75,7 +78,6 @@ export const useModelStore = defineStore('model', () => {
     potreeVolumes,
     windyLayerVisible,
     isShowBTSInfo,
-    isShowPoleInfo,
     selectedBTS,
     mappingStationWithTileset,
     vectorSource,
@@ -86,9 +88,13 @@ export const useModelStore = defineStore('model', () => {
     widthBasePlateValue,
     heightBasePlateValue,
     zPlaneHistory,
+    stationsData,
     poles,
     images,
     activePole,
     gpsRatio,
+    fieldHover,
+    isDrawing,
+    basePlateChecked,
   };
 });

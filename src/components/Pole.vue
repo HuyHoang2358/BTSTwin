@@ -1,152 +1,166 @@
 <template>
   <div
-    class="w-[285px] bg-[#303030] overflow-auto"
+    class="w-[285px] bg-[#323232] overflow-auto"
     style="height: calc(100vh - 84px)"
-    v-if="modelStore.isShowPoleInfo"
+    v-if="modelStore.selectedPole"
   >
-    <div class="flex justify-between items-center px-3.5 pt-3.5 pb-1">
-      <a-typography-text class="text-base font-medium text-white">Thông tin cột</a-typography-text>
-      <div>
-        <a-button
-          type="ghost"
-          @click="modelStore.isShowPoleInfo = !modelStore.isShowPoleInfo"
-        >
-          <IconClose />
-        </a-button>
-      </div>
-    </div>
-    <a-divider class="mt-1 mb-0 border-[#404040]" />
-    <div class="p-3.5">
-      <div class="flex justify-start gap-2 items-center">
-        <div class="w-12 h-12">
-          <IconBTS class="w-full h-full" />
+    <HeaderInformation
+      title="Thông tin cột"
+      :on-close="onClosePole"
+    />
+    <div class="px-4 py-2.5">
+      <div class="flex flex-row items-center">
+        <IconBTS />
+        <div class="flex flex-row flex-1 items-center justify-between ml-1">
+          <h3
+            class="text-white m-0"
+            style="font-size: 22px"
+          >
+            {{ modelStore.selectedPole?.name }}
+          </h3>
+          <a-popover
+            placement="left"
+            trigger="click"
+            v-model:open="visibleHistory"
+          >
+            <template #content>
+              <CustomAEmpty
+                v-if="!dataHistory || dataHistory.length === 0"
+                class="h-[100px]"
+              />
+              <div
+                class="max-h-[200px] overflow-auto"
+                v-else
+              >
+                <div
+                  class="flex flex-row gap-2 items-center cursor-pointer group mb-2"
+                  v-for="item in dataHistory"
+                  :key="item.id"
+                  @mouseenter="modelStore.fieldHover = item.field"
+                  @mouseleave="modelStore.fieldHover = {}"
+                >
+                  <a-typography-text class="group-hover:text-main">
+                    {{ item.createdAt }}
+                  </a-typography-text>
+                  <a-button
+                    type="primary"
+                    class="w-8 h-8 flex justify-center items-center"
+                    @click="onRollback"
+                  >
+                    <RollbackOutlined class="text-white h-4 w-4" />
+                  </a-button>
+                </div>
+              </div>
+            </template>
+            <template #title>
+              <span>Lịch sử thay đổi</span>
+            </template>
+            <a-button
+              ghost
+              class="border-none m-0 p-0"
+            >
+              <HistoryOutlined class="text-white h-4 w-4" />
+            </a-button>
+          </a-popover>
         </div>
-        <h3 class="text-white m-0">{{ modelStore.selectedPole?.name }}</h3>
       </div>
-
-      <h5 class="text-white font-semibold mt-4">Thông tin chung</h5>
-      <a-descriptions
-        layout="horizontal"
-        :column="1"
-        class="mt-2 p-2 rounded-lg"
-        style="border: 1px solid #404040"
-      >
-        <a-descriptions-item
+      <a-typography class="text-[#E3E3E3] font-medium text-sm mt-2.5 mb-1">
+        Thông tin chung
+      </a-typography>
+      <div class="border border-solid border-[#4B4B4B] rounded-[5px] px-3 py-1">
+        <ItemDescription
           label="Loại cột"
-          :labelStyle="descriptionStyle"
-          :contentStyle="descriptionStyle"
-        >
-          {{ modelStore.selectedPole?.category?.name }} ({{
-            modelStore.selectedPole?.category?.code
-          }})
-        </a-descriptions-item>
-        <a-descriptions-item
+          :value="`${modelStore.selectedPole?.category?.name} (${modelStore.selectedPole?.category?.code})`"
+        />
+        <ItemDescription
           label="Vị trí"
-          :labelStyle="descriptionStyle"
-          :contentStyle="descriptionStyle"
-        >
-          {{ modelStore.selectedPole?.is_roof ? 'Trên mái' : 'Dưới đất' }}
-        </a-descriptions-item>
-        <a-descriptions-item
-          label="Chiều cao cột"
-          :labelStyle="descriptionStyle"
-          :contentStyle="descriptionStyle"
-        >
-          {{ modelStore.selectedPole?.height + ' (m)' }}
-        </a-descriptions-item>
-        <a-descriptions-item
-          label="Chiều cao nhà"
-          :labelStyle="descriptionStyle"
-          :contentStyle="descriptionStyle"
-          v-if="modelStore.selectedPole?.is_roof"
-        >
-          {{ modelStore.selectedPole?.house_height + ' (m)' }}
-        </a-descriptions-item>
-      </a-descriptions>
+          :value="modelStore.selectedPole?.is_roof ? 'Trên mái' : 'Dưới đất'"
+        />
+        <ItemDescription
+          label="Chiều cao cột (m)"
+          :value="modelStore.selectedPole?.height"
+        />
+        <ItemDescription
+          label="Chiều cao nhà (m)"
+          :value="modelStore.selectedPole?.house_height"
+        />
+      </div>
+      <a-typography class="text-[#E3E3E3] font-medium text-sm mt-2.5 mb-1">
+        Thông số cột
+      </a-typography>
 
-      <h5 class="text-white font-semibold mt-4">Thông số cột</h5>
-      <a-descriptions
-        layout="horizontal"
-        :column="1"
-        class="mt-2 p-2 rounded-lg"
-        style="border: 1px solid #404040"
-      >
-        <a-descriptions-item
-          label="Đường kính ống thân"
-          :labelStyle="descriptionStyle"
-          :contentStyle="descriptionStyle"
-        >
-          {{ modelStore.selectedPole?.diameter_body_tube + ' (mm)' }}
-        </a-descriptions-item>
-        <a-descriptions-item
-          label="Đường kính ống thanh chống"
-          :labelStyle="descriptionStyle"
-          :contentStyle="descriptionStyle"
-        >
-          {{ modelStore.selectedPole?.diameter_strut_tube + ' (mm)' }}
-        </a-descriptions-item>
-        <a-descriptions-item
-          label="Đường kính ống thân mép trên"
-          :labelStyle="descriptionStyle"
-          :contentStyle="descriptionStyle"
-          v-if="modelStore.selectedPole?.diameter_top_tube"
-        >
-          {{ modelStore.selectedPole?.diameter_top_tube }}
-        </a-descriptions-item>
-        <a-descriptions-item
-          label="Đường kính ống thân mép dưới"
-          :labelStyle="descriptionStyle"
-          :contentStyle="descriptionStyle"
-          v-if="modelStore.selectedPole?.diameter_bottom_tube"
-        >
-          {{ modelStore.selectedPole?.diameter_bottom_tube }}
-        </a-descriptions-item>
-        <a-descriptions-item
+      <div class="border border-solid border-[#4B4B4B] rounded-[5px] px-3 py-1">
+        <ItemDescription
+          label="ĐK ống thân (mm)"
+          :value="modelStore.selectedPole?.diameter_body_tube"
+          submit-key="diameter_body_tube"
+          :on-submit="onSubmitEditing"
+          editable
+        />
+        <ItemDescription
+          label="ĐK ống thanh chống (mm)"
+          :value="modelStore.selectedPole?.diameter_strut_tube"
+          submit-key="diameter_strut_tube"
+          :on-submit="onSubmitEditing"
+          editable
+        />
+        <ItemDescription
+          label="ĐK ống thân mép trên (mm)"
+          :value="modelStore.selectedPole?.diameter_top_tube"
+          submit-key="diameter_top_tube"
+          :on-submit="onSubmitEditing"
+          editable
+        />
+        <ItemDescription
+          label="ĐK ống thân mép dưới (mm)"
+          :value="modelStore.selectedPole?.diameter_bottom_tube"
+          submit-key="diameter_bottom_tube"
+          :on-submit="onSubmitEditing"
+          editable
+        />
+        <ItemDescription
           label="Kích thước cột"
-          :labelStyle="descriptionStyle"
-          :contentStyle="descriptionStyle"
-        >
-          {{ modelStore.selectedPole?.size ?? ' Chưa xác định' }}
-        </a-descriptions-item>
-
-        <a-descriptions-item
+          :value="modelStore.selectedPole?.size"
+          submit-key="size"
+          :on-submit="onSubmitEditing"
+          editable
+        />
+        <ItemDescription
           label="Kích thước chân cột"
-          :labelStyle="descriptionStyle"
-          :contentStyle="descriptionStyle"
-        >
-          {{ modelStore.selectedPole?.foot_size ?? ' Chưa xác định' }}
-        </a-descriptions-item>
-        <a-descriptions-item
+          :value="modelStore.selectedPole?.foot_size"
+          submit-key="foot_size"
+          :on-submit="onSubmitEditing"
+          editable
+        />
+        <ItemDescription
           label="Kích thước đỉnh cột"
-          :labelStyle="descriptionStyle"
-          :contentStyle="descriptionStyle"
-        >
-          {{ modelStore.selectedPole?.top_size ?? ' Chưa xác định' }}
-        </a-descriptions-item>
-        <a-descriptions-item
+          :value="modelStore.selectedPole?.top_size"
+          submit-key="top_size"
+          :on-submit="onSubmitEditing"
+          editable
+        />
+        <ItemDescription
           label="Cấu trúc cột"
-          :labelStyle="descriptionStyle"
-          :contentStyle="descriptionStyle"
-        >
-          {{ modelStore.selectedPole?.structure ?? ' Chưa xác định' }}
-        </a-descriptions-item>
-
-        <a-descriptions-item
-          label="Góc Tilt"
-          :labelStyle="descriptionStyle"
-          :contentStyle="descriptionStyle"
-        >
-          {{ modelStore.selectedPole?.tilt_angle }}
-        </a-descriptions-item>
-        <a-descriptions-item
-          label="Giá trị ứng suất"
-          :labelStyle="descriptionStyle"
-          :contentStyle="descriptionStyle"
-        >
-          {{ modelStore.selectedPole?.stress_value }}%
-        </a-descriptions-item>
-      </a-descriptions>
-
+          :value="modelStore.selectedPole?.structure"
+          submit-key="structure"
+          :on-submit="onSubmitEditing"
+          editable
+        />
+        <ItemDescription
+          label="Góc Tilt (°)"
+          :value="modelStore.selectedPole?.tilt_angle"
+          submit-key="tilt_angle"
+          :on-submit="onSubmitEditing"
+          editable
+        />
+        <ItemDescription
+          label="Giá trị ứng suất (%)"
+          :value="modelStore.selectedPole?.stress_value"
+          submit-key="stress_value"
+          :on-submit="onSubmitEditing"
+          editable
+        />
+      </div>
       <a-form
         ref="formRef"
         :model="formState"
@@ -183,22 +197,81 @@
 <script lang="ts" setup>
 import { computed, onMounted, reactive, ref, type UnwrapRef } from 'vue';
 import { useModelStore } from '@/stores/model';
-import IconClose from '@/components/icon/IconClose.vue';
 import IconBTS from '@/components/icons/home/IconBTS.vue';
+import { HistoryOutlined, RollbackOutlined } from '@ant-design/icons-vue';
+import { useRoute } from 'vue-router';
+import {
+  HISTORY_POLE_LIST_QUERY_KEY,
+  useCreatePoleHistory,
+  usePoleHistory,
+} from '@/services/hooks/useStation';
+import HeaderInformation from '@/components/HeaderInformation.vue';
+import ItemDescription from '@/components/ItemDescription.vue';
+import { useQueryClient } from '@tanstack/vue-query';
+import CustomAEmpty from '@/components/CustomAEmpty.vue';
 
 const modelStore = useModelStore();
+const { mutate: createPoleHistory } = useCreatePoleHistory();
 
 interface FormState {
   description?: string;
   status?: string;
 }
+
+const visibleHistory = ref<boolean>(false);
+
 // set value for status from modelStore
 onMounted(() => {
   formState.status = modelStore.selectedPole?.is_shielded?.toString() || '0';
 });
 
+const route = useRoute();
+
+const { data: dataHistory } = usePoleHistory(
+  {
+    id: computed(() => route.query.id as string),
+    poleId: computed(() => modelStore.selectedPole?.pivot?.id || 0),
+  },
+  computed(() => !!route.query.id),
+);
+
 const formRef = ref();
 const formState: UnwrapRef<FormState> = reactive({});
+const queryClient = useQueryClient();
 
-const descriptionStyle = computed(() => ({ color: 'white', fontSize: '12px' }));
+const onSubmitEditing = (key: string, value: string) => {
+  createPoleHistory(
+    {
+      scanId: Number(route.query.id),
+      poleId: Number(modelStore.selectedPole?.pivot?.id),
+      field: {
+        [key]: value,
+      },
+    },
+    {
+      onSuccess() {
+        queryClient.invalidateQueries({ queryKey: [HISTORY_POLE_LIST_QUERY_KEY] });
+      },
+    },
+  );
+};
+
+const onRollback = () => {
+  modelStore.poles = modelStore.poles.map((pole) => {
+    if (pole.pivot.id === modelStore.selectedPole?.pivot.id) {
+      return { ...pole, ...modelStore.fieldHover };
+    }
+    return pole;
+  });
+  const currentPole = modelStore.poles.find(
+    (pole) => pole.pivot.id === modelStore.selectedPole?.pivot.id,
+  );
+  if (!currentPole) return;
+  modelStore.selectedPole = currentPole;
+  visibleHistory.value = false;
+};
+
+const onClosePole = () => {
+  modelStore.selectedPole = undefined;
+};
 </script>

@@ -1,6 +1,16 @@
 import { useMutation, useQuery } from '@tanstack/vue-query';
 
 import {
+  createDeviceHistory,
+  createPoleHistory,
+  fetchBTSById,
+  fetchDeviceHistory,
+  fetchPoleHistory,
+  fetchReport,
+  fetchStations,
+} from '@/services/apis/station';
+import type { ComputedRef } from 'vue';
+import {
   fetchBTSById,
   fetchReport,
   fetchScanDetail,
@@ -13,6 +23,9 @@ export const STATION_QUERY_KEY = 'STATION_QUERY_KEY';
 export const BTS_DETAIL_QUERY_KEY = 'BTS_DETAIL_QUERY_KEY';
 export const STATION_SCAN_IMAGE_QUERY_KEY = 'STATION_SCAN_IMAGE_QUERY_KEY';
 export const STATION_SCAN_QUERY_KEY = 'STATION_SCAN_QUERY_KEY';
+export const HISTORY_POLE_LIST_QUERY_KEY = 'HISTORY_POLE_LIST_QUERY_KEY';
+export const HISTORY_DEVICE_LIST_QUERY_KEY = 'HISTORY_DEVICE_LIST_QUERY_KEY';
+
 export const useStations = () =>
   useQuery({
     queryKey: [STATION_QUERY_KEY],
@@ -43,4 +56,39 @@ export const useBTSDetail = (idComputed: ComputedRef<string>, enabled: ComputedR
     enabled,
   });
 
+export const useStationReport = () => useMutation({ mutationFn: (id: string) => fetchReport(id) });
+
+export const usePoleHistory = (
+  paramsComputed: { id: ComputedRef<string>; poleId: ComputedRef<number> },
+  enabled: ComputedRef<boolean>,
+) =>
+  useQuery({
+    queryKey: [HISTORY_POLE_LIST_QUERY_KEY, paramsComputed],
+    queryFn: () =>
+      fetchPoleHistory({
+        scanId: paramsComputed.id.value,
+        poleId: paramsComputed.poleId.value,
+      }),
+    enabled,
+    retry: 1,
+  });
+
+export const useCreatePoleHistory = () => useMutation({ mutationFn: createPoleHistory });
+
+export const useDeviceHistory = (
+  paramsComputed: { id: ComputedRef<string>; deviceId: ComputedRef<number> },
+  enabled: ComputedRef<boolean>,
+) =>
+  useQuery({
+    queryKey: [HISTORY_DEVICE_LIST_QUERY_KEY, paramsComputed],
+    queryFn: () =>
+      fetchDeviceHistory({
+        scanId: paramsComputed.id.value,
+        deviceId: paramsComputed.deviceId.value,
+      }),
+    enabled,
+    retry: 1,
+  });
+
+export const useCreateDeviceHistory = () => useMutation({ mutationFn: createDeviceHistory });
 export const useStationReport = () => useMutation({ mutationFn: (id: string) => fetchReport(id) });

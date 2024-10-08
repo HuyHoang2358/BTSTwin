@@ -1,48 +1,51 @@
 <template>
   <div
-    class="w-[285px] bg-[#303030] p-6 overflow-auto flex flex-col"
+    class="w-[285px] bg-[#303030] overflow-auto flex flex-col"
     style="height: calc(100vh - 84px)"
   >
-    <a-typography-paragraph
-      content="Base plate"
-      class="text-[#f2f2f2] text-lg"
+    <HeaderInformation
+      title="Base plate"
+      :on-close="() => (modelStore.isSelectedBasePlate = false)"
     />
-    <a-typography-text>Chiều dài (m)</a-typography-text>
-    <a-input-number
-      v-model:value="modelStore.heightBasePlateValue"
-      :min="1"
-      :max="100"
-      class="w-full my-2"
-    />
-    <a-typography-text>Chiều rộng (m)</a-typography-text>
-    <a-input-number
-      v-model:value="modelStore.widthBasePlateValue"
-      :min="1"
-      :max="100"
-      class="w-full my-2"
-    />
-    <a-typography-text>Vị trí (z)</a-typography-text>
-    <a-input-number
-      v-model:value="modelStore.positionValue"
-      :min="-50"
-      :max="50"
-      class="w-full my-2"
-    />
-    <div class="w-full flex flex-col">
-      <a-slider
+
+    <div class="p-3 flex flex-col">
+      <a-typography-text>Chiều dài (m)</a-typography-text>
+      <a-input-number
+        v-model:value="modelStore.heightBasePlateValue"
+        :min="1"
+        :max="100"
+        class="w-full my-2"
+      />
+      <a-typography-text>Chiều rộng (m)</a-typography-text>
+      <a-input-number
+        v-model:value="modelStore.widthBasePlateValue"
+        :min="1"
+        :max="100"
+        class="w-full my-2"
+      />
+      <a-typography-text>Vị trí (z)</a-typography-text>
+      <a-input-number
         v-model:value="modelStore.positionValue"
         :min="-50"
         :max="50"
-        :step="0.01"
+        class="w-full my-2"
       />
+      <div class="w-full flex flex-col">
+        <a-slider
+          v-model:value="modelStore.positionValue"
+          :min="-50"
+          :max="50"
+          :step="0.01"
+        />
+      </div>
+      <a-button
+        type="primary"
+        class="mt-4"
+        @click="onReset"
+      >
+        Cài đặt về ban đầu
+      </a-button>
     </div>
-    <a-button
-      type="primary"
-      class="mt-4"
-      @click="onReset"
-    >
-      Reset
-    </a-button>
   </div>
 </template>
 
@@ -50,6 +53,7 @@
 import { onMounted, watch } from 'vue';
 import { useModelStore } from '@/stores/model';
 import { heightBasePlate, widthBasePlate } from '@/utils/constants';
+import HeaderInformation from '@/components/HeaderInformation.vue';
 
 const modelStore = useModelStore();
 

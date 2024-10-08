@@ -1,6 +1,8 @@
 import type { Point, WrapperResponse } from '@/services/services.types';
 import client from '@/services/client';
 import { API_STATION, API_STATION_SCAN, API_STATION_SCAN_IMAGE } from '@/services/apiPath';
+import { API_STATION } from '@/services/apiPath';
+import type { Address } from '@/services/apis/stationCategory';
 import * as THREE from 'three';
 import type { Vendor } from '@/services/apis/vendor';
 import type { Commune, Country, District, Province } from '@/services/apis/address';
@@ -87,19 +89,9 @@ export interface CalculateResType {
 // TODO: Define types
 export interface Location {
   id: number;
-  latitude: number;
-  longitude: number;
-  height: number;
-}
-
-export interface Address {
-  id: number;
-  detail: string | null;
-  address_detail?: string;
-  country: Country;
-  province: Province;
-  district: District;
-  commune: Commune;
+  latitude: string;
+  longitude: string;
+  height: string;
 }
 
 export interface Station {
@@ -147,6 +139,7 @@ export interface Image {
   gps: Gps;
   camera_pose: CameraPose;
   gimbal: Gimbal;
+  take_date: string;
 }
 
 export interface Gps {
@@ -274,6 +267,34 @@ export interface Model {
   type: string;
 }
 
+export interface PoleHistory {
+  id: string;
+  field: Record<string, string | number>;
+  createdAt: string;
+  scanId: number;
+  poleId: number;
+}
+
+export type DataCreatePole = {
+  scanId: number;
+  poleId: number;
+  field: Record<string, string | number>;
+};
+
+export interface DeviceHistory {
+  id: string;
+  field: Record<string, string | number>;
+  createdAt: string;
+  scanId: number;
+  deviceId: number;
+}
+
+export type DataCreateDevice = {
+  scanId: number;
+  deviceId: number;
+  field: Record<string, string | number>;
+};
+
 export interface PoleParam {
   id: number;
   pole_id: number;
@@ -337,3 +358,25 @@ export const fetchReport = (id: string) =>
       stations: [id],
     },
   });
+
+export const fetchPoleHistory = (params: {
+  scanId: string;
+  poleId: number;
+}): Promise<PoleHistory[]> =>
+  client.get('https://66ff6db12b9aac9c997f3c22.mockapi.io/history-pole', {
+    params,
+  });
+
+export const createPoleHistory = (data: DataCreatePole) =>
+  client.post(`https://66ff6db12b9aac9c997f3c22.mockapi.io/history-pole`, data);
+
+export const fetchDeviceHistory = (params: {
+  scanId: string;
+  deviceId: number;
+}): Promise<DeviceHistory[]> =>
+  client.get('https://66ff6db12b9aac9c997f3c22.mockapi.io/history-device', {
+    params,
+  });
+
+export const createDeviceHistory = (data: DataCreateDevice) =>
+  client.post(`https://66ff6db12b9aac9c997f3c22.mockapi.io/history-device`, data);

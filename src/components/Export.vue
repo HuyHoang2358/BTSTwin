@@ -1,22 +1,23 @@
 <template>
   <div
     class="bg-[#303030] w-[260px] overflow-auto"
-    v-if="modelStore.activeTool === 'export'"
+    v-if="modelStore.activeTool === ACTIVE_TOOL.REPORT"
   >
-    <div class="flex justify-between items-center px-3 pt-4">
-      <a-typography-text class="text-lg font-semibold text-[#E3E3E3]">
-        Xuất báo cáo
-      </a-typography-text>
-    </div>
-    <a-divider class="mt-1 mb-0 border-[#404040]" />
+    <HeaderMenu
+      title="Xuất báo cáo"
+      show-divider
+    />
     <div class="mx-3 py-4">
+      <a-typography-text class="text-base font-semibold text-white">
+        Danh sách báo cáo
+      </a-typography-text>
       <a-button
         type="primary"
-        class="w-full"
+        class="w-full mt-2"
         @click="onDownload"
         :loading="isPendingDownload"
       >
-        Xuất báo cáo excel
+        Xuất báo cáo EXCEL
       </a-button>
     </div>
   </div>
@@ -27,9 +28,10 @@ import { useModelStore } from '@/stores/model';
 import { useBTSDetail, useStationReport } from '@/services/hooks/useStation';
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
-import { displayDateFormat, excelMineType } from '@/utils/constants';
-import dayjs from 'dayjs';
 import { useErrorHandler } from '@/services/hooks/useErrorHandler';
+import HeaderMenu from '@/components/HeaderMenu.vue';
+import { ACTIVE_TOOL } from '@/utils/enums';
+
 const modelStore = useModelStore();
 const route = useRoute();
 

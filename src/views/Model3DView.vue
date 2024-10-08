@@ -52,9 +52,10 @@
             @click="onPointerClick"
             @mousedown="onPointerDown"
             @mousemove="onPointerMove"
+            @contextmenu.prevent="onRightClick"
             class="flex relative"
           />
-          <MeasurementTool class="absolute top-[82px] right-6 z-10" />
+          <MeasurementTool class="absolute top-[24px] right-4 z-10" />
           <BottomTool />
 
           <div
@@ -63,14 +64,26 @@
           >
             <div class="loader" />
           </div>
-          <div
-            v-if="!!modelStore.hoverInformation"
-            class="absolute bottom-4 right-4 z-10"
-          >
-            <a-typography-text class="text-white">
-              {{ modelStore.hoverInformation }}
-            </a-typography-text>
-          </div>
+          <transition name="fade">
+            <div
+              v-if="!!modelStore.hoverInformation"
+              class="absolute top-4 left-4 z-10 bg-white flex flex-row items-center p-2 rounded-[15px]"
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                xmlns="http://www.w3.org/2000/svg"
+                preserveAspectRatio="xMidYMid meet"
+                focusable="false"
+              >
+                <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1Zm1 11H7V7h2v5Zm0-6H7V4h2v2Z"></path>
+              </svg>
+              <a-typography-text class="text-[#303030] pl-2 text-xs">
+                {{ modelStore.hoverInformation }}
+              </a-typography-text>
+            </div>
+          </transition>
         </div>
 
         <!-- Resize button -->
@@ -84,25 +97,7 @@
           </div>
         </div>
 
-        <!-- List images -->
-        <div
-          class="overflow-auto flex flex-col bg-[#212121]"
-          :style="{ flex: 100 - pane1Size + ' 0 0' }"
-          v-if="modelStore.selectedImage"
-        >
-          <ListImages />
-        </div>
-
-        <!-- Information -->
-        <Suggestion
-          v-if="
-            !modelStore.selectedImage &&
-            !modelStore.selectedInventory &&
-            !modelStore.isShowPoleInfo &&
-            !modelStore.isSelectedBasePlate
-          "
-        />
-        <Information v-else />
+        <Information :pane1-size="pane1Size" />
       </div>
     </div>
     <ModalAddInventory />
@@ -110,13 +105,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onUnmounted, ref, watch } from 'vue';
+import { computed, onUnmounted, ref } from 'vue';
 import * as THREE from 'three';
-import ListImages from '@/components/ListImages.vue';
 import MeasurementTool from '@/components/MeasurementTool.vue';
 import { useModelStore } from '@/stores/model';
 import { useInitial } from '@/potree/hooks/useInitial';
-import Suggestion from '@/components/Suggestion.vue';
 import BottomTool from '@/components/BottomTool.vue';
 import Information from '@/components/Information.vue';
 import LeftMenu from '@/components/LeftMenu.vue';
@@ -164,7 +157,7 @@ const onMouseMove = (event: any) => {
     const containerWidth = container.value.offsetWidth;
     const newPane1Size = startPane1Size + (deltaX / containerWidth) * 100;
 
-    pane1Size.value = Math.max(10, Math.min(90, newPane1Size));
+    pane1Size.value = Math.max(10, Math.min(75, newPane1Size));
   }
 };
 
@@ -222,6 +215,7 @@ const onPointerClick = (evt: any) => {
         modelStore.selectedImage = undefined;
       }
       modelStore.selectedPole = undefined;
+      modelStore.selectedMeasurement = undefined;
       modelStore.isSelectedBasePlate = false;
       modelStore.selectedInventory = selectedInventory;
     } else if (targetObject.userData.type === 'basePlate') {
@@ -229,7 +223,7 @@ const onPointerClick = (evt: any) => {
     }
   } else {
     modelStore.selectedImage = undefined;
-    modelStore.currentMeasurement = undefined;
+    modelStore.selectedMeasurement = undefined;
     modelStore.selectedInventory = undefined;
     modelStore.isSelectedBasePlate = false;
   }
@@ -287,37 +281,14 @@ const onPointerMove = (evt: any) => {
 
 useInitial();
 
-watch(
-  () => modelStore.selectedImage,
-  () => {
-    if (modelStore.selectedImage) {
-      modelStore.selectedPole = undefined;
-      modelStore.isSelectedBasePlate = false;
-    }
-  },
-);
-
-watch(
-  () => modelStore.selectedPole,
-  () => {
-    if (modelStore.selectedPole) {
-      modelStore.selectedInventory = undefined;
-      modelStore.selectedImage = undefined;
-      modelStore.isSelectedBasePlate = false;
-    }
-  },
-);
-
-watch(
-  () => modelStore.isSelectedBasePlate,
-  () => {
-    if (modelStore.isSelectedBasePlate) {
-      modelStore.selectedInventory = undefined;
-      modelStore.selectedImage = undefined;
-      modelStore.selectedPole = undefined;
-    }
-  },
-);
+const onRightClick = (event: MouseEvent) => {
+  event.preventDefault();
+  if (modelStore.activeSubTool === 'distance' || modelStore.activeSubTool === 'area') {
+    modelStore.hoverInformation = '';
+    modelStore.activeSubTool = undefined;
+    modelStore.isDrawing = false;
+  }
+};
 </script>
 
 <style>
@@ -339,5 +310,13 @@ watch(
   100% {
     transform: rotate(360deg);
   }
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 1.5s ease;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
+  opacity: 0;
 }
 </style>

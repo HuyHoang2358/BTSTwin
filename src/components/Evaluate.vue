@@ -1,21 +1,18 @@
 <template>
   <div
-    v-if="modelStore.poles.length > 0 && modelStore.activeTool === 'evaluate'"
+    v-if="modelStore.poles.length > 0 && modelStore.activeTool === ACTIVE_TOOL.EVALUATE"
     class="flex flex-col bg-[#303030] w-[260px]"
   >
-    <a-typography-title
-      :level="3"
-      style="font-size: 16px; color: white"
-      class="ml-3 mt-4"
-    >
-      Đánh giá thiết kế
-    </a-typography-title>
+    <HeaderMenu
+      title="Đánh giá thiết kế"
+      show-divider
+    />
     <div>
       <a-segmented
         v-model:value="splat"
         :options="splatData"
         size="middle"
-        class="my-2 mx-3"
+        class="my-3 mx-3"
         block
       />
       <div
@@ -58,7 +55,7 @@
     <div class="flex flex-col overflow-auto">
       <a-tabs
         v-model:activeKey="modelStore.activePole"
-        @change="onChangeTab"
+        @tabClick="tabClick"
       >
         <a-tab-pane
           v-for="pole in modelStore.poles"
@@ -82,6 +79,8 @@ import type { UploadChangeParam } from 'ant-design-vue';
 import * as XLSX from 'xlsx';
 import type { Device } from '@/services/apis/station';
 import { generateUUID } from 'three/src/math/MathUtils';
+import HeaderMenu from '@/components/HeaderMenu.vue';
+import { ACTIVE_TOOL } from '@/utils/enums';
 
 const modelStore = useModelStore();
 
@@ -91,9 +90,8 @@ const files = ref([]);
 
 const jsonData = ref();
 
-const onChangeTab = (value: number) => {
+const tabClick = (value: number) => {
   modelStore.selectedPole = modelStore.poles.find((item) => item.pivot.id === value);
-  modelStore.isShowPoleInfo = true;
 };
 
 let isSetActivePole = false;
@@ -111,7 +109,7 @@ watch(
 const beforeUpload = (file: any) => {
   const reader = new FileReader();
   reader.onload = (e) => {
-    const data = new Uint8Array(e.target.result);
+    const data = new Uint8Array(e.target?.result);
     const workbook = XLSX.read(data, { type: 'array' });
     const firstSheetName = workbook.SheetNames[0];
     const worksheet = workbook.Sheets[firstSheetName];
@@ -136,7 +134,6 @@ const handleChange = (info: UploadChangeParam<any>) => {
 
 const onAddBox = () => {
   modelStore.openModalAddInventory = true;
-  modelStore.activeTool = undefined;
   modelStore.selectedImage = undefined;
   modelStore.selectedInventory = undefined;
   modelStore.selectedPole = undefined;

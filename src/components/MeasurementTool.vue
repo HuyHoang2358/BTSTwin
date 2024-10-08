@@ -134,20 +134,6 @@
         />
       </a-button>
     </a-tooltip>
-
-    <a-tooltip
-      title="Xóa toàn bộ công cụ đo"
-      placement="right"
-      color="#212121"
-    >
-      <a-button
-        class="w-8 h-8 p-0 m-0 rounded-t rounded-b-none flex flex-row items-center justify-center"
-        type="ghost"
-        @click="onRemoveAllMeasurements"
-      >
-        <icon-close-active class="w-full h-full p-1.5" />
-      </a-button>
-    </a-tooltip>
   </div>
 </template>
 
@@ -161,14 +147,32 @@ import AngleIcon from '@/components/icon/tools/angleIcon.vue';
 import DistanceIcon from '@/components/icon/tools/distanceIcon.vue';
 import CircleIcon from '@/components/icon/tools/circleIcon.vue';
 import AreaIcon from '@/components/icon/tools/areaIcon.vue';
-import IconCloseActive from '@/components/icon/IconCloseActive.vue';
 import IconTilt from '@/components/icon/tools/IconTilt.vue';
 import IconAzimuth from '@/components/icon/tools/IconAzimuth.vue';
 
 const modelStore = useModelStore();
 
+const onMeasureDistance = () => {
+  modelStore.activeSubTool = 'distance';
+  window.potreeViewer.measuringTool.startInsertion({
+    showDistances: true,
+    showArea: false,
+    closed: false,
+    name: `Khoảng cách ${modelStore.measurements.length + 1}`,
+  });
+};
+
+const onMeasureArea = () => {
+  modelStore.activeSubTool = 'area';
+  window.potreeViewer.measuringTool.startInsertion({
+    showDistances: true,
+    showArea: true,
+    closed: true,
+    name: `Diện tích ${modelStore.measurements.length + 1}`,
+  });
+};
+
 const onMeasureAngle = () => {
-  initMeasurement();
   modelStore.activeSubTool = 'angle';
   window.potreeViewer.measuringTool.startInsertion({
     showDistances: false,
@@ -176,34 +180,11 @@ const onMeasureAngle = () => {
     showArea: false,
     closed: true,
     maxMarkers: 3,
-    name: 'Góc',
-  });
-};
-
-const onMeasureDistance = () => {
-  initMeasurement();
-  modelStore.activeSubTool = 'distance';
-  window.potreeViewer.measuringTool.startInsertion({
-    showDistances: true,
-    showArea: false,
-    closed: false,
-    name: 'Khoảng cách',
-  });
-};
-
-const onMeasureArea = () => {
-  initMeasurement();
-  modelStore.activeSubTool = 'area';
-  window.potreeViewer.measuringTool.startInsertion({
-    showDistances: true,
-    showArea: true,
-    closed: true,
-    name: 'Diện tích',
+    name: `Góc ${modelStore.measurements.length + 1}`,
   });
 };
 
 const onMeasureHeight = () => {
-  initMeasurement();
   modelStore.activeSubTool = 'height';
   window.potreeViewer.measuringTool.startInsertion({
     showDistances: false,
@@ -211,27 +192,11 @@ const onMeasureHeight = () => {
     showArea: false,
     closed: false,
     maxMarkers: 2,
-    name: 'Góc Tilt',
-  });
-};
-
-const onMeasureCircle = () => {
-  initMeasurement();
-  modelStore.activeSubTool = 'circle';
-  window.potreeViewer.measuringTool.startInsertion({
-    showDistances: false,
-    showHeight: false,
-    showArea: false,
-    showCircle: true,
-    showEdges: false,
-    closed: false,
-    maxMarkers: 3,
-    name: 'Đường Kính',
+    name: `Góc Tilt ${modelStore.measurements.length + 1}`,
   });
 };
 
 const onMeasureAzimuth = () => {
-  initMeasurement();
   modelStore.activeSubTool = 'azimuth';
   window.potreeViewer.measuringTool.startInsertion({
     showDistances: false,
@@ -242,26 +207,21 @@ const onMeasureAzimuth = () => {
     showAzimuth: true,
     closed: false,
     maxMarkers: 2,
-    name: 'Góc Azimuth',
+    name: `Góc Azimuth ${modelStore.measurements.length + 1}`,
   });
 };
-const initMeasurement = () => {
-  // modelStore.activeTool = 'measurements';
-};
 
-/*const onInsertAnnotation = () => {
-  modelStore.activeTool = 'annotation';
-  window.potreeViewer.annotationTool.startInsertion();
-};
-
-const onInsertClipVolumeInside = () => {
-  modelStore.activeTool = 'clip_volume_inside';
-  window.potreeViewer.volumeTool.startInsertion({ clip: true });
-};*/
-
-const onRemoveAllMeasurements = () => {
-  window.potreeViewer.scene.removeAllMeasurements();
-  modelStore.measurements = [];
-  modelStore.activeSubTool = null;
+const onMeasureCircle = () => {
+  modelStore.activeSubTool = 'circle';
+  window.potreeViewer.measuringTool.startInsertion({
+    showDistances: false,
+    showHeight: false,
+    showArea: false,
+    showCircle: true,
+    showEdges: false,
+    closed: false,
+    maxMarkers: 3,
+    name: `Bán kính ${modelStore.measurements.length + 1}`,
+  });
 };
 </script>

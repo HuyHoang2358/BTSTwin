@@ -1,7 +1,7 @@
 <template>
   <div class="absolute bottom-4 left-4 z-10">
     <img
-      src="/icons/left.svg"
+      src="/potree/build/potree/resources/icons/left.svg"
       style="width: 32px; height: 32px"
       class="button-measure-icon"
       title="Góc nhìn bên trái"
@@ -9,7 +9,7 @@
       @click="onLeftView"
     />
     <img
-      src="/icons/right.svg"
+      src="/potree/build/potree/resources/icons/right.svg"
       style="width: 32px; height: 32px"
       class="button-measure-icon"
       title="Góc nhìn bên phải"
@@ -17,7 +17,7 @@
       @click="onRightView"
     />
     <img
-      src="/icons/front.svg"
+      src="/potree/build/potree/resources/icons/front.svg"
       style="width: 32px; height: 32px"
       class="button-measure-icon"
       title="Góc nhìn chính diện"
@@ -25,7 +25,7 @@
       @click="onFrontView"
     />
     <img
-      src="/icons/back.svg"
+      src="/potree/build/potree/resources/icons/back.svg"
       style="width: 32px; height: 32px"
       class="button-measure-icon"
       title="Góc nhìn đằng sau"
@@ -33,7 +33,7 @@
       @click="onBackView"
     />
     <img
-      src="/icons/top.svg"
+      src="/potree/build/potree/resources/icons/top.svg"
       style="width: 32px; height: 32px"
       class="button-measure-icon"
       title="Góc nhìn từ trên xuống"
@@ -41,7 +41,7 @@
       @click="onTopView"
     />
     <img
-      src="/icons/bottom.svg"
+      src="/potree/build/potree/resources/icons/bottom.svg"
       style="width: 32px; height: 32px"
       class="button-measure-icon"
       title="Góc nhìn từ dưới lên"
@@ -50,8 +50,12 @@
     />
   </div>
 
+  <div class="absolute flex flex-row bottom-4 left-[220px] z-10 bg-[#212121] rounded-full">
+    <Setting />
+  </div>
+
   <div
-    class="absolute flex flex-row bottom-4 left-[220px] z-10 bg-[#212121] rounded-l-2xl rounded-r-2xl"
+    class="absolute flex flex-row bottom-4 left-[260px] z-10 bg-[#212121] rounded-l-2xl rounded-r-2xl"
   >
     <a-button
       class="p-0 w-8 flex items-center justify-center border-none bg-transparent"
@@ -92,6 +96,8 @@
   </div>
 </template>
 <script setup lang="ts">
+import Setting from '@/components/Setting.vue';
+
 const onLeftView = () => window.potreeViewer.setLeftView();
 const onRightView = () => window.potreeViewer.setRightView();
 const onFrontView = () => window.potreeViewer.setFrontView();
@@ -100,10 +106,10 @@ const onTopView = () => window.potreeViewer.setTopView();
 const onBottomView = () => window.potreeViewer.setBottomView();
 
 const onZoomOut = () => {
-  window.potreeViewer.setFOV(window.potreeViewer.getFOV() + 10);
+  // window.potreeViewer.setFOV(window.potreeViewer.getFOV() + 10);
 };
 
 const onZoomIn = () => {
-  window.potreeViewer.setFOV(window.potreeViewer.getFOV() - 10);
+  // window.potreeViewer.setFOV(window.potreeViewer.getFOV() - 10);
 };
 </script>
