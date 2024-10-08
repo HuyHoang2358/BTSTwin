@@ -1,11 +1,10 @@
 <template>
   <div
-    v-if="modelStore.activeTool === 'images'"
+    v-if="modelStore.activeTool === ACTIVE_TOOL.IMAGE"
     class="flex flex-col bg-[#303030] w-[260px]"
   >
-    <div class="flex justify-between items-center px-3 py-4">
-      <a-typography-text class="text-lg font-semibold text-[#E3E3E3]">Ảnh 2D</a-typography-text>
-    </div>
+    <HeaderMenu title="Ảnh 2D" />
+
     <div class="px-3 flex flex-row items-center gap-1">
       <a-input
         :placeholder="$t('search')"
@@ -17,9 +16,6 @@
           <IconSearchInput />
         </template>
       </a-input>
-      <a-button class="m-0 p-0 w-[26px] h-[26px] border-none bg-[#424242] rounded-sm">
-        <IconFilter />
-      </a-button>
     </div>
 
     <div class="flex flex-col flex-1 overflow-auto mt-4">
@@ -69,6 +65,8 @@ import { useModelStore } from '@/stores/model';
 import { useChangeImage } from '@/potree/hooks/useChangeImage';
 import IconFilter from '@/components/icons/home/IconFilter.vue';
 import IconSearchInput from '@/components/icons/home/IconSearchInput.vue';
+import { ACTIVE_TOOL } from '@/utils/enums';
+import HeaderMenu from '@/components/HeaderMenu.vue';
 
 const { onChangeImage } = useChangeImage();
 const searchValue = ref<string>('');

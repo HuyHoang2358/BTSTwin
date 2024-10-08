@@ -1,19 +1,22 @@
 <template>
   <div>
     <div
-      class="flex flex-row justify-between items-center cursor-pointer"
-      v-if="modelStore.activeTool === 'inventory'"
+      :class="[
+        'flex flex-row justify-between items-center cursor-pointer',
+
+        pole.pivot.id === modelStore.selectedPole?.pivot.id && 'bg-[#38536d]',
+      ]"
+      v-if="modelStore.activeTool === ACTIVE_TOOL.INVENTORY"
     >
-      <a-typography-text
-        :class="[
-          'text-base px-3 font-semibold',
-          pole.pivot.id === modelStore.selectedPole?.pivot.id ? 'text-white' : 'text-white',
-        ]"
+      <div
+        class="flex flex-row items-center pl-2 py-1 w-full"
         @click="onShowInfoPole"
       >
-        {{ pole.name }}
-      </a-typography-text>
-
+        <IconBTS />
+        <a-typography-text class="text-base font-semibold text-[#E3E3E3]">
+          {{ pole.name }}
+        </a-typography-text>
+      </div>
       <a-button
         type="ghost"
         @click="onToggleExpand"
@@ -47,7 +50,7 @@
     </div>
     <div
       class="flex flex-1 overflow-auto mt-2"
-      v-if="pole.isExpanded"
+      v-if="pole.isExpanded || modelStore.activeTool !== ACTIVE_TOOL.INVENTORY"
     >
       <a-collapse
         v-model:activeKey="activeKey"
@@ -76,9 +79,11 @@
           </template>
 
           <InventoryItem
-            v-for="(item, index) in deviceCategory.devices.filter(() =>
-              compareString(deviceCategory.name, searchValue),
-            )"
+            v-for="(item, index) in deviceCategory.devices
+              .filter((device) =>
+                modelStore.activeTool === ACTIVE_TOOL.INVENTORY ? !device.isNewDevice : true,
+              )
+              .filter((device) => compareString(device.name, searchValue))"
             :key="index"
             :item="item"
             :index="index"
@@ -88,7 +93,7 @@
     </div>
     <div
       class="flex flex-col m-4"
-      v-if="modelStore.activeTool === 'evaluate'"
+      v-if="modelStore.activeTool === ACTIVE_TOOL.EVALUATE"
     >
       <a-button
         class="w-full"
@@ -137,6 +142,8 @@ import { useRoute } from 'vue-router';
 import { useCalculate } from '@/services/hooks/useBTS';
 import IconSearchInput from '@/components/icons/home/IconSearchInput.vue';
 import IconFilter from '@/components/icons/home/IconFilter.vue';
+import { ACTIVE_TOOL } from '@/utils/enums';
+import IconBTS from '@/components/icons/home/IconBTS.vue';
 
 const props = defineProps<{
   pole: Pole;
@@ -165,7 +172,6 @@ onMounted(() => {
 
 const onShowInfoPole = () => {
   modelStore.selectedPole = props.pole;
-  modelStore.isShowPoleInfo = true;
 };
 
 const descriptionStyle = computed(() => ({ color: 'white', fontSize: '14px' }));

@@ -27,6 +27,8 @@ declare namespace Potree {
     function moveTo(a, b, c): any;
     function getMeasurementIcon(e): string;
     function addCommas(e): any;
+    function computeCircleCenter(a, b, c): any;
+    function computeAzimuth(a, b, c): any;
   }
 
   class BoxVolume {

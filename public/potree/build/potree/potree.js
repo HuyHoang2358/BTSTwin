@@ -52830,11 +52830,11 @@
 
 					this.boundingSphere.radius = Math.sqrt( maxRadiusSq );
 
-					if ( isNaN( this.boundingSphere.radius ) ) {
-
-						console.error( 'THREE.LineSegmentsGeometry.computeBoundingSphere(): Computed radius is NaN. The instanced position data is likely to have NaN values.', this );
-
-					}
+					// if ( isNaN( this.boundingSphere.radius ) ) {
+					//
+					// 	console.error( 'THREE.LineSegmentsGeometry.computeBoundingSphere(): Computed radius is NaN. The instanced position data is likely to have NaN values.', this );
+					//
+					// }
 
 				}
 
@@ -54332,7 +54332,7 @@
 
 					const angleB = Math.atan(b / a) * (180 / Math.PI); // góc B
 
-					let msg = `${angleB.toFixed(2)}°`;
+					let msg = !Number.isNaN(angleB) ? `${angleB.toFixed(2)}°` : '0°';
 					this.heightLabel.setText(msg);
 				}
 			}
@@ -54644,7 +54644,7 @@
 
 		static debugLine(parent, start, end, color){
 
-			let material = new LineBasicMaterial({ color: color }); 
+			let material = new LineBasicMaterial({ color: color });
 			let geometry = new Geometry();
 
 			const p1 = new Vector3(0, 0, 0);
@@ -54680,21 +54680,21 @@
 				let u1 = 2 * Math.PI * (i + 1) / n;
 
 				let p0 = new Vector3(
-					Math.cos(u0), 
-					Math.sin(u0), 
+					Math.cos(u0),
+					Math.sin(u0),
 					0
 				);
 
 				let p1 = new Vector3(
-					Math.cos(u1), 
-					Math.sin(u1), 
+					Math.cos(u1),
+					Math.sin(u1),
 					0
 				);
 
-				geometry.vertices.push(p0, p1); 
+				geometry.vertices.push(p0, p1);
 			}
 
-			let tl = new Line( geometry, material ); 
+			let tl = new Line( geometry, material );
 			tl.position.copy(center);
 			tl.scale.set(radius, radius, radius);
 
@@ -54702,7 +54702,7 @@
 		}
 
 		static debugBox(parent, box, transform = new Matrix4(), color = 0xFFFF00){
-			
+
 			let vertices = [
 				[box.min.x, box.min.y, box.min.z],
 				[box.min.x, box.min.y, box.max.z],
@@ -54966,9 +54966,9 @@
 		}
 
 		static getMousePointCloudIntersection (mouse, camera, viewer, pointclouds, params = {}) {
-			
+
 			let renderer = viewer.renderer;
-			
+
 			let nmouse = {
 				x: (mouse.x / renderer.domElement.clientWidth) * 2 - 1,
 				y: -(mouse.y / renderer.domElement.clientHeight) * 2 + 1
@@ -54991,10 +54991,10 @@
 			let closestDistance = Infinity;
 			let closestIntersection = null;
 			let closestPoint = null;
-			
+
 			for(let pointcloud of pointclouds){
 				let point = pointcloud.pick(viewer, camera, ray, pickParams);
-				
+
 				if(!point){
 					continue;
 				}
@@ -55156,8 +55156,8 @@
 			p2.y = (p2.y + 1.0) * 0.5 * screenHeight;
 			return p1.distanceTo(p2);
 		}
-			
-			
+
+
 		static topView(camera, node){
 			camera.position.set(0, 1, 0);
 			camera.rotation.set(-Math.PI / 2, 0, 0);
@@ -55182,7 +55182,7 @@
 			camera.zoomTo(node, 1);
 		}
 
-		
+
 		static findClosestGpsTime(target, viewer){
 			const start = performance.now();
 
@@ -55204,7 +55204,7 @@
 
 			for(const node of nodes){
 
-				const isOkay = node.geometryNode != null 
+				const isOkay = node.geometryNode != null
 					&& node.geometryNode.geometry != null
 					&& node.sceneNode != null;
 
@@ -55409,6 +55409,10 @@
 					return `${Potree.resourcePath}/icons/angle.png`;
 				} else if (measurement.showHeight) {
 					return `${Potree.resourcePath}/icons/height.svg`;
+				} else if (measurement.showAzimuth) {
+					return `${Potree.resourcePath}/icons/azimuth.svg`;
+				} else if (measurement.showCircle) {
+					return `${Potree.resourcePath}/icons/circle.svg`;
 				} else {
 					return `${Potree.resourcePath}/icons/distance.svg`;
 				}
@@ -55426,7 +55430,7 @@
 			const P = [P0, P1, P2, P3];
 
 			const d = (m, n, o, p) => {
-				let result =  
+				let result =
 					  (P[m].x - P[n].x) * (P[o].x - P[p].x)
 					+ (P[m].y - P[n].y) * (P[o].y - P[p].y)
 					+ (P[m].z - P[n].z) * (P[o].z - P[p].z);
@@ -55447,7 +55451,7 @@
 
 			const P01 = P1.clone().sub(P0);
 			const P23 = P3.clone().sub(P2);
-			
+
 			const Pa = P0.clone().add(P01.multiplyScalar(mua));
 			const Pb = P2.clone().add(P23.multiplyScalar(mub));
 
@@ -55501,13 +55505,13 @@
 				llP2 = [llP1[0], llP1[1] + polarRadius];
 
 				const northVec = transform.inverse(llP2);
-				
+
 				return new Vector3(...northVec, p1.z).sub(p1);
 			}else {
 				// if there is no projection, assume [0, 1, 0] as north direction
 
 				const vec = new Vector3(0, 1, 0).multiplyScalar(distance);
-				
+
 				return vec;
 			}
 		}
@@ -55584,21 +55588,21 @@
 			//		<stop offset="100%"  stop-color="rgb(157, 0, 65)" />
 			//		</linearGradient>
 			//	</defs>
-			//	
+			//
 			//	<rect width="100%" height="100%" fill="url('#myGradient')" stroke="black" stroke-width="0.1em"/>
 			//</svg>
 
 
 			const gradientId = `${Math.random()}_${Date.now()}`;
-			
+
 			const svgn = "http://www.w3.org/2000/svg";
 			const svg = document.createElementNS(svgn, "svg");
 			svg.setAttributeNS(null, "width", "2em");
 			svg.setAttributeNS(null, "height", "3em");
-			
+
 			{ // <defs>
 				const defs = document.createElementNS(svgn, "defs");
-				
+
 				const linearGradient = document.createElementNS(svgn, "linearGradient");
 				linearGradient.setAttributeNS(null, "id", gradientId);
 				linearGradient.setAttributeNS(null, "gradientTransform", "rotate(90)");
@@ -55627,12 +55631,12 @@
 			rect.setAttributeNS(null, "stroke-width", `0.1em`);
 
 			svg.appendChild(rect);
-			
+
 			return svg;
 		}
 
 		static async waitAny(promises){
-			
+
 			return new Promise( (resolve) => {
 
 				promises.map( promise => {
@@ -70214,7 +70218,7 @@ void main() {
 
 				const projection = viewer.getProjection();
 				const azimuth = Utils.computeAzimuth(p1, p2, projection);
-				
+
 				this.dom.css("transform", `rotateZ(${-azimuth}rad)`);
 			});
 
@@ -70240,7 +70244,7 @@ void main() {
 		}
 
 		createElement(){
-			const style = `style="position: absolute; top: 10px; right: 10px; z-index: 10000; width: 64px;"`;
+			const style = `style="position: absolute; bottom: 10px; right: 10px; z-index: 10000; width: 64px;"`;
 			const img = $(`<img src="${Potree.resourcePath}/images/compas.svg" ${style} />`);
 
 			return img;

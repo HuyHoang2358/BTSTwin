@@ -1,13 +1,6 @@
 import type { Point, WrapperResponse } from '@/services/services.types';
 import client from '@/services/client';
-import {
-  API_BTS,
-  API_CALCULATE,
-  API_CAMERA_POSE,
-  API_INVENTORY,
-  API_MEDIA_MANAGER,
-  API_STATION,
-} from '@/services/apiPath';
+import { API_STATION } from '@/services/apiPath';
 import type { Address } from '@/services/apis/stationCategory';
 import * as THREE from 'three';
 import type { Vendor } from '@/services/apis/vendor';
@@ -311,6 +304,34 @@ export interface Model {
   type: string;
 }
 
+export interface PoleHistory {
+  id: string;
+  field: Record<string, string | number>;
+  createdAt: string;
+  scanId: number;
+  poleId: number;
+}
+
+export type DataCreatePole = {
+  scanId: number;
+  poleId: number;
+  field: Record<string, string | number>;
+};
+
+export interface DeviceHistory {
+  id: string;
+  field: Record<string, string | number>;
+  createdAt: string;
+  scanId: number;
+  deviceId: number;
+}
+
+export type DataCreateDevice = {
+  scanId: number;
+  deviceId: number;
+  field: Record<string, string | number>;
+};
+
 export const fetchStations = (): WrapperResponse<Station[]> => client.get(API_STATION);
 
 export const fetchBTSById = (id: string): WrapperResponse<BtsDetail> =>
@@ -322,3 +343,25 @@ export const fetchReport = (id: string) =>
       stations: [id],
     },
   });
+
+export const fetchPoleHistory = (params: {
+  scanId: string;
+  poleId: number;
+}): Promise<PoleHistory[]> =>
+  client.get('https://66ff6db12b9aac9c997f3c22.mockapi.io/history-pole', {
+    params,
+  });
+
+export const createPoleHistory = (data: DataCreatePole) =>
+  client.post(`https://66ff6db12b9aac9c997f3c22.mockapi.io/history-pole`, data);
+
+export const fetchDeviceHistory = (params: {
+  scanId: string;
+  deviceId: number;
+}): Promise<DeviceHistory[]> =>
+  client.get('https://66ff6db12b9aac9c997f3c22.mockapi.io/history-device', {
+    params,
+  });
+
+export const createDeviceHistory = (data: DataCreateDevice) =>
+  client.post(`https://66ff6db12b9aac9c997f3c22.mockapi.io/history-device`, data);

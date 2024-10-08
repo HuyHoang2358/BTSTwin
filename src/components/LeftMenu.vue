@@ -1,154 +1,70 @@
 <template>
   <div class="bg-[#212121] flex flex-col">
-    <a-tooltip
+    <MenuItem
       title="Đo lường"
-      placement="right"
-      color="#212121"
+      :active-tool="ACTIVE_TOOL.MEASUREMENT"
+      class="-mt-[1px]"
     >
-      <a-button
-        @click="
-          modelStore.activeTool === 'measurements'
-            ? (modelStore.activeTool = undefined)
-            : (modelStore.activeTool = 'measurements')
-        "
-        :class="[
-          'p-0 border-none rounded-none w-10 h-10',
-          modelStore.activeTool === 'measurements' ? 'bg-[#303030]' : 'bg-transparent',
-        ]"
-      >
-        <icon-measurement class="w-full h-full p-2" />
-      </a-button>
-    </a-tooltip>
-    <a-tooltip
+      <icon-measurement />
+    </MenuItem>
+    <MenuItem
       title="Khảo sát"
-      placement="right"
-      color="#212121"
+      :active-tool="ACTIVE_TOOL.INVENTORY"
     >
-      <a-button
-        @click="
-          modelStore.activeTool === 'inventory'
-            ? (modelStore.activeTool = undefined)
-            : (modelStore.activeTool = 'inventory')
-        "
-        :class="[
-          'p-0 border-none rounded-none w-10 h-10',
-          modelStore.activeTool === 'inventory' ? 'bg-[#303030]' : 'bg-transparent',
-        ]"
-      >
-        <icon3-d-model class="w-full h-full p-2" />
-      </a-button>
-    </a-tooltip>
-    <a-tooltip
+      <icon3-d-model />
+    </MenuItem>
+    <MenuItem
       title="Đánh giá"
-      placement="right"
-      color="#212121"
+      :active-tool="ACTIVE_TOOL.EVALUATE"
     >
-      <a-button
-        @click="
-          modelStore.activeTool === 'evaluate'
-            ? (modelStore.activeTool = undefined)
-            : (modelStore.activeTool = 'evaluate')
-        "
-        :class="[
-          'p-0 border-none rounded-none w-10 h-10',
-          modelStore.activeTool === 'evaluate' ? 'bg-[#303030]' : 'bg-transparent',
-        ]"
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 18 18"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
       >
-        <svg
-          width="24"
-          height="24"
-          viewBox="0 0 18 18"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
+        <mask
+          id="mask0_150_4528"
+          style="mask-type: alpha"
+          maskUnits="userSpaceOnUse"
+          x="0"
+          y="0"
+          width="18"
+          height="18"
         >
-          <mask
-            id="mask0_150_4528"
-            style="mask-type: alpha"
-            maskUnits="userSpaceOnUse"
-            x="0"
-            y="0"
+          <rect
             width="18"
             height="18"
-          >
-            <rect
-              width="18"
-              height="18"
-              fill="#D9D9D9"
-            />
-          </mask>
-          <g mask="url(#mask0_150_4528)">
-            <path
-              d="M9.12503 1C9.3092 1.05208 9.5017 1.08458 9.67587 1.16C10.4638 1.50208 10.9059 2.10583 11.0017 2.96083C11.0042 2.98125 11.0079 3.00167 11.0117 3.02208C11.0125 3.02667 11.0167 3.03042 11.0296 3.05083H12.1029V5.0675H5.64795V3.05625H6.72295C6.76045 2.86625 6.7767 2.69333 6.8292 2.5325C7.10295 1.69917 7.67253 1.19417 8.53753 1.02792C8.56753 1.02208 8.59587 1.00958 8.62503 1C8.7917 1 8.95837 1 9.12503 1Z"
-              fill="white"
-            />
-            <path
-              fill-rule="evenodd"
-              clip-rule="evenodd"
-              d="M14.7499 15.9999C14.75 16.5522 14.3022 17 13.7499 17H4C3.44772 17 3 16.5523 3 16V3.06543H4.7025V6.00501H13.0592V3.06751H14.7492V3.28168C14.7492 7.5212 14.7495 11.7607 14.7499 15.9999ZM12.0229 11.9675L11.7737 12.2226C11.6265 12.3731 11.4761 12.527 11.3204 12.6867L10.6321 11.9792L9.94833 12.6629L9.94861 12.6632L9.94837 12.6634L10.1687 12.8821C10.3256 13.0377 10.4908 13.2016 10.6702 13.3798C10.4311 13.6118 10.1945 13.8413 9.97 14.0588L9.97028 14.059L9.97004 14.0593L10.2859 14.3754L10.6309 14.7205L10.9571 14.3753L10.9586 14.3738L10.9588 14.3735L10.9593 14.373C11.0761 14.2493 11.1958 14.1227 11.3192 13.9922L11.6718 14.3543L11.7897 14.4755L12.0117 14.7039L12.7013 14.0155L12.701 14.0153L12.7013 14.015L12.4983 13.825L11.9582 13.319C12.1196 13.1648 12.2747 13.0163 12.4256 12.8719L12.6817 12.6268L12.6814 12.6265L12.6817 12.6263C12.5365 12.4808 12.3941 12.3385 12.2486 12.1931L12.2485 12.193L12.2485 12.193L12.2485 12.193L12.2484 12.1929L12.2484 12.1929L12.0229 11.9675ZM8.87042 9.36751H5.46292V10.2788H5.46298V10.2788H8.87048V9.36757H8.87042V9.36751ZM8.86292 14.6158H8.86287V14.6159H5.46162V13.6959H5.46167V13.6958H8.86292V14.6158ZM12.7125 8.18126L12.5811 8.31245C12.0972 8.79562 11.5953 9.29674 11.0934 9.79751L11.0933 9.79751L11.0564 9.76048L10.5747 9.27795L10.5048 9.20793L9.91625 8.61835C10.0923 8.4419 10.2758 8.25777 10.4714 8.06147L10.5687 7.96376L10.5688 7.96377L10.5688 7.96376L10.9216 8.33379L11.0888 8.50918L11.3748 8.22148L11.507 8.08848L11.507 8.08848L12.0625 7.5296L12.0625 7.52961L12.0625 7.52959L12.0839 7.55106L12.4252 7.89317L12.6733 8.14193L12.6811 8.14976L12.7125 8.18126L12.7125 8.18126ZM5.465 7.69335V8.61585H6.375V8.61582H6.37501V7.69332H5.46501V7.69335H5.465ZM6.375 12.0376H6.37504V12.9534H5.46213V12.9533H5.46208V12.0375H6.375V12.0376Z"
-              fill="white"
-            />
-          </g>
-        </svg>
-      </a-button>
-    </a-tooltip>
-    <a-tooltip
+            fill="#D9D9D9"
+          />
+        </mask>
+        <g mask="url(#mask0_150_4528)">
+          <path
+            d="M9.12503 1C9.3092 1.05208 9.5017 1.08458 9.67587 1.16C10.4638 1.50208 10.9059 2.10583 11.0017 2.96083C11.0042 2.98125 11.0079 3.00167 11.0117 3.02208C11.0125 3.02667 11.0167 3.03042 11.0296 3.05083H12.1029V5.0675H5.64795V3.05625H6.72295C6.76045 2.86625 6.7767 2.69333 6.8292 2.5325C7.10295 1.69917 7.67253 1.19417 8.53753 1.02792C8.56753 1.02208 8.59587 1.00958 8.62503 1C8.7917 1 8.95837 1 9.12503 1Z"
+            fill="currentColor"
+          />
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M14.7499 15.9999C14.75 16.5522 14.3022 17 13.7499 17H4C3.44772 17 3 16.5523 3 16V3.06543H4.7025V6.00501H13.0592V3.06751H14.7492V3.28168C14.7492 7.5212 14.7495 11.7607 14.7499 15.9999ZM12.0229 11.9675L11.7737 12.2226C11.6265 12.3731 11.4761 12.527 11.3204 12.6867L10.6321 11.9792L9.94833 12.6629L9.94861 12.6632L9.94837 12.6634L10.1687 12.8821C10.3256 13.0377 10.4908 13.2016 10.6702 13.3798C10.4311 13.6118 10.1945 13.8413 9.97 14.0588L9.97028 14.059L9.97004 14.0593L10.2859 14.3754L10.6309 14.7205L10.9571 14.3753L10.9586 14.3738L10.9588 14.3735L10.9593 14.373C11.0761 14.2493 11.1958 14.1227 11.3192 13.9922L11.6718 14.3543L11.7897 14.4755L12.0117 14.7039L12.7013 14.0155L12.701 14.0153L12.7013 14.015L12.4983 13.825L11.9582 13.319C12.1196 13.1648 12.2747 13.0163 12.4256 12.8719L12.6817 12.6268L12.6814 12.6265L12.6817 12.6263C12.5365 12.4808 12.3941 12.3385 12.2486 12.1931L12.2485 12.193L12.2485 12.193L12.2485 12.193L12.2484 12.1929L12.2484 12.1929L12.0229 11.9675ZM8.87042 9.36751H5.46292V10.2788H5.46298V10.2788H8.87048V9.36757H8.87042V9.36751ZM8.86292 14.6158H8.86287V14.6159H5.46162V13.6959H5.46167V13.6958H8.86292V14.6158ZM12.7125 8.18126L12.5811 8.31245C12.0972 8.79562 11.5953 9.29674 11.0934 9.79751L11.0933 9.79751L11.0564 9.76048L10.5747 9.27795L10.5048 9.20793L9.91625 8.61835C10.0923 8.4419 10.2758 8.25777 10.4714 8.06147L10.5687 7.96376L10.5688 7.96377L10.5688 7.96376L10.9216 8.33379L11.0888 8.50918L11.3748 8.22148L11.507 8.08848L11.507 8.08848L12.0625 7.5296L12.0625 7.52961L12.0625 7.52959L12.0839 7.55106L12.4252 7.89317L12.6733 8.14193L12.6811 8.14976L12.7125 8.18126L12.7125 8.18126ZM5.465 7.69335V8.61585H6.375V8.61582H6.37501V7.69332H5.46501V7.69335H5.465ZM6.375 12.0376H6.37504V12.9534H5.46213V12.9533H5.46208V12.0375H6.375V12.0376Z"
+            fill="currentColor"
+          />
+        </g>
+      </svg>
+    </MenuItem>
+    <MenuItem
       title="Hình ảnh"
-      placement="right"
-      color="#212121"
+      :active-tool="ACTIVE_TOOL.IMAGE"
     >
-      <a-button
-        @click="
-          modelStore.activeTool === 'images'
-            ? (modelStore.activeTool = undefined)
-            : (modelStore.activeTool = 'images')
-        "
-        :class="[
-          'p-0 border-none rounded-none w-10 h-10',
-          modelStore.activeTool === 'images' ? 'bg-[#303030]' : 'bg-transparent',
-        ]"
-      >
-        <icon-image class="w-full h-full p-2" />
-      </a-button>
-    </a-tooltip>
-
-    <a-tooltip
+      <icon-image />
+    </MenuItem>
+    <MenuItem
       title="Báo cáo"
-      placement="right"
-      color="#212121"
+      :active-tool="ACTIVE_TOOL.REPORT"
     >
-      <a-button
-        @click="
-          modelStore.activeTool === 'export'
-            ? (modelStore.activeTool = undefined)
-            : (modelStore.activeTool = 'export')
-        "
-        :class="[
-          'p-0 border-none rounded-none w-10 h-10',
-          modelStore.activeTool === 'export' ? 'bg-[#303030]' : 'bg-transparent',
-        ]"
-      >
-        <icon-report class="w-full h-full p-2" />
-      </a-button>
-    </a-tooltip>
-    <a-tooltip
-      title="Cài đặt"
-      placement="right"
-      color="#212121"
-    >
-      <a-button
-        @click="
-          modelStore.activeTool === 'setting'
-            ? (modelStore.activeTool = undefined)
-            : (modelStore.activeTool = 'setting')
-        "
-        :class="[
-          'p-0 border-none rounded-none w-10 h-10',
-          modelStore.activeTool === 'setting' ? 'bg-[#303030]' : 'bg-transparent',
-        ]"
-      >
-        <icon-setting class="w-full h-full p-2" />
-      </a-button>
-    </a-tooltip>
+      <icon-report />
+    </MenuItem>
   </div>
   <div
     style="height: calc(100vh - 84px)"
@@ -159,23 +75,19 @@
     <Evaluate />
     <ImageSection />
     <Export />
-    <Setting />
   </div>
 </template>
 
 <script setup lang="ts">
-import { useModelStore } from '@/stores/model';
 import Inventory from '@/components/Inventory.vue';
 import Measurement from '@/components/Measurement.vue';
 import ImageSection from '@/components/ImageSection.vue';
-import Setting from '@/components/Setting.vue';
 import Evaluate from '@/components/Evaluate.vue';
 import Export from '@/components/Export.vue';
 import IconImage from '@/components/icon/IconImage.vue';
 import Icon3DModel from '@/components/icon/Icon3DModel.vue';
 import IconMeasurement from '@/components/icon/IconMeasurement.vue';
+import MenuItem from '@/components/MenuItem.vue';
+import { ACTIVE_TOOL } from '@/utils/enums';
 import IconReport from '@/components/icon/IconReport.vue';
-import IconSetting from '@/components/icon/IconSetting.vue';
-
-const modelStore = useModelStore();
 </script>

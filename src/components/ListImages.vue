@@ -6,7 +6,7 @@
     >
       <div
         ref="panzoomContainer"
-        style="height: calc(100vh - 228px - 84px)"
+        :style="styleImage"
         class="bg-[#303030] flex justify-center"
         @wheel="handleWheel"
       >
@@ -14,8 +14,8 @@
           :src="modelStore.selectedImage.image_url"
           alt="BTS"
           :preview="false"
-          class="object-contain"
-          style="width: 100%; height: calc(100vh - 228px - 84px)"
+          class="object-contain w-full"
+          :style="styleImage"
         >
           <template #placeholder>
             <div class="relative h-full">
@@ -23,7 +23,7 @@
                 :src="modelStore.selectedImage.preview_image_url"
                 class="blur-sm object-contain"
                 :preview="false"
-                style="width: 100%; height: calc(100vh - 228px - 84px)"
+                :style="styleImage"
               />
               <div class="loader-line absolute bottom-0 w-full" />
             </div>
@@ -72,10 +72,28 @@
         </svg>
       </a-button>
       <div
-        class="absolute h-8 px-4 flex flex-row items-center rounded-[15px] top-4 right-4 bg-[#212121]"
+        class="absolute h-8 flex flex-row items-center rounded-[15px] top-4 right-2 bg-[#212121]"
       >
+        <div class="flex flex-row items-center ml-4">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M13.9555 0H2.04453C0.917156 0 0 0.917188 0 2.04456V13.9555C0 15.0828 0.917156 16 2.04453 16H13.9555C15.0828 16 16 15.0828 16 13.9554V2.04456C16 0.917188 15.0828 0 13.9555 0ZM15.0576 13.9555C15.0576 14.5632 14.5632 15.0576 13.9555 15.0576H2.04453C1.43681 15.0576 0.942406 14.5632 0.942406 13.9555V12.2365L4.04413 9.59741C4.15731 9.50109 4.32244 9.50019 4.43669 9.59506L6.37962 11.2084C6.56697 11.364 6.84197 11.3512 7.01412 11.1789L11.6307 6.55531C11.7141 6.47172 11.8114 6.46359 11.8622 6.46619C11.9128 6.46878 12.0089 6.48684 12.0833 6.57856L15.0576 10.2408L15.0576 13.9555ZM15.0576 8.74578L12.8149 5.98434C12.5925 5.71047 12.2628 5.54303 11.9104 5.52494C11.5583 5.50712 11.213 5.63969 10.9637 5.88938L6.651 10.2088L5.03881 8.87006C4.57134 8.48188 3.89622 8.48591 3.43341 8.87969L0.942406 10.9991V2.04456C0.942406 1.43684 1.43681 0.942438 2.04453 0.942438H13.9555C14.5632 0.942438 15.0576 1.43684 15.0576 2.04456V8.74578Z"
+              fill="#F6F6F6"
+            />
+          </svg>
+          <a-typography-text class="mx-2 font-medium text-[#f6f6f6]">
+            {{ modelStore?.selectedImage?.filename.split('.')[0] }}
+          </a-typography-text>
+          <div class="w-px h-8 bg-[#4c4c4c]" />
+        </div>
         <a-button
-          class="m-0 p-0 w-4 h-4 border-none bg-transparent"
+          class="m-0 p-0 w-8 h-8 border-none bg-transparent flex items-center justify-center"
           @click="onZoomOut"
         >
           <svg
@@ -96,7 +114,6 @@
           v-model:value="zoomValue"
           size="small"
           style="width: 74px"
-          class="mx-4"
           :options="[
             { label: 'x1', value: '1' },
             { label: 'x2', value: '2' },
@@ -112,7 +129,7 @@
           @change="handleZoomChange"
         ></a-select>
         <a-button
-          class="m-0 p-0 w-4 h-4 border-none bg-transparent"
+          class="m-0 p-0 w-8 h-8 border-none bg-transparent flex items-center justify-center"
           @click="onZoomIn"
         >
           <svg
@@ -130,6 +147,18 @@
           </svg>
         </a-button>
       </div>
+      <a-button
+        :class="[
+          'absolute bottom-0 m-0 p-0 border-none h-5 w-6 left-1/2 transform -translate-x-1/2 bg-[#282828] flex justify-center items-center',
+          isExpandedList
+            ? 'rotate-180 rounded-b-[10px] rounded-t-none'
+            : 'rounded-t-[10px] rounded-b-none',
+        ]"
+        type="ghost"
+        @click="isExpandedList = !isExpandedList"
+      >
+        <IconExpandedImage />
+      </a-button>
     </div>
     <div class="pl-2 h-[30px] flex flex-row items-center">
       <a-tooltip
@@ -195,9 +224,13 @@
         "
       >
         <icon-download />
+        <a-typography-text class="text-[#888] text-sm">Tải ảnh</a-typography-text>
       </a-button>
     </div>
-    <div class="overflow-auto gap-2 flex flex-row h-[198px] bg-[#303030]">
+    <div
+      class="overflow-auto gap-2 flex flex-row h-[198px] bg-[#303030]"
+      v-if="isExpandedList"
+    >
       <div
         v-for="item in modelStore.images"
         :key="item.id"
@@ -232,8 +265,10 @@ import IconGimbalYaw from '@/components/icon/IconGimbalYaw.vue';
 import IconGimbalPitch from '@/components/icon/IconGimbalPitch.vue';
 import IconCamera from '@/components/icon/IconCamera.vue';
 import IconDownload from '@/components/icon/IconDownload.vue';
+import IconExpandedImage from '@/components/icons/IconExpandedImage.vue';
 
 const imageRefs = reactive<any>({});
+const isExpandedList = ref(true);
 
 const modelStore = useModelStore();
 const { onChangeImage } = useChangeImage();
@@ -248,6 +283,10 @@ const indexOfSelectedImage = computed(() =>
 
 const panzoomContainer = ref<HTMLElement | null>(null);
 let panzoomInstance: PanzoomObject | null = null;
+
+const styleImage = computed(() => ({
+  height: `calc(100vh - ${isExpandedList.value ? '228px' : '32px'} - 84px)`,
+}));
 
 onMounted(() => {
   if (panzoomContainer.value) {
@@ -284,6 +323,14 @@ const scrollToSelectedImage = (image: any) => {
     imageRefs[image].scrollIntoView({ behavior: 'smooth', inline: 'center' });
   }
 };
+
+watch(isExpandedList, () => {
+  if (isExpandedList.value) {
+    setTimeout(() => {
+      scrollToSelectedImage(modelStore.selectedImage?.filename);
+    }, 100);
+  }
+});
 
 watch(
   () => modelStore.selectedImage,

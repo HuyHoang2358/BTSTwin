@@ -317,18 +317,18 @@ body,
   color: red;
 }
 
-.ant-popover .ant-popover-inner {
-  /*background-color: rgba(21, 21, 21, 0.9);*/
-  padding: 20px 26px;
-}
+/*.ant-popover .ant-popover-inner {*/
+/*  !*background-color: rgba(21, 21, 21, 0.9);*!*/
+/*  padding: 20px 26px;*/
+/*}*/
 
 /*.ant-popover {*/
 /*  !*--antd-arrow-background-color: rgba(21, 21, 21, 0.9);*!*/
 /*}*/
 
-.ant-popover-placement-bottomRight .ant-popover-arrow {
-  right: 10px;
-}
+/*.ant-popover-placement-bottomRight .ant-popover-arrow {*/
+/*  right: 10px;*/
+/*}*/
 
 .ant-tree .ant-tree-checkbox {
   margin-block-start: 0;
@@ -407,4 +407,17 @@ body,
 
 .ant-descriptions .ant-descriptions-title {
   font-size: 14px;
+}
+
+.edit-field .ant-typography, .ant-typography p {
+margin-bottom: 0 !important;
+}
+
+.edit-field .ant-input {
+  font-size: 12px;
+}
+
+.edit-field .ant-typography-edit-content {
+  margin-right: -14px;
+  margin-left: 6px;
 }

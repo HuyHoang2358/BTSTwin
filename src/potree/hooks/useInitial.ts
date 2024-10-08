@@ -14,6 +14,7 @@ import {
 import { useBTSDetail } from '@/services/hooks/useStation';
 import type { Device, Image } from '@/services/apis/station';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
+import { ACTIVE_TOOL } from '@/utils/enums';
 
 export type InventoryDetail = {
   boxMesh?: THREE.Mesh<THREE.BoxGeometry, THREE.MeshBasicMaterial, THREE.Object3DEventMap>;
@@ -39,9 +40,9 @@ export const useInitial = () => {
   );
 
   const resetState = () => {
-    modelStore.currentMeasurement = undefined;
     modelStore.measurements = [];
-    modelStore.activeTool = undefined;
+    modelStore.activeTool = ACTIVE_TOOL.INVENTORY;
+    modelStore.selectedMeasurement = undefined;
     modelStore.selectedInventory = undefined;
     modelStore.selectedImage = undefined;
     modelStore.selectedPole = undefined;
@@ -56,8 +57,40 @@ export const useInitial = () => {
   );
 
   const onMeasurementAdded = (e: any) => {
-    modelStore.currentMeasurement = e.measurement;
-    e.measurement.icon = Potree.Utils.getMeasurementIcon(e.measurement);
+    modelStore.hoverInformation = 'Nhấn chuột trái để thêm điểm, nhấn chuột phải để kết thúc đo';
+    const measurement = e.measurement;
+    const modelStoreListener = useModelStore();
+    modelStoreListener.isDrawing = true;
+
+    measurement.addEventListener('marker_dropped', () => {
+      const modelStoreListener = useModelStore();
+
+      if (
+        (measurement.points.length === 3 && modelStoreListener.activeSubTool === 'angle') ||
+        (measurement.points.length === 2 && modelStoreListener.activeSubTool === 'height') ||
+        (measurement.points.length === 2 && modelStoreListener.activeSubTool === 'azimuth') ||
+        (measurement.points.length === 3 && modelStoreListener.activeSubTool === 'circle')
+      ) {
+        setTimeout(() => {
+          modelStoreListener.hoverInformation = '';
+          modelStoreListener.activeSubTool = undefined;
+          modelStoreListener.isDrawing = false;
+        }, 100);
+      }
+    });
+
+    measurement.addEventListener('marker_moved', () => {
+      const modelStoreListener = useModelStore();
+      modelStoreListener.isDrawing = true;
+    });
+
+    measurement.icon = Potree.Utils.getMeasurementIcon(measurement);
+    if (modelStore.activeTool === ACTIVE_TOOL.MEASUREMENT) {
+      modelStore.selectedMeasurement = measurement;
+      modelStore.selectedInventory = undefined;
+      modelStore.selectedPole = undefined;
+      modelStore.isSelectedBasePlate = false;
+    }
     modelStore.measurements.push(e.measurement);
   };
 

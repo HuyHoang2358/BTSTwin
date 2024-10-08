@@ -1,4 +1,7 @@
 <template>
+  <a-typography class="text-[#F4F4F4] text-lg mb-2">
+    {{ modelStore.selectedInventory?.name }}
+  </a-typography>
   <a-button
     class="m-0 p-0 w-8 h-8 border-none bg-[#212121] rounded-full flex items-center justify-center"
     @click="onRemoveDevice"
@@ -107,7 +110,7 @@ import { useModelStore } from '@/stores/model';
 
 const descriptionStyle = computed(() => ({ color: 'white', fontSize: '12px' }));
 
-const properties = ref<Record<string, number>>({});
+const properties = ref<Record<string, number | string>>({});
 
 const modelStore = useModelStore();
 
@@ -165,7 +168,7 @@ const onRemoveDevice = () => {
     deviceCategories: item.deviceCategories.map((category) => ({
       ...category,
       devices: category.devices.filter(
-        (device) => device.pivot.id !== modelStore.selectedInventory.pivot.id,
+        (device) => device.pivot.id !== modelStore.selectedInventory?.pivot.id,
       ),
     })),
   }));
