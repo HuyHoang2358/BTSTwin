@@ -8,9 +8,16 @@
       title="Thông tin cột"
       :on-close="onClosePole"
     />
+
     <div class="px-4 py-2.5">
       <div class="flex flex-row items-center">
-        <IconBTS />
+        <div class="w-8 h-8">
+          <img
+            :src="domain + modelStore.selectedPole?.category?.icon"
+            alt="icon"
+            class="w-full h-full"
+          />
+        </div>
         <div class="flex flex-row flex-1 items-center justify-between ml-1">
           <h3
             class="text-white m-0"
@@ -64,6 +71,7 @@
           </a-popover>
         </div>
       </div>
+
       <a-typography class="text-[#E3E3E3] font-medium text-sm mt-2.5 mb-1">
         Thông tin chung
       </a-typography>
@@ -74,81 +82,75 @@
         />
         <ItemDescription
           label="Vị trí"
-          :value="modelStore.selectedPole?.is_roof ? 'Trên mái' : 'Dưới đất'"
+          :value="modelStore.selectedPole?.pole_param.is_roof ? 'Trên mái(TM)' : 'Dưới đất(DD)'"
         />
         <ItemDescription
           label="Chiều cao cột (m)"
-          :value="modelStore.selectedPole?.height"
+          :value="modelStore.selectedPole?.pole_param.height"
         />
         <ItemDescription
           label="Chiều cao nhà (m)"
-          :value="modelStore.selectedPole?.house_height"
+          :value="modelStore.selectedPole?.pole_param.house_height"
+          v-if="modelStore.selectedPole?.pole_param.is_roof"
         />
       </div>
+
       <a-typography class="text-[#E3E3E3] font-medium text-sm mt-2.5 mb-1">
         Thông số cột
       </a-typography>
-
       <div class="border border-solid border-[#4B4B4B] rounded-[5px] px-3 py-1">
         <ItemDescription
           label="ĐK ống thân (mm)"
-          :value="modelStore.selectedPole?.diameter_body_tube"
+          :value="modelStore.selectedPole?.pole_param.diameter_body_tube"
           submit-key="diameter_body_tube"
           :on-submit="onSubmitEditing"
           editable
         />
         <ItemDescription
           label="ĐK ống thanh chống (mm)"
-          :value="modelStore.selectedPole?.diameter_strut_tube"
+          :value="modelStore.selectedPole?.pole_param.diameter_strut_tube"
           submit-key="diameter_strut_tube"
           :on-submit="onSubmitEditing"
           editable
         />
         <ItemDescription
           label="ĐK ống thân mép trên (mm)"
-          :value="modelStore.selectedPole?.diameter_top_tube"
+          :value="modelStore.selectedPole?.pole_param.diameter_top_tube"
           submit-key="diameter_top_tube"
           :on-submit="onSubmitEditing"
           editable
         />
         <ItemDescription
           label="ĐK ống thân mép dưới (mm)"
-          :value="modelStore.selectedPole?.diameter_bottom_tube"
+          :value="modelStore.selectedPole?.pole_param.diameter_bottom_tube"
           submit-key="diameter_bottom_tube"
           :on-submit="onSubmitEditing"
           editable
         />
         <ItemDescription
           label="Kích thước cột"
-          :value="modelStore.selectedPole?.size"
+          :value="modelStore.selectedPole?.pole_param.size"
           submit-key="size"
           :on-submit="onSubmitEditing"
           editable
         />
         <ItemDescription
           label="Kích thước chân cột"
-          :value="modelStore.selectedPole?.foot_size"
+          :value="modelStore.selectedPole?.pole_param.foot_size"
           submit-key="foot_size"
           :on-submit="onSubmitEditing"
           editable
         />
         <ItemDescription
           label="Kích thước đỉnh cột"
-          :value="modelStore.selectedPole?.top_size"
+          :value="modelStore.selectedPole?.pole_param.top_size"
           submit-key="top_size"
           :on-submit="onSubmitEditing"
           editable
         />
         <ItemDescription
-          label="Cấu trúc cột"
-          :value="modelStore.selectedPole?.structure"
-          submit-key="structure"
-          :on-submit="onSubmitEditing"
-          editable
-        />
-        <ItemDescription
           label="Góc Tilt (°)"
-          :value="modelStore.selectedPole?.tilt_angle"
+          :value="modelStore.selectedPole?.pole_param.tilt_angle"
           submit-key="tilt_angle"
           :on-submit="onSubmitEditing"
           editable
@@ -161,6 +163,7 @@
           editable
         />
       </div>
+
       <a-form
         ref="formRef"
         :model="formState"
@@ -197,7 +200,6 @@
 <script lang="ts" setup>
 import { computed, onMounted, reactive, ref, type UnwrapRef } from 'vue';
 import { useModelStore } from '@/stores/model';
-import IconBTS from '@/components/icons/home/IconBTS.vue';
 import { HistoryOutlined, RollbackOutlined } from '@ant-design/icons-vue';
 import { useRoute } from 'vue-router';
 import {
@@ -209,6 +211,9 @@ import HeaderInformation from '@/components/HeaderInformation.vue';
 import ItemDescription from '@/components/ItemDescription.vue';
 import { useQueryClient } from '@tanstack/vue-query';
 import CustomAEmpty from '@/components/CustomAEmpty.vue';
+
+const baseUrl = import.meta.env.VITE_BASE_URL;
+const domain = baseUrl.slice(0, baseUrl.length - 5);
 
 const modelStore = useModelStore();
 const { mutate: createPoleHistory } = useCreatePoleHistory();
@@ -222,7 +227,7 @@ const visibleHistory = ref<boolean>(false);
 
 // set value for status from modelStore
 onMounted(() => {
-  formState.status = modelStore.selectedPole?.is_shielded?.toString() || '0';
+  formState.status = modelStore.selectedPole?.pole_param.is_shielded?.toString() || '0';
 });
 
 const route = useRoute();
@@ -230,7 +235,7 @@ const route = useRoute();
 const { data: dataHistory } = usePoleHistory(
   {
     id: computed(() => route.query.id as string),
-    poleId: computed(() => modelStore.selectedPole?.pivot?.id || 0),
+    poleId: computed(() => modelStore.selectedPole?.id || 0),
   },
   computed(() => !!route.query.id),
 );
@@ -243,7 +248,7 @@ const onSubmitEditing = (key: string, value: string) => {
   createPoleHistory(
     {
       scanId: Number(route.query.id),
-      poleId: Number(modelStore.selectedPole?.pivot?.id),
+      poleId: Number(modelStore.selectedPole?.id),
       field: {
         [key]: value,
       },
@@ -258,14 +263,12 @@ const onSubmitEditing = (key: string, value: string) => {
 
 const onRollback = () => {
   modelStore.poles = modelStore.poles.map((pole) => {
-    if (pole.pivot.id === modelStore.selectedPole?.pivot.id) {
+    if (pole.id === modelStore.selectedPole?.id) {
       return { ...pole, ...modelStore.fieldHover };
     }
     return pole;
   });
-  const currentPole = modelStore.poles.find(
-    (pole) => pole.pivot.id === modelStore.selectedPole?.pivot.id,
-  );
+  const currentPole = modelStore.poles.find((pole) => pole.id === modelStore.selectedPole?.id);
   if (!currentPole) return;
   modelStore.selectedPole = currentPole;
   visibleHistory.value = false;

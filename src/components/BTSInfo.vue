@@ -21,7 +21,11 @@
     <div class="p-3.5">
       <div class="flex justify-start gap-2 items-center">
         <div class="w-12 h-12">
-          <IconBTS class="w-full h-full" />
+          <img
+            :src="domain + modelStore.selectedBTS?.pole_category?.icon"
+            alt="icon"
+            class="w-full h-full"
+          />
         </div>
         <h3 class="text-white m-0">Trạm {{ modelStore.selectedBTS?.name }}</h3>
       </div>
@@ -87,10 +91,11 @@
 import { useModelStore } from '@/stores/model';
 import { computed } from 'vue';
 import { convertToDMS } from '@/utils/helpers';
-import IconBTS from '@/components/icons/home/IconBTS.vue';
 import IconClose from '@/components/icon/IconClose.vue';
 
 const modelStore = useModelStore();
+const baseUrl = import.meta.env.VITE_BASE_URL;
+const domain = baseUrl.slice(0, baseUrl.length - 5);
 
 const descriptionStyle = computed(() => ({ color: 'white', fontSize: '12px' }));
 </script>

@@ -6,6 +6,8 @@ import {
   fetchBTSById,
   fetchDeviceHistory,
   fetchPoleHistory,
+  fetchScanDetail,
+  fetchScanImages,
   fetchReport,
   fetchStations,
 } from '@/services/apis/station';
@@ -13,6 +15,8 @@ import type { ComputedRef } from 'vue';
 
 export const STATION_QUERY_KEY = 'STATION_QUERY_KEY';
 export const BTS_DETAIL_QUERY_KEY = 'BTS_DETAIL_QUERY_KEY';
+export const STATION_SCAN_IMAGE_QUERY_KEY = 'STATION_SCAN_IMAGE_QUERY_KEY';
+export const STATION_SCAN_QUERY_KEY = 'STATION_SCAN_QUERY_KEY';
 export const HISTORY_POLE_LIST_QUERY_KEY = 'HISTORY_POLE_LIST_QUERY_KEY';
 export const HISTORY_DEVICE_LIST_QUERY_KEY = 'HISTORY_DEVICE_LIST_QUERY_KEY';
 
@@ -22,6 +26,23 @@ export const useStations = () =>
     queryFn: fetchStations,
   });
 
+export const useStationScan = (idComputed: ComputedRef<string>, enabled: ComputedRef<boolean>) =>
+  useQuery({
+    queryKey: [STATION_SCAN_QUERY_KEY, idComputed],
+    queryFn: () => fetchScanDetail(idComputed.value),
+    enabled,
+  });
+
+export const useStationScanImages = (
+  idComputed: ComputedRef<string>,
+  enabled: ComputedRef<boolean>,
+) =>
+  useQuery({
+    queryKey: [STATION_SCAN_IMAGE_QUERY_KEY, idComputed],
+    queryFn: () => fetchScanImages(idComputed.value),
+    enabled,
+  });
+
 export const useBTSDetail = (idComputed: ComputedRef<string>, enabled: ComputedRef<boolean>) =>
   useQuery({
     queryKey: [BTS_DETAIL_QUERY_KEY, idComputed],
@@ -29,7 +50,7 @@ export const useBTSDetail = (idComputed: ComputedRef<string>, enabled: ComputedR
     enabled,
   });
 
-export const useStationReport = () => useMutation({ mutationFn: (id: string) => fetchReport(id) });
+export const useStationReport = () => useMutation({ mutationFn: fetchReport });
 
 export const usePoleHistory = (
   paramsComputed: { id: ComputedRef<string>; poleId: ComputedRef<number> },

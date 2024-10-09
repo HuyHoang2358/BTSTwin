@@ -12,7 +12,7 @@
       <PoleItem
         v-for="pole in modelStore.poles"
         :pole="pole"
-        :key="pole.pivot.id"
+        :key="pole.id"
       />
     </div>
   </div>

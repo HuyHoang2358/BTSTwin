@@ -59,7 +59,7 @@
       >
         <a-tab-pane
           v-for="pole in modelStore.poles"
-          :key="pole.pivot.id"
+          :key="pole.id"
           :tab="pole.name"
         >
           <PoleItem :pole="pole" />
@@ -77,7 +77,6 @@ import IconTrash from '@/components/icons/IconTrash.vue';
 import IconUploadForm from '@/components/icons/IconUploadForm.vue';
 import type { UploadChangeParam } from 'ant-design-vue';
 import * as XLSX from 'xlsx';
-import type { Device } from '@/services/apis/station';
 import { generateUUID } from 'three/src/math/MathUtils';
 import HeaderMenu from '@/components/HeaderMenu.vue';
 import { ACTIVE_TOOL } from '@/utils/enums';
@@ -91,7 +90,7 @@ const files = ref([]);
 const jsonData = ref();
 
 const tabClick = (value: number) => {
-  modelStore.selectedPole = modelStore.poles.find((item) => item.pivot.id === value);
+  modelStore.selectedPole = modelStore.poles.find((item) => item.id === value);
 };
 
 let isSetActivePole = false;
@@ -101,7 +100,7 @@ watch(
   () => {
     if (!isSetActivePole && modelStore.poles.length > 0) {
       isSetActivePole = true;
-      modelStore.activePole = modelStore.poles[0].pivot.id;
+      modelStore.activePole = modelStore.poles[0].id;
     }
   },
 );

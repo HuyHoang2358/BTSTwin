@@ -46,5 +46,7 @@ export const API_ADDRESS_DISTRICT = '/address/districts';
 export const API_ADDRESS_COMMUNE = '/address/communes';
 export const API_DEVICE = '/devices';
 export const API_STATION = '/stations';
+export const API_STATION_SCAN = '/scans';
+export const API_STATION_SCAN_IMAGE = '/scans/:id/images';
 export const API_PROCESS = '/processing-data-processes';
 export const API_POLE = '/poles';

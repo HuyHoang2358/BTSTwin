@@ -25,13 +25,13 @@
         <a-typography-text
           style="color: #f6f6f6; font-size: 14px; margin-bottom: 0"
           class="ml-4"
-          v-if="data?.data?.name"
+          v-if="scanInfo?.data?.name"
         >
-          Trạm {{ data?.data?.name }}
+          Trạm {{ scanInfo?.data?.name }}
         </a-typography-text>
         <IconTickGreen
           class="ml-1"
-          v-if="data?.data?.name"
+          v-if="scanInfo?.data?.name"
         />
       </div>
 
@@ -105,42 +105,53 @@
 </template>
 
 <script setup lang="ts">
+// TODO: Import libraries
+import { theme } from 'ant-design-vue';
 import { computed, onUnmounted, ref } from 'vue';
+import viVN from 'ant-design-vue/es/locale/vi_VN';
 import * as THREE from 'three';
-import MeasurementTool from '@/components/MeasurementTool.vue';
+
 import { useModelStore } from '@/stores/model';
 import { useInitial } from '@/potree/hooks/useInitial';
-import BottomTool from '@/components/BottomTool.vue';
-import Information from '@/components/Information.vue';
-import LeftMenu from '@/components/LeftMenu.vue';
-import { useChangeImage } from '@/potree/hooks/useChangeImage';
-import HeaderHome from '@/components/HeaderHome.vue';
-import IconHome from '@/components/icons/home/IconHome.vue';
-import { HOME_PAGE_PATH } from '@/router/routePath';
 import { useRoute, useRouter } from 'vue-router';
-import IconTickGreen from '@/components/icons/home/IconTickGreen.vue';
-import viVN from 'ant-design-vue/es/locale/vi_VN';
-import { theme } from 'ant-design-vue';
+import { useChangeImage } from '@/potree/hooks/useChangeImage';
 import { checkRuleActiveTool } from '@/utils/helpers';
-import ModalAddInventory from '@/components/ModalAddInventory.vue';
-import { useBTSDetail } from '@/services/hooks/useStation';
+import { useStationScan } from '@/services/hooks/useStation';
+import { HOME_PAGE_PATH } from '@/router/routePath';
 import type { Device } from '@/services/apis/station';
+
+import LeftMenu from '@/components/LeftMenu.vue';
+import BottomTool from '@/components/BottomTool.vue';
+import HeaderHome from '@/components/HeaderHome.vue';
+import Information from '@/components/Information.vue';
+import MeasurementTool from '@/components/MeasurementTool.vue';
+import ModalAddInventory from '@/components/ModalAddInventory.vue';
+
+import IconTickGreen from '@/components/icons/home/IconTickGreen.vue';
+import IconHome from '@/components/icons/home/IconHome.vue';
 import IconResizeWidth from '@/components/icon/IconResizeWidth.vue';
 
+// TODO: Define variables
 const pane1Size = ref(50);
 const container = ref<HTMLElement | null>(null);
-const router = useRouter();
+
 const modelStore = useModelStore();
 let startX = 0;
 let startPane1Size = 0;
 const raycaster = new THREE.Raycaster();
-const INTERSECTED = ref();
-const route = useRoute();
 
-const { data } = useBTSDetail(
+const route = useRoute();
+const router = useRouter();
+const INTERSECTED = ref();
+
+// TODO: get scan info to show in breadcrumb
+const { data: scanInfo } = useStationScan(
   computed(() => route.query.id as string),
   computed(() => !!route.query.id),
 );
+
+// TODO: Init 3D environment
+useInitial();
 
 const startResize = (event: any) => {
   event.preventDefault();
@@ -278,8 +289,6 @@ const onPointerMove = (evt: any) => {
     modelStore.hoverInformation = '';
   }
 };
-
-useInitial();
 
 const onRightClick = (event: MouseEvent) => {
   event.preventDefault();

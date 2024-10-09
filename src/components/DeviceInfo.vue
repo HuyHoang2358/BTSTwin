@@ -6,7 +6,7 @@
           class="text-white m-0"
           style="font-size: 22px"
         >
-          {{ modelStore.selectedInventory?.name }}
+          {{ modelStore.selectedInventory?.device_info?.name }}
         </h3>
         <a-popover
           placement="left"
@@ -60,15 +60,15 @@
     <div class="border border-solid border-[#4B4B4B] rounded-[5px] px-3 py-1">
       <ItemDescription
         label="Danh mục"
-        :value="modelStore.selectedInventory.category.name"
+        :value="modelStore.selectedInventory.device_info?.category.name"
       />
       <ItemDescription
         label="Loại thiết bị"
-        :value="modelStore.selectedInventory.name"
+        :value="modelStore.selectedInventory.device_info?.name"
       />
       <ItemDescription
         label="Nhà cung cấp"
-        :value="modelStore.selectedInventory?.vendor?.name"
+        :value="modelStore.selectedInventory?.device_info?.vendor?.name"
       />
     </div>
 
@@ -78,28 +78,28 @@
     <div class="border border-solid border-[#4B4B4B] rounded-[5px] px-3 py-1">
       <ItemDescription
         label="Chiều rộng (mm)"
-        :value="modelStore.selectedInventory?.width"
+        :value="modelStore.selectedInventory?.ai_device_width"
         submit-key="width"
         :on-submit="onSubmitEditing"
         editable
       />
       <ItemDescription
         label="Chiều dài (mm)"
-        :value="modelStore.selectedInventory?.length"
+        :value="modelStore.selectedInventory?.ai_device_height"
         submit-key="length"
         :on-submit="onSubmitEditing"
         editable
       />
       <ItemDescription
         label="Chiều sâu (mm)"
-        :value="modelStore.selectedInventory?.depth"
+        :value="modelStore.selectedInventory?.ai_device_depth"
         submit-key="depth"
         :on-submit="onSubmitEditing"
         editable
       />
       <ItemDescription
         label="Trọng lượng (kg)"
-        :value="modelStore.selectedInventory?.weight"
+        :value="modelStore.selectedInventory?.device_info?.weight"
         submit-key="weight"
         :on-submit="onSubmitEditing"
         editable
@@ -109,7 +109,7 @@
         :value="item.value"
         :submit-key="item.key"
         :on-submit="onSubmitEditing"
-        v-for="item in modelStore.selectedInventory.params"
+        v-for="item in modelStore.selectedInventory.device_info?.params"
         :key="item.key"
         editable
       />
@@ -121,21 +121,21 @@
     <div class="border border-solid border-[#4B4B4B] rounded-[5px] px-3 py-1">
       <ItemDescription
         label="Góc tilt (°)"
-        :value="modelStore.selectedInventory?.pivot.tilt"
+        :value="modelStore.selectedInventory?.pole_param?.tilt_angle"
         submit-key="tilt"
         :on-submit="onSubmitEditing"
         editable
       />
       <ItemDescription
         label="Góc Azimuth (°)"
-        :value="modelStore.selectedInventory?.pivot.azimuth"
+        :value="modelStore.selectedInventory?.pole_param?.azimuth_angle"
         submit-key="azimuth"
         :on-submit="onSubmitEditing"
         editable
       />
       <ItemDescription
         label="Độ cao so với mặt đất (m)"
-        :value="modelStore.selectedInventory?.pivot.height"
+        :value="modelStore.selectedInventory?.pole_param?.height"
         submit-key="height"
         :on-submit="onSubmitEditing"
         editable
@@ -212,11 +212,11 @@ const onRollback = () => {
     deviceCategories: pole.deviceCategories.map((category) => ({
       ...category,
       devices: category.devices.map((device) => {
-        if (device.pivot.id === modelStore.selectedInventory?.pivot.id) {
+        if (device.id === modelStore.selectedInventory?.id) {
           return {
             ...device,
             pivot: {
-              ...device.pivot,
+              ...device,
               ...modelStore.fieldHover,
             },
           };
@@ -230,12 +230,12 @@ const onRollback = () => {
   modelStore.poles.forEach((pole) => {
     pole.deviceCategories.forEach((category) => {
       category.devices.forEach((device) => {
-        if (device.pivot.id === modelStore.selectedInventory?.pivot.id) {
+        if (device.id === modelStore.selectedInventory?.id) {
           modelStore.selectedInventory = device;
           return {
             ...device,
             pivot: {
-              ...device.pivot,
+              ...device,
               ...modelStore.fieldHover,
             },
           };
