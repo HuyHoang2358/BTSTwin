@@ -4,7 +4,7 @@
       :class="[
         'flex flex-row justify-between items-center cursor-pointer',
 
-        pole.pivot.id === modelStore.selectedPole?.pivot.id && 'bg-[#38536d]',
+        pole.id === modelStore.selectedPole?.id && 'bg-[#38536d]',
       ]"
       v-if="modelStore.activeTool === ACTIVE_TOOL.INVENTORY"
     >
@@ -12,9 +12,16 @@
         class="flex flex-row items-center pl-2 py-1 w-full"
         @click="onShowInfoPole"
       >
-        <IconBTS />
-        <a-typography-text class="text-base font-semibold text-[#E3E3E3]">
-          {{ pole.name }}
+        <div class="h-8 w-7">
+          <img
+            :src="domain + pole?.category?.icon"
+            alt="icon"
+            class="w-full h-full"
+          />
+        </div>
+        <!--        <IconBTS />-->
+        <a-typography-text class="text-base font-semibold text-[#E3E3E3] capitalize">
+          Cột {{ pole.name }}
         </a-typography-text>
       </div>
       <a-button
@@ -80,10 +87,10 @@
 
           <InventoryItem
             v-for="(item, index) in deviceCategory.devices
-              .filter((device) =>
+              .filter((device: any) =>
                 modelStore.activeTool === ACTIVE_TOOL.INVENTORY ? !device.isNewDevice : true,
               )
-              .filter((device) => compareString(device.name, searchValue))"
+              .filter((device: any) => compareString(device.device_info.name, searchValue))"
             :key="index"
             :item="item"
             :index="index"
@@ -137,13 +144,16 @@ import { useModelStore } from '@/stores/model';
 import type { Device } from '@/services/apis/bts';
 import { notification } from 'ant-design-vue';
 import { useErrorHandler } from '@/services/hooks/useErrorHandler';
-import { useBTSDetail } from '@/services/hooks/useStation';
+import { useStationScan } from '@/services/hooks/useStation';
 import { useRoute } from 'vue-router';
 import { useCalculate } from '@/services/hooks/useBTS';
 import IconSearchInput from '@/components/icons/home/IconSearchInput.vue';
 import IconFilter from '@/components/icons/home/IconFilter.vue';
 import { ACTIVE_TOOL } from '@/utils/enums';
 import IconBTS from '@/components/icons/home/IconBTS.vue';
+
+const baseUrl = import.meta.env.VITE_BASE_URL;
+const domain = baseUrl.slice(0, baseUrl.length - 5);
 
 const props = defineProps<{
   pole: Pole;
@@ -157,7 +167,7 @@ const route = useRoute();
 
 const { mutate, isPending, data } = useCalculate();
 
-const { data: dataBTS } = useBTSDetail(
+const { data: dataBTS } = useStationScan(
   computed(() => route.query.id as string),
   computed(() => !!route.query.id),
 );
@@ -181,7 +191,7 @@ const onCalculate = () => {
 
   const inventories: Device[] = [];
 
-  const pole = modelStore.poles.find((pole) => pole.pivot.id === modelStore.activePole);
+  const pole = modelStore.poles.find((pole) => pole.id === modelStore.activePole);
   if (!pole) return;
 
   modelStore.poles.forEach((pole) => {
@@ -244,7 +254,7 @@ const onCalculate = () => {
 
 const onToggleExpand = () => {
   modelStore.poles = modelStore.poles.map((item) =>
-    item.pivot.id === props.pole.pivot.id
+    item.id === props.pole.id
       ? {
           ...item,
           isExpanded: !item.isExpanded,

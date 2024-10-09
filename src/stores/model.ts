@@ -7,7 +7,7 @@ import { Cesium3DTileset } from 'cesium';
 import type VectorSource from 'ol/source/Vector';
 import { Mesh } from 'three';
 import { heightBasePlate, widthBasePlate } from '@/utils/constants';
-import type { Device, Image, Pole, Station } from '@/services/apis/station';
+import type { Device, Image, Pole, PoleDevice, Station } from '@/services/apis/station';
 import { ACTIVE_TOOL } from '@/utils/enums';
 
 export const useModelStore = defineStore('model', () => {
@@ -19,7 +19,7 @@ export const useModelStore = defineStore('model', () => {
   const measurements = ref<any[]>([]);
   const activeTool = ref<ACTIVE_TOOL>();
   const activeSubTool = ref();
-  const selectedInventory = ref<Device>();
+  const selectedInventory = ref<PoleDevice>();
   const selectedPole = ref<Pole>();
   const selectedImage = ref<Image>();
   const scale = ref<number>(1);
@@ -41,7 +41,7 @@ export const useModelStore = defineStore('model', () => {
   const widthBasePlateValue = ref<number>(widthBasePlate);
   const heightBasePlateValue = ref<number>(heightBasePlate);
   const zPlaneHistory = ref(0);
-  const poles = ref<any[]>([]);
+  const poles = ref<Pole[]>([]);
   const images = ref<Image[]>([]);
   const activePole = ref<number>();
   const gpsRatio = ref<number>(1);

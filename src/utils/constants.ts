@@ -69,5 +69,5 @@ export const pointSizeValue = 1;
 export const EDL = true;
 export const EDLRadius = false;
 
-export const widthBasePlate = 10;
-export const heightBasePlate = 10;
+export const widthBasePlate = 15;
+export const heightBasePlate = 15;

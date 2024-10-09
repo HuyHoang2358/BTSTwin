@@ -55,18 +55,6 @@ export type PoleData = {
   pole_category_id: number | string | null;
 };
 
-export type PoleDevice = {
-  pole_id: number | null;
-  device_id: number | null;
-  attached_at: number | null;
-  x: number | null;
-  y: number | null;
-  z: number | null;
-  alpha: number | null;
-  beta: number | null;
-  gamma: number | null;
-};
-
 export type PoleDeviceData = {
   pole_id: number | null;
   device_id: number | null;

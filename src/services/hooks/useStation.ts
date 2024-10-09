@@ -6,15 +6,9 @@ import {
   fetchBTSById,
   fetchDeviceHistory,
   fetchPoleHistory,
-  fetchReport,
-  fetchStations,
-} from '@/services/apis/station';
-import type { ComputedRef } from 'vue';
-import {
-  fetchBTSById,
-  fetchReport,
   fetchScanDetail,
   fetchScanImages,
+  fetchReport,
   fetchStations,
 } from '@/services/apis/station';
 import type { ComputedRef } from 'vue';
@@ -56,7 +50,7 @@ export const useBTSDetail = (idComputed: ComputedRef<string>, enabled: ComputedR
     enabled,
   });
 
-export const useStationReport = () => useMutation({ mutationFn: (id: string) => fetchReport(id) });
+export const useStationReport = () => useMutation({ mutationFn: fetchReport });
 
 export const usePoleHistory = (
   paramsComputed: { id: ComputedRef<string>; poleId: ComputedRef<number> },
@@ -91,4 +85,3 @@ export const useDeviceHistory = (
   });
 
 export const useCreateDeviceHistory = () => useMutation({ mutationFn: createDeviceHistory });
-export const useStationReport = () => useMutation({ mutationFn: (id: string) => fetchReport(id) });

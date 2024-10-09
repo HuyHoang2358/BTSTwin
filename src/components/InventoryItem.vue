@@ -2,7 +2,7 @@
   <div
     :class="[
       'flex flex-row items-center justify-between cursor-pointer',
-      item.pivot.id === modelStore.selectedInventory?.pivot.id && 'bg-[#38536d]',
+      item.id === modelStore.selectedInventory?.id && 'bg-[#38536d]',
     ]"
   >
     <div
@@ -12,8 +12,8 @@
       <div class="w-1 h-[28px] bg-[#69f0ae] mr-7" />
       <a-typography-text
         class="text-white text-sm w-[190px]"
-        :ellipsis="{ tooltip: `${item.name} (${item.pivot.id})` }"
-        :content="`${item.name} (${item.pivot.id})`"
+        :ellipsis="{ tooltip: `${item.device_info.name} (${item.id})` }"
+        :content="`${item.device_info.name} (${item.id})`"
       />
     </div>
     <div
@@ -65,18 +65,17 @@
 import { useModelStore } from '@/stores/model';
 import { useChangeImage } from '@/potree/hooks/useChangeImage';
 import * as THREE from 'three';
-import type { Device } from '@/services/apis/station';
+import type { PoleDevice } from '@/services/apis/station';
 
-defineProps<{ item: Device; index: number }>();
+defineProps<{ item: PoleDevice; index: number }>();
 
 const modelStore = useModelStore();
 
 const { onChangeImage } = useChangeImage();
 
-const onClickInventory = (object: Device) => {
+const onClickInventory = (object: PoleDevice) => {
   if (object.isNewDevice) {
     modelStore.selectedInventory = object;
-
     window.potreeViewer.inputHandler.deselectAll();
     window.potreeViewer.inputHandler.toggleSelection(object.newDevice);
     window.potreeViewer.zoomTo(object.newDevice, 2, 500);
@@ -86,9 +85,10 @@ const onClickInventory = (object: Device) => {
   if (modelStore.selectedInventory && modelStore.selectedInventory.isNewDevice) {
     window.potreeViewer.inputHandler.deselectAll();
   }
+
   modelStore.selectedInventory = object;
-  const image2D = object?.pivot.suggested_img
-    ? modelStore.images.find((item) => item.filename.includes(object?.pivot.suggested_img))
+  const image2D = object?.suggested_img
+    ? modelStore.images.find((item) => item.filename.includes(object?.suggested_img))
     : undefined;
   if (image2D) {
     onChangeImage(image2D);
@@ -100,9 +100,9 @@ const onClickInventory = (object: Device) => {
   modelStore.isSelectedBasePlate = false;
 };
 
-const onMoveToInventory = (object: Device) => {
-  if (!object.pivot.vertices) return;
-  const vertices = JSON.parse(object.pivot.vertices);
+const onMoveToInventory = (object: PoleDevice) => {
+  if (!object.vertices) return;
+  const vertices = JSON.parse(object.vertices);
   const antennaVertices = vertices.map(
     (item: number[]) => new THREE.Vector3(item[0], item[1], item[2]),
   );
@@ -118,15 +118,15 @@ const onMoveToInventory = (object: Device) => {
   }
 };
 
-const onToggleRemoveInventory = (object: Device) => {
+const onToggleRemoveInventory = (object: PoleDevice) => {
   if (!modelStore.poles || !object.volume) return;
   const nextState = !object.volume.clip;
   modelStore.poles = modelStore.poles.map((item) => ({
     ...item,
     deviceCategories: item.deviceCategories.map((category) => ({
       ...category,
-      devices: category.devices.map((device) =>
-        device.pivot.id === object.pivot.id
+      devices: category.devices.map((poleDevice) =>
+        poleDevice.id === object.id
           ? {
               ...device,
               clip: nextState,

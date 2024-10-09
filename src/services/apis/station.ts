@@ -1,90 +1,12 @@
-import type { Point, WrapperResponse } from '@/services/services.types';
 import client from '@/services/client';
 import { API_STATION, API_STATION_SCAN, API_STATION_SCAN_IMAGE } from '@/services/apiPath';
-import { API_STATION } from '@/services/apiPath';
-import type { Address } from '@/services/apis/stationCategory';
+
 import * as THREE from 'three';
 import type { Vendor } from '@/services/apis/vendor';
-import type { Commune, Country, District, Province } from '@/services/apis/address';
+import type { Address } from '@/services/apis/address';
 import type { PoleCategory } from '@/services/apis/polecategory';
+import type { WrapperResponse } from '@/services/services.types';
 import type { DeviceCategory } from '@/services/apis/devicecategory';
-
-export type Bts = {
-  id: number;
-  createdAt: string;
-  updatedAt: string;
-  station: string;
-  modelLink: string;
-  address: string;
-  operator: string;
-  type: string;
-  mountingPosition: string;
-  towerHeight: number;
-  towerTilt: number;
-  gpsRatio: number;
-  paramA: number;
-  assetId: number;
-  paramB: number;
-  northDirection: number[];
-  geom: Point;
-  zplane: number;
-};
-
-export interface Inventory {
-  id: number | string;
-  createdAt: string;
-  updatedAt: string;
-  name: string;
-  model: string;
-  vendor: string;
-  deviceTilt: number;
-  deviceAzimuth: number;
-  deviceHeight: number;
-  status: boolean;
-  modelHeight: number;
-  modelWidth: number;
-  modelDepth: number;
-  vertices: string;
-  translation: string;
-  rotation: string;
-  image2D?: Image2D;
-}
-
-export type StationItems = {
-  station: string;
-  expanded: boolean;
-  items: Omit<Bts, 'station'>[];
-};
-
-export interface Image2D {
-  id: number;
-  createdAt: string;
-  updatedAt: string;
-  fileName: string;
-  width: number;
-  height: number;
-  gpsLatitudeRef: string;
-  gpsLongitudeRef: string;
-  gpsAltitudeRef: string;
-  gimbalRollDegree: string;
-  gimbalYawDegree: string;
-  gimbalPitchDegree: number;
-  gpsAltitude: string;
-  gpsLatitude: string;
-  gpsLongitude: string;
-  imageUrl: string;
-  previewImageUrl: string;
-  cameraPose: CameraPose;
-}
-
-export interface CalculateData {
-  station_code: string;
-  devices: Device[];
-}
-
-export interface CalculateResType {
-  pole_stress: number;
-}
 
 // TODO: Define types
 export interface Location {
@@ -139,7 +61,6 @@ export interface Image {
   gps: Gps;
   camera_pose: CameraPose;
   gimbal: Gimbal;
-  take_date: string;
 }
 
 export interface Gps {
@@ -197,8 +118,13 @@ export interface Pole {
   category: PoleCategory;
   pole_devices: PoleDevice[];
   pole_param: PoleParam;
+  deviceCategories: PoleDeviceCategory[];
+  isExpanded?: boolean;
 }
-
+export interface PoleDeviceCategory {
+  name: string;
+  devices: PoleDevice[];
+}
 export interface PoleDevice {
   id: number;
   pole_id: number;
@@ -215,7 +141,7 @@ export interface PoleDevice {
   suggested_img: string;
   user_id: number;
   is_active: number;
-  device: Device;
+  device_info: DeviceInfo;
   geometry_box: GeometryBox;
   boxMesh?: THREE.Mesh<THREE.BoxGeometry, THREE.MeshBasicMaterial, THREE.Object3DEventMap>;
   volume?: Potree.BoxVolume;
@@ -239,7 +165,7 @@ export interface GeometryBox {
   rotate_z: number;
 }
 
-export interface Device {
+export interface DeviceInfo {
   id: number;
   name: string;
   slug: string;
@@ -341,11 +267,15 @@ export interface Detail {
   address: Address;
 }
 
+// TODO: API Detail
+// Get information of all stations
 export const fetchStations = (): WrapperResponse<Station[]> => client.get(API_STATION);
 
+// Get information of a scan of station by scan id
 export const fetchScanDetail = (id: string): WrapperResponse<Scan> =>
   client.get(`${API_STATION_SCAN}/${id}`);
 
+// Get all images of a scan by scan id
 export const fetchScanImages = (id: string): WrapperResponse<Image[]> =>
   client.get(API_STATION_SCAN_IMAGE.replace(':id', id));
 
@@ -359,6 +289,7 @@ export const fetchReport = (id: string) =>
     },
   });
 
+//
 export const fetchPoleHistory = (params: {
   scanId: string;
   poleId: number;
