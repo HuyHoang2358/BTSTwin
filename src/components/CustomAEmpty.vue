@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-1 flex-col justify-center items-center">
     <IconEmpty />
-    <a-typography-text class="text-[#686868] font-medium text-[8px] mt-2.5">
+    <a-typography-text class="text-[#686868] font-medium text-[12px] mt-2.5 text-center">
       {{ emptyText || t('noData') }}
     </a-typography-text>
   </div>

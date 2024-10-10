@@ -7,6 +7,8 @@ import type { Address } from '@/services/apis/address';
 import type { PoleCategory } from '@/services/apis/polecategory';
 import type { WrapperResponse } from '@/services/services.types';
 import type { DeviceCategory } from '@/services/apis/devicecategory';
+import Measurement from '@/components/Measurement.vue';
+import { data } from 'autoprefixer';
 
 // TODO: Define types
 export interface Location {
@@ -221,6 +223,11 @@ export type DataCreateDevice = {
   field: Record<string, string | number>;
 };
 
+export type DataSaveMeasurements = {
+  scanId: number;
+  measurements: string;
+};
+
 export interface PoleParam {
   id: number;
   pole_id: number;
@@ -239,32 +246,6 @@ export interface PoleParam {
   is_active: number;
   user_id: number;
   description: string;
-}
-
-// end
-
-export interface BtsDetail {
-  id: number;
-  name: string;
-  code: string;
-  station_category_id: number;
-  date: string;
-  status: number;
-  detail: Detail;
-  poles?: Pole[];
-  images?: Image[];
-  models?: Model[];
-}
-
-export interface Detail {
-  id: number;
-  name: string;
-  code: string;
-  description: any;
-  location_id: number;
-  address_id: number;
-  location: Location;
-  address: Address;
 }
 
 // TODO: API Detail
@@ -308,3 +289,11 @@ export const fetchDeviceHistory = (params: {
 
 export const createDeviceHistory = (data: DataCreateDevice) =>
   client.post(`https://66ff6db12b9aac9c997f3c22.mockapi.io/history-device`, data);
+
+export const getMeasurementHistoryByScanId = (
+  scanId: string,
+): WrapperResponse<DataSaveMeasurements> =>
+  client.get(`http://localhost:8899/api/bts/get-measurement-history-by-scan-id/${scanId}`);
+
+export const saveMeasurements = (data: DataSaveMeasurements) =>
+  client.post('http://localhost:8899/api/bts/save-measurement-history', data);

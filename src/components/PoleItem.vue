@@ -194,41 +194,43 @@ const onCalculate = () => {
   if (!pole) return;
 
   modelStore.poles.forEach((pole) => {
-    pole.deviceCategories.forEach((category) => {
-      category.devices.forEach((item) => {
-        if (item.isNewDevice) {
-          let dimensions = item.newDevice.scale.toArray();
-          dimensions = dimensions.map((v: number) => Potree.Utils.addCommas(v.toFixed(2)));
-          inventories.push({
-            name: item.device_info.name as string,
-            depth: Number(dimensions[0]),
-            width: Number(dimensions[1]),
-            height: Number(dimensions[2]),
-            DC: Math.abs(
-              item.newDevice
-                ? (item.newDevice.position.z - (modelStore.positionValue || pole.z_plane)) *
-                    modelStore.gpsRatio
-                : 0,
-            ),
-          });
-        } else {
-          if (!item.clip) {
+    if (pole.id === modelStore.activePole) {
+      pole.deviceCategories.forEach((category) => {
+        category.devices.forEach((item) => {
+          if (item.isNewDevice) {
+            let dimensions = item.newDevice.scale.toArray();
+            dimensions = dimensions.map((v: number) => Potree.Utils.addCommas(v.toFixed(2)));
             inventories.push({
               name: item.device_info.name as string,
-              depth: Number(item.device_info.depth) / 1000,
-              width: Number(item.device_info.width) / 1000,
-              height: Number(item.device_info.length) / 1000,
+              depth: Number(dimensions[0]),
+              width: Number(dimensions[1]),
+              height: Number(dimensions[2]),
               DC: Math.abs(
-                item.boxMesh
-                  ? (item.boxMesh.position.z - (modelStore.positionValue || pole.z_plane)) *
+                item.newDevice
+                  ? (item.newDevice.position.z - (modelStore.positionValue || pole.z_plane)) *
                       modelStore.gpsRatio
                   : 0,
               ),
             });
+          } else {
+            if (!item.clip) {
+              inventories.push({
+                name: item.device_info.name as string,
+                depth: Number(item.device_info.depth) / 1000,
+                width: Number(item.device_info.width) / 1000,
+                height: Number(item.device_info.length) / 1000,
+                DC: Math.abs(
+                  item.boxMesh
+                    ? (item.boxMesh.position.z - (modelStore.positionValue || pole.z_plane)) *
+                        modelStore.gpsRatio
+                    : 0,
+                ),
+              });
+            }
           }
-        }
+        });
       });
-    });
+    }
   });
 
   mutate(

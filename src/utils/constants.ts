@@ -63,8 +63,8 @@ export const googleSatelliteLayer = new TileLayer({
 });
 
 // export const budgetPoint = 30_000_000;
-export const budgetPoint = 1_000_000;
-export const budgetPointValue = 30000000;
+export const budgetPoint = 10_000_000;
+export const budgetPointValue = 10000000;
 export const pointSizeValue = 1;
 export const EDL = true;
 export const EDLRadius = false;

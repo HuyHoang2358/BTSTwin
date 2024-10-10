@@ -11,7 +11,11 @@ import {
   pointSizeValue,
   widthBasePlate,
 } from '@/utils/constants';
-import { useStationScan, useStationScanImages } from '@/services/hooks/useStation';
+import {
+  useMeasurementHistoryByScanId,
+  useStationScan,
+  useStationScanImages,
+} from '@/services/hooks/useStation';
 import type { Image, PoleDevice } from '@/services/apis/station';
 import { ACTIVE_TOOL } from '@/utils/enums';
 
@@ -36,6 +40,10 @@ export const useInitial = () => {
 
   // Fetch information of scan
   const { data: scanInfoResponse } = useStationScan(
+    computed(() => route.query.id as string),
+    computed(() => !!route.query.id),
+  );
+  const { data: dataMeasurementHistory } = useMeasurementHistoryByScanId(
     computed(() => route.query.id as string),
     computed(() => !!route.query.id),
   );
@@ -67,7 +75,9 @@ export const useInitial = () => {
   );
 
   const onMeasurementAdded = (e: any) => {
-    modelStore.hoverInformation = 'Nhấn chuột trái để thêm điểm, nhấn chuột phải để kết thúc đo';
+    if (modelStore.activeTool === ACTIVE_TOOL.MEASUREMENT) {
+      modelStore.hoverInformation = 'Nhấn chuột trái để thêm điểm, nhấn chuột phải để kết thúc đo';
+    }
     const measurement = e.measurement;
     const modelStoreListener = useModelStore();
     modelStoreListener.isDrawing = true;
@@ -92,6 +102,13 @@ export const useInitial = () => {
     measurement.addEventListener('marker_moved', () => {
       const modelStoreListener = useModelStore();
       modelStoreListener.isDrawing = true;
+      if (
+        modelStoreListener.activeTool === ACTIVE_TOOL.MEASUREMENT &&
+        (measurement.uuid !== modelStoreListener.selectedMeasurement?.uuid ||
+          !modelStoreListener.selectedMeasurement)
+      ) {
+        modelStoreListener.selectedMeasurement = measurement;
+      }
     });
 
     measurement.icon = Potree.Utils.getMeasurementIcon(measurement);
@@ -107,12 +124,6 @@ export const useInitial = () => {
   const loadInventory = () => {
     const poles = scanInfo.value?.poles || [];
     let allDevices: PoleDevice[] = [];
-
-    if (poles[0]?.gps_ratio) {
-      const gpsRatio = Number(poles[0].gps_ratio) / 1000 / modelStore.gpsRatio;
-      modelStore.gpsRatio = gpsRatio;
-      window.potreeViewer.setGPSRatio(gpsRatio);
-    }
 
     poles.forEach((pole) => {
       allDevices = allDevices.concat(pole.pole_devices || []);
@@ -219,6 +230,7 @@ export const useInitial = () => {
   });
 
   let loaded = false;
+  let loadedImage = false;
 
   const loadPointCloud = () => {
     const url = scanInfo.value?.models?.find((item) => item.type === 'potree')?.url;
@@ -344,16 +356,54 @@ export const useInitial = () => {
     });*/
   };
 
+  const loadMeasure = () => {
+    if (!dataMeasurementHistory.value?.data?.measurements) return;
+    const measurements = JSON.parse(dataMeasurementHistory.value?.data?.measurements);
+
+    measurements.forEach((data: any) => {
+      const measure = new Potree.Measure(window.potreeViewer);
+
+      measure.uuid = data.uuid;
+      measure.name = data.name;
+      measure.showDistances = data.showDistances;
+      measure.showCoordinates = data.showCoordinates;
+      measure.showArea = data.showArea;
+      measure.closed = data.closed;
+      measure.showAngles = data.showAngles;
+      measure.showHeight = data.showHeight;
+      measure.showCircle = data.showCircle;
+      measure.showAzimuth = data.showAzimuth;
+      measure.showEdges = data.showEdges;
+
+      for (const point of data.points) {
+        const pos = new THREE.Vector3(...point);
+        measure.addMarker(pos);
+      }
+
+      window.potreeViewer.scene.addMeasurement(measure);
+    });
+  };
+
   watch([scanInfo], () => {
-    if (scanInfo.value && !loaded) {
+    if (scanInfo.value && dataMeasurementHistory.value && !loaded) {
       loaded = true;
+      const poles = scanInfo.value?.poles || [];
+      if (poles[0]?.gps_ratio) {
+        const gpsRatio = Number(poles[0].gps_ratio) / 1000 / modelStore.gpsRatio;
+        modelStore.gpsRatio = gpsRatio;
+        window.potreeViewer.setGPSRatio(gpsRatio);
+      }
       loadPointCloud();
       loadInventory();
       loadBasePlate();
+      loadMeasure();
     }
   });
 
   watch([imageData], () => {
-    loadImages();
+    if (imageData.value && !loadedImage) {
+      loadedImage = true;
+      loadImages();
+    }
   });
 };
