@@ -160,72 +160,87 @@
         <IconExpandedImage />
       </a-button>
     </div>
-    <div class="pl-2 h-[30px] flex flex-row items-center">
+    <div class="pl-2 h-[30px] flex flex-row items-center justify-between">
+      <div class="flex flex-row">
+        <a-tooltip
+          title="Tên ảnh"
+          placement="top"
+          color="#212121"
+        >
+          <div class="flex flex-row gap-1 items-center">
+            <icon-camera class="w-4 h-4" />
+            <a-typography-paragraph
+              :ellipsis="{ rows: 1 }"
+              class="text-[#888] text-sm"
+              style="margin-bottom: 0"
+              :content="modelStore?.selectedImage?.filename.split('.')[0]"
+            />
+          </div>
+        </a-tooltip>
+        <a-tooltip
+          title="Gimbal Pitch"
+          placement="top"
+          color="#212121"
+        >
+          <div class="flex flex-row items-center ml-2">
+            <icon-gimbal-pitch />
+            <a-typography-paragraph
+              :ellipsis="{ rows: 1 }"
+              class="text-[#888] text-sm"
+              style="margin-bottom: 0"
+              :content="modelStore.selectedImage?.gimbal.pitch_degree"
+            />
+          </div>
+        </a-tooltip>
+        <a-tooltip
+          title="Gimbal Yaw"
+          placement="top"
+          color="#212121"
+        >
+          <div class="flex flex-row items-center ml-2">
+            <icon-gimbal-yaw />
+            <a-typography-paragraph
+              :ellipsis="{ rows: 1 }"
+              class="text-[#888] text-sm"
+              style="margin-bottom: 0"
+              :content="modelStore.selectedImage?.gimbal.yaw_degree"
+            />
+          </div>
+        </a-tooltip>
+        <a-tooltip
+          title="Ngày chụp ảnh"
+          placement="top"
+          color="#212121"
+        >
+          <div class="flex flex-row gap-1 items-center ml-2">
+            <icon-date class="w-4 h-4" />
+            <a-typography-paragraph
+              :ellipsis="{ rows: 1 }"
+              class="text-[#888] text-sm"
+              style="margin-bottom: 0"
+              :content="modelStore.selectedImage?.take_date"
+            />
+          </div>
+        </a-tooltip>
+      </div>
       <a-tooltip
-        title="Tên ảnh"
+        title="Tải ảnh"
         placement="top"
         color="#212121"
       >
-        <div class="flex flex-row gap-2 items-center">
-          <icon-camera />
-          <a-typography-text class="text-[#888] text-sm">
-            &nbsp;{{ modelStore?.selectedImage?.filename.split('.')[0] }}
-            <!--({{
-            modelStore?.selectedImage?.id
-          }})-->
-          </a-typography-text>
-        </div>
+        <a-button
+          type="ghost"
+          class="flex flex-row gap-1 items-center p-1"
+          @click="
+            downloadImage(
+              modelStore.selectedImage?.image_url || '',
+              modelStore.selectedImage?.filename || '',
+            )
+          "
+        >
+          <icon-download class="w-4 h-4" />
+        </a-button>
       </a-tooltip>
-      <a-tooltip
-        title="Gimbal Pitch"
-        placement="top"
-        color="#212121"
-      >
-        <div class="flex flex-row gap-1 items-center ml-2">
-          <icon-gimbal-pitch />
-          <a-typography-text class="text-[#888] text-sm">
-            &nbsp;{{ modelStore.selectedImage?.gimbal.pitch_degree }}°
-          </a-typography-text>
-        </div>
-      </a-tooltip>
-      <a-tooltip
-        title="Gimbal Yaw"
-        placement="top"
-        color="#212121"
-      >
-        <div class="flex flex-row gap-1 items-center ml-2">
-          <icon-gimbal-yaw />
-          <a-typography-text class="text-[#888] text-sm">
-            &nbsp;{{ modelStore.selectedImage?.gimbal.yaw_degree }}°
-          </a-typography-text>
-        </div>
-      </a-tooltip>
-      <a-tooltip
-        title="Ngày chụp ảnh"
-        placement="top"
-        color="#212121"
-      >
-        <div class="flex flex-row gap-2 items-center ml-2">
-          <icon-date />
-          <a-typography-text class="text-[#888] text-sm">
-            {{ modelStore.selectedImage?.take_date }}
-          </a-typography-text>
-        </div>
-      </a-tooltip>
-
-      <a-button
-        type="ghost"
-        class="flex flex-row gap-1 items-center p-1"
-        @click="
-          downloadImage(
-            modelStore.selectedImage?.image_url || '',
-            modelStore.selectedImage?.filename || '',
-          )
-        "
-      >
-        <icon-download />
-        <a-typography-text class="text-[#888] text-sm">Tải ảnh</a-typography-text>
-      </a-button>
     </div>
     <div
       class="overflow-auto gap-2 flex flex-row h-[198px] bg-[#303030]"

@@ -8,7 +8,7 @@
       <a-button
         class="w-8 h-8 p-0 m-0 rounded-t rounded-b-none flex flex-row items-center justify-center"
         type="ghost"
-        @click="modelStore.activeSubTool = undefined"
+        @click="onViewInfo"
       >
         <select-icon v-if="checkRuleActiveTool()" />
         <select-active-icon v-else />
@@ -151,6 +151,11 @@ import IconTilt from '@/components/icon/tools/IconTilt.vue';
 import IconAzimuth from '@/components/icon/tools/IconAzimuth.vue';
 
 const modelStore = useModelStore();
+
+const onViewInfo = () => {
+  modelStore.activeSubTool = undefined;
+  modelStore.hoverInformation = '';
+};
 
 const onMeasureDistance = () => {
   modelStore.activeSubTool = 'distance';

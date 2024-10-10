@@ -9,19 +9,19 @@
       v-if="modelStore.activeTool === ACTIVE_TOOL.INVENTORY"
     >
       <div
-        class="flex flex-row items-center pl-2 py-1 w-full"
+        class="flex flex-row items-center pl-1 py-1 w-full"
         @click="onShowInfoPole"
       >
-        <div class="h-8 w-7">
-          <img
-            :src="domain + pole?.category?.icon"
-            alt="icon"
-            class="w-full h-full"
-          />
-        </div>
-        <!--        <IconBTS />-->
+        <a-image
+          :src="domain + pole?.category?.icon"
+          alt="bts-icon"
+          :preview="false"
+          :width="32"
+          :height="32"
+          class="object-contain"
+        />
         <a-typography-text class="text-base font-semibold text-[#E3E3E3] capitalize">
-          Cột {{ pole.name }}
+          {{ pole.name }}
         </a-typography-text>
       </div>
       <a-button
@@ -90,7 +90,7 @@
               .filter((device: any) =>
                 modelStore.activeTool === ACTIVE_TOOL.INVENTORY ? !device.isNewDevice : true,
               )
-              .filter((device: any) => compareString(device.device_info.name, searchValue))"
+              .filter((device: any) => compareString(device?.device_info?.name, searchValue))"
             :key="index"
             :item="item"
             :index="index"
@@ -150,7 +150,6 @@ import { useCalculate } from '@/services/hooks/useBTS';
 import IconSearchInput from '@/components/icons/home/IconSearchInput.vue';
 import IconFilter from '@/components/icons/home/IconFilter.vue';
 import { ACTIVE_TOOL } from '@/utils/enums';
-import IconBTS from '@/components/icons/home/IconBTS.vue';
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 const domain = baseUrl.slice(0, baseUrl.length - 5);
@@ -201,7 +200,7 @@ const onCalculate = () => {
           let dimensions = item.newDevice.scale.toArray();
           dimensions = dimensions.map((v: number) => Potree.Utils.addCommas(v.toFixed(2)));
           inventories.push({
-            name: item.name as string,
+            name: item.device_info.name as string,
             depth: Number(dimensions[0]),
             width: Number(dimensions[1]),
             height: Number(dimensions[2]),
@@ -215,10 +214,10 @@ const onCalculate = () => {
         } else {
           if (!item.clip) {
             inventories.push({
-              name: item.name as string,
-              depth: Number(item.depth) / 1000,
-              width: Number(item.width) / 1000,
-              height: Number(item.length) / 1000,
+              name: item.device_info.name as string,
+              depth: Number(item.device_info.depth) / 1000,
+              width: Number(item.device_info.width) / 1000,
+              height: Number(item.device_info.length) / 1000,
               DC: Math.abs(
                 item.boxMesh
                   ? (item.boxMesh.position.z - (modelStore.positionValue || pole.z_plane)) *

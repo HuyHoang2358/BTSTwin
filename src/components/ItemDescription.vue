@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-row justify-between py-0.5 gap-2">
+  <div class="flex flex-row items-center justify-between py-0.5 gap-2">
     <div class="w-1/2">
       <a-typography-text class="text-[#FAFAFA] text-xs">{{ label }}</a-typography-text>
     </div>

@@ -11,13 +11,13 @@
 
     <div class="px-4 py-2.5">
       <div class="flex flex-row items-center">
-        <div class="w-8 h-8">
-          <img
-            :src="domain + modelStore.selectedPole?.category?.icon"
-            alt="icon"
-            class="w-full h-full"
-          />
-        </div>
+        <a-image
+          :src="domain + modelStore.selectedPole?.category?.icon"
+          alt="icon"
+          :width="32"
+          :height="32"
+          :preview="false"
+        />
         <div class="flex flex-row flex-1 items-center justify-between ml-1">
           <h3
             class="text-white m-0"
@@ -198,7 +198,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, reactive, ref, type UnwrapRef } from 'vue';
+import { computed, onMounted, reactive, ref, type UnwrapRef, watch } from 'vue';
 import { useModelStore } from '@/stores/model';
 import { HistoryOutlined, RollbackOutlined } from '@ant-design/icons-vue';
 import { useRoute } from 'vue-router';
@@ -245,6 +245,15 @@ const formState: UnwrapRef<FormState> = reactive({});
 const queryClient = useQueryClient();
 
 const onSubmitEditing = (key: string, value: string) => {
+  modelStore.poles = modelStore.poles.map((pole) => {
+    if (pole.id === modelStore.selectedPole?.id) {
+      return { ...pole, pole_param: { ...pole.pole_param, [key]: value } };
+    }
+    return pole;
+  });
+  const currentPole = modelStore.poles.find((pole) => pole.id === modelStore.selectedPole?.id);
+  if (!currentPole) return;
+  modelStore.selectedPole = currentPole;
   createPoleHistory(
     {
       scanId: Number(route.query.id),
@@ -264,7 +273,7 @@ const onSubmitEditing = (key: string, value: string) => {
 const onRollback = () => {
   modelStore.poles = modelStore.poles.map((pole) => {
     if (pole.id === modelStore.selectedPole?.id) {
-      return { ...pole, ...modelStore.fieldHover };
+      return { ...pole, pole_param: { ...pole.pole_param, ...modelStore.fieldHover } };
     }
     return pole;
   });
@@ -273,6 +282,13 @@ const onRollback = () => {
   modelStore.selectedPole = currentPole;
   visibleHistory.value = false;
 };
+
+watch(
+  () => modelStore.poles,
+  () => {
+    console.log('modelStore.poles', modelStore.poles);
+  },
+);
 
 const onClosePole = () => {
   modelStore.selectedPole = undefined;

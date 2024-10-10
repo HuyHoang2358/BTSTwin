@@ -118,7 +118,6 @@ import { useChangeImage } from '@/potree/hooks/useChangeImage';
 import { checkRuleActiveTool } from '@/utils/helpers';
 import { useStationScan } from '@/services/hooks/useStation';
 import { HOME_PAGE_PATH } from '@/router/routePath';
-import type { Device } from '@/services/apis/station';
 
 import LeftMenu from '@/components/LeftMenu.vue';
 import BottomTool from '@/components/BottomTool.vue';
@@ -130,6 +129,7 @@ import ModalAddInventory from '@/components/ModalAddInventory.vue';
 import IconTickGreen from '@/components/icons/home/IconTickGreen.vue';
 import IconHome from '@/components/icons/home/IconHome.vue';
 import IconResizeWidth from '@/components/icon/IconResizeWidth.vue';
+import type { PoleDevice } from '@/services/apis/station';
 
 // TODO: Define variables
 const pane1Size = ref(50);
@@ -153,7 +153,7 @@ const { data: scanInfo } = useStationScan(
 // TODO: Init 3D environment
 useInitial();
 
-const startResize = (event: any) => {
+const startResize = (event: MouseEvent) => {
   event.preventDefault();
   startX = event.clientX;
   startPane1Size = pane1Size.value;
@@ -162,7 +162,7 @@ const startResize = (event: any) => {
   window.addEventListener('mouseup', stopResize);
 };
 
-const onMouseMove = (event: any) => {
+const onMouseMove = (event: MouseEvent) => {
   if (container.value) {
     const deltaX = event.clientX - startX;
     const containerWidth = container.value.offsetWidth;
@@ -190,7 +190,7 @@ const onPointerDown = () => {
 
 const { onChangeImage } = useChangeImage();
 
-const onPointerClick = (evt: any) => {
+const onPointerClick = (evt: MouseEvent) => {
   evt.preventDefault();
 
   if (isDragging.value) return;
@@ -214,11 +214,9 @@ const onPointerClick = (evt: any) => {
     if (targetObject.userData.data && targetObject.userData.type === 'camera_pose') {
       onChangeImage(targetObject.userData.data);
     } else if (targetObject.userData.type === 'inventory') {
-      const selectedInventory = targetObject.userData?.device as Device;
-      const image2D = selectedInventory?.pivot.suggested_img
-        ? modelStore.images.find((item) =>
-            item.filename.includes(selectedInventory?.pivot.suggested_img),
-          )
+      const selectedInventory = targetObject.userData?.poleDevice as PoleDevice;
+      const image2D = selectedInventory?.suggested_img
+        ? modelStore.images.find((item) => item.filename.includes(selectedInventory?.suggested_img))
         : null;
       if (image2D) {
         onChangeImage(image2D);
@@ -240,7 +238,7 @@ const onPointerClick = (evt: any) => {
   }
 };
 
-const onPointerMove = (evt: any) => {
+const onPointerMove = (evt: MouseEvent) => {
   isDragging.value = true;
 
   if (checkRuleActiveTool()) {
@@ -270,11 +268,11 @@ const onPointerMove = (evt: any) => {
         INTERSECTED.value.currentColor = targetObject.material.color.getHex();
         INTERSECTED.value.material.color.setHex(0xffffff);
 
-        modelStore.hoverInformation = `Ảnh ${targetObject.userData.data?.filename}`;
+        // modelStore.hoverInformation = `Ảnh ${targetObject.userData.data?.filename}`;
       }
     } else if (targetObject.userData.type === 'inventory') {
-      const deviceData = targetObject.userData.device as Device;
-      modelStore.hoverInformation = `${deviceData?.name} - ${deviceData?.category.name} - ID: ${deviceData?.pivot.id} `;
+      const deviceData = targetObject.userData.poleDevice as PoleDevice;
+      modelStore.hoverInformation = `${deviceData?.device_info.name} - ${deviceData?.device_info.category.name} - ID: ${deviceData?.id} `;
     } else if (targetObject.userData.type === 'basePlate') {
       if (INTERSECTED.value)
         INTERSECTED.value.material.color.setHex(INTERSECTED.value.currentColor);

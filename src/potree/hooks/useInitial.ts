@@ -345,7 +345,6 @@ export const useInitial = () => {
   };
 
   watch([scanInfo], () => {
-    console.log('scanInfo', scanInfo.value);
     if (scanInfo.value && !loaded) {
       loaded = true;
       loadPointCloud();

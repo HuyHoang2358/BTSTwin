@@ -1,114 +1,84 @@
 <template>
-  <a-typography class="text-[#F4F4F4] text-lg mb-2">
-    {{ modelStore.selectedInventory?.name }}
+  <div class="flex flex-row justify-between items-center">
+    <a-typography class="text-[#F4F4F4] text-lg mb-2">
+      {{ modelStore.selectedInventory?.device_info?.name }}
+    </a-typography>
+    <a-button
+      class="m-0 p-0 w-8 h-8 border-none bg-[#212121] rounded-full flex items-center justify-center"
+      @click="onRemoveDevice"
+    >
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        xmlns="http://www.w3.org/2000/svg"
+        preserveAspectRatio="xMidYMid meet"
+        focusable="false"
+      >
+        <path
+          fill="white"
+          d="M3 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V6H3v6Zm11-9h-3.5l-1-1h-3l-1 1H2v2h12V3Z"
+        ></path>
+      </svg>
+    </a-button>
+  </div>
+  <a-typography class="text-[#E3E3E3] font-medium text-sm mt-2.5 mb-1">
+    Thông tin chung
   </a-typography>
-  <a-button
-    class="m-0 p-0 w-8 h-8 border-none bg-[#212121] rounded-full flex items-center justify-center"
-    @click="onRemoveDevice"
-  >
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 16 16"
-      xmlns="http://www.w3.org/2000/svg"
-      preserveAspectRatio="xMidYMid meet"
-      focusable="false"
-    >
-      <path
-        fill="white"
-        d="M3 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V6H3v6Zm11-9h-3.5l-1-1h-3l-1 1H2v2h12V3Z"
-      ></path>
-    </svg>
-  </a-button>
-  <a-descriptions
-    layout="horizontal"
-    :column="1"
-    class="mt-4"
-  >
-    <a-descriptions-item
+  <div class="border border-solid border-[#4B4B4B] rounded-[5px] px-3 py-1">
+    <ItemDescription
+      label="Danh mục"
+      :value="modelStore.selectedInventory?.device_info?.category.name"
+    />
+    <ItemDescription
       label="Loại thiết bị"
-      :labelStyle="descriptionStyle"
-      :contentStyle="descriptionStyle"
-    >
-      {{ modelStore.selectedInventory?.model }}
-    </a-descriptions-item>
-  </a-descriptions>
-  <a-descriptions
-    layout="vertical"
-    :column="3"
-    :colon="false"
-  >
-    <a-descriptions-item
-      label="x"
-      :labelStyle="descriptionStyle"
-      :contentStyle="descriptionStyle"
-    >
-      {{ properties.x }}
-    </a-descriptions-item>
-    <a-descriptions-item
-      label="y"
-      :labelStyle="descriptionStyle"
-      :contentStyle="descriptionStyle"
-    >
-      {{ properties.y }}
-    </a-descriptions-item>
-    <a-descriptions-item
-      label="z"
-      :labelStyle="descriptionStyle"
-      :contentStyle="descriptionStyle"
-    >
-      {{ properties.z }}
-    </a-descriptions-item>
-    <a-descriptions-item
+      :value="modelStore.selectedInventory?.device_info?.name"
+    />
+    <ItemDescription
+      label="Nhà cung cấp"
+      :value="modelStore.selectedInventory?.device_info?.vendor?.name"
+    />
+  </div>
+
+  <a-typography class="text-[#E3E3E3] font-medium text-sm mt-2.5 mb-1">
+    Thông số kỹ thuật
+  </a-typography>
+  <div class="border border-solid border-[#4B4B4B] rounded-[5px] px-3 py-1">
+    <ItemDescription
+      label="Chiều rộng (mm)"
+      :value="properties.elWidth"
+    />
+    <ItemDescription
+      label="Chiều dài (mm)"
+      :value="properties.elHeight"
+    />
+    <ItemDescription
+      label="Chiều sâu (mm)"
+      :value="properties.elLength"
+    />
+    <ItemDescription
+      label="Trọng lượng (kg)"
+      :value="modelStore.selectedInventory?.device_info?.weight"
+    />
+    <ItemDescription
       label="α"
-      :labelStyle="descriptionStyle"
-      :contentStyle="descriptionStyle"
-    >
-      {{ properties.elAlpha }}
-    </a-descriptions-item>
-    <a-descriptions-item
+      :value="properties.elAlpha"
+    />
+    <ItemDescription
       label="β"
-      :labelStyle="descriptionStyle"
-      :contentStyle="descriptionStyle"
-    >
-      {{ properties.elBetta }}
-    </a-descriptions-item>
-    <a-descriptions-item
+      :value="properties.elBetta"
+    />
+    <ItemDescription
       label="γ"
-      :labelStyle="descriptionStyle"
-      :contentStyle="descriptionStyle"
-    >
-      {{ properties.elGamma }}
-    </a-descriptions-item>
-    <a-descriptions-item
-      label="Chiều dài"
-      :labelStyle="descriptionStyle"
-      :contentStyle="descriptionStyle"
-    >
-      {{ properties.elLength }} mm
-    </a-descriptions-item>
-    <a-descriptions-item
-      label="Chiều rộng"
-      :labelStyle="descriptionStyle"
-      :contentStyle="descriptionStyle"
-    >
-      {{ properties.elWidth }} mm
-    </a-descriptions-item>
-    <a-descriptions-item
-      label="Chiều cao"
-      :labelStyle="descriptionStyle"
-      :contentStyle="descriptionStyle"
-    >
-      {{ properties.elHeight }} mm
-    </a-descriptions-item>
-  </a-descriptions>
+      :value="properties.elGamma"
+    />
+  </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref, toRaw } from 'vue';
+import { onMounted, onUnmounted, ref, toRaw } from 'vue';
 import { useModelStore } from '@/stores/model';
-
-const descriptionStyle = computed(() => ({ color: 'white', fontSize: '12px' }));
+import ItemDescription from '@/components/ItemDescription.vue';
 
 const properties = ref<Record<string, number | string>>({});
 
@@ -167,9 +137,7 @@ const onRemoveDevice = () => {
     ...item,
     deviceCategories: item.deviceCategories.map((category) => ({
       ...category,
-      devices: category.devices.filter(
-        (device) => device.pivot.id !== modelStore.selectedInventory?.pivot.id,
-      ),
+      devices: category.devices.filter((device) => device.id !== modelStore.selectedInventory?.id),
     })),
   }));
   window.potreeViewer.scene.removeVolume(toRaw(modelStore.selectedInventory?.newDevice));

@@ -1,9 +1,38 @@
 <template>
   <div
-    class="bg-[#303030] w-[260px] overflow-auto"
+    class="bg-[#303030] w-[260px] overflow-auto flex flex-col"
     v-if="modelStore.activeTool === ACTIVE_TOOL.MEASUREMENT"
   >
-    <HeaderMenu title="Đo lường" />
+    <HeaderMenu title="Đo lường">
+      <div
+        class="flex"
+        v-if="modelStore.measurements.length > 0"
+      >
+        <a-tooltip
+          title="Ẩn/Hiện tất cả"
+          placement="top"
+        >
+          <a-button
+            @click="onToggleAllMeasurement"
+            class="p-0 m-0 border-none bg-transparent flex items-center"
+          >
+            <IconVisible v-if="modelStore.visibleAllMeasurements" />
+            <IconInvisible v-else />
+          </a-button>
+        </a-tooltip>
+        <a-tooltip
+          title="Xóa tất cả"
+          placement="top"
+        >
+          <a-button
+            @click="onRemoveAllMeasurement"
+            class="p-0 m-0 border-none bg-transparent ml-2 flex items-center"
+          >
+            <IconRemove />
+          </a-button>
+        </a-tooltip>
+      </div>
+    </HeaderMenu>
     <div class="px-3 mb-1">
       <a-input
         :placeholder="$t('search')"
@@ -16,10 +45,12 @@
         </template>
       </a-input>
     </div>
-    <CustomAEmpty
+    <div
+      class="flex flex-1 items-center"
       v-if="modelStore.measurements.length === 0"
-      class="mt-10"
-    />
+    >
+      <CustomAEmpty />
+    </div>
     <div
       v-for="(item, index) in modelStore.measurements"
       :key="index"
@@ -41,54 +72,23 @@
           {{ item.name }}
         </a-typography-text>
       </div>
-      <div>
+      <div class="flex">
         <a-button
           @click="onToggleMeasurement(item)"
-          ghost
-          class="p-0 m-0 border-none"
+          class="p-0 m-0 border-none bg-transparent flex items-center"
         >
-          <svg
-            v-if="!item.visible"
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            xmlns="http://www.w3.org/2000/svg"
-            preserveAspectRatio="xMidYMid meet"
-            focusable="false"
-          >
-            <path
-              fill="#888888"
-              d="M8 4.46a3.11 3.11 0 0 1 3.19 3A3 3 0 0 1 11 8.6l1.86 1.76A7.15 7.15 0 0 0 15 7.49a7.53 7.53 0 0 0-7-4.55 7.87 7.87 0 0 0-2.54.42l1.38 1.31A3.19 3.19 0 0 1 8 4.46ZM1.64 2.8l1.45 1.38.29.28A7.2 7.2 0 0 0 1 7.49 7.53 7.53 0 0 0 8 12c.953.003 1.9-.17 2.79-.51l.27.26 1.86 1.77.81-.77L2.45 2l-.81.8Zm3.52 3.35 1 .94a1.75 1.75 0 0 0 0 .4A1.86 1.86 0 0 0 8 9.3a2 2 0 0 0 .42 0l1 .94a3.24 3.24 0 0 1-1.4.32 3.11 3.11 0 0 1-3.18-3 2.93 2.93 0 0 1 .32-1.41Zm2.74-.47 2 1.91v-.1A1.87 1.87 0 0 0 8 5.67l-.1.01Z"
-            ></path>
-          </svg>
-          <svg
-            v-else
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            xmlns="http://www.w3.org/2000/svg"
-            preserveAspectRatio="xMidYMid meet"
-            focusable="false"
-          >
-            <path
-              fill="#888888"
-              d="M8 3a8 8 0 0 0-7 5 8 8 0 0 0 7 5 8 8 0 0 0 7-5 8 8 0 0 0-7-5Zm0 8a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"
-            ></path>
-            <path
-              fill="#888888"
-              d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"
-            ></path>
-          </svg>
+          <IconVisible v-if="item.visible" />
+          <IconInvisible v-else />
         </a-button>
         <a-button
           @click="onRemoveMeasurement(item)"
-          ghost
-          class="p-0 m-0 border-none ml-2"
+          class="p-0 m-0 border-none bg-transparent ml-2 flex items-center"
         >
           <IconRemove />
         </a-button>
       </div>
     </div>
+    <!--    <a-button @click="onTestExport">Export</a-button>-->
   </div>
 </template>
 
@@ -101,6 +101,8 @@ import HeaderMenu from '@/components/HeaderMenu.vue';
 import { ACTIVE_TOOL } from '@/utils/enums';
 import CustomAEmpty from '@/components/CustomAEmpty.vue';
 import IconRemove from '@/components/icon/IconRemove.vue';
+import IconInvisible from '@/components/icons/IconInvisible.vue';
+import IconVisible from '@/components/icons/IconVisible.vue';
 
 const modelStore = useModelStore();
 
@@ -130,7 +132,28 @@ const onToggleMeasurement = (object: any) => {
   object.visible = !object.visible;
 };
 
+const onToggleAllMeasurement = () => {
+  const nextState = !modelStore.visibleAllMeasurements;
+  modelStore.visibleAllMeasurements = nextState;
+  modelStore.measurements.forEach((object: any) => {
+    object.visible = nextState;
+  });
+};
+
+const onRemoveAllMeasurement = () => {
+  modelStore.selectedMeasurement = undefined;
+  modelStore.measurements.forEach((object: any) => {
+    window.potreeViewer.scene.removeMeasurement(toRaw(object));
+  });
+  modelStore.measurements = [];
+};
+
 const searchValue = ref<string>();
+
+const onTestExport = () => {
+  let data = Potree.saveProject(window.potreeViewer);
+  console.log('data', data);
+};
 </script>
 <style>
 .ant-input {

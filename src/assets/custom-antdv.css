@@ -421,3 +421,7 @@ margin-bottom: 0 !important;
   margin-right: -14px;
   margin-left: 6px;
 }
+
+.ant-btn-default {
+  box-shadow: unset !important;
+}

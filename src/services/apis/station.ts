@@ -279,9 +279,6 @@ export const fetchScanDetail = (id: string): WrapperResponse<Scan> =>
 export const fetchScanImages = (id: string): WrapperResponse<Image[]> =>
   client.get(API_STATION_SCAN_IMAGE.replace(':id', id));
 
-export const fetchBTSById = (id: string): WrapperResponse<BtsDetail> =>
-  client.get(`${API_STATION}/${id}`);
-
 export const fetchReport = (id: string) =>
   client.get(`${API_STATION}/excel/export`, {
     params: {
