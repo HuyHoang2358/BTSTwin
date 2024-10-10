@@ -4,6 +4,36 @@
     v-if="modelStore.activeTool === ACTIVE_TOOL.MEASUREMENT"
   >
     <HeaderMenu title="Đo lường">
+      <a-tooltip
+        title="Lưu lại"
+        placement="top"
+      >
+        <a-button
+          @click="onSave"
+          class="p-0 m-0 border-none bg-transparent flex items-center h-[20px]"
+        >
+          <SaveOutlined class="text-[20px]" />
+        </a-button>
+      </a-tooltip>
+    </HeaderMenu>
+    <div class="px-3 mb-1">
+      <a-input
+        :placeholder="$t('search')"
+        v-model:value="searchValue"
+        allow-clear
+        class="bg-[#424242] text-white focus:outline-0"
+      >
+        <template #prefix>
+          <IconSearchInput />
+        </template>
+      </a-input>
+    </div>
+    <div class="flex flex-row justify-between items-start px-3 mt-2">
+      <div>
+        <span class="text-white text-sm">Danh sách đo lường</span>
+        <br />
+        <span class="text-[#8C8C8C] text-xs">({{ modelStore.measurements.length }} items)</span>
+      </div>
       <div
         class="flex"
         v-if="modelStore.measurements.length > 0"
@@ -32,24 +62,12 @@
           </a-button>
         </a-tooltip>
       </div>
-    </HeaderMenu>
-    <div class="px-3 mb-1">
-      <a-input
-        :placeholder="$t('search')"
-        v-model:value="searchValue"
-        allow-clear
-        class="bg-[#424242] text-white focus:outline-0"
-      >
-        <template #prefix>
-          <IconSearchInput />
-        </template>
-      </a-input>
     </div>
     <div
       class="flex flex-1 items-center"
       v-if="modelStore.measurements.length === 0"
     >
-      <CustomAEmpty />
+      <CustomAEmpty empty-text="Chưa có dữ liệu, chọn công cụ để thêm" />
     </div>
     <div
       v-for="(item, index) in modelStore.measurements"
@@ -98,11 +116,16 @@ import * as THREE from 'three';
 import IconSearchInput from '@/components/icons/home/IconSearchInput.vue';
 import { ref, toRaw } from 'vue';
 import HeaderMenu from '@/components/HeaderMenu.vue';
-import { ACTIVE_TOOL } from '@/utils/enums';
+import { ACTIVE_TOOL, LOCAL_STORAGE_KEY } from '@/utils/enums';
 import CustomAEmpty from '@/components/CustomAEmpty.vue';
 import IconRemove from '@/components/icon/IconRemove.vue';
 import IconInvisible from '@/components/icons/IconInvisible.vue';
 import IconVisible from '@/components/icons/IconVisible.vue';
+import { SaveOutlined } from '@ant-design/icons-vue';
+import { useSaveMeasurements } from '@/services/hooks/useStation';
+import { useRoute } from 'vue-router';
+import { useErrorHandler } from '@/services/hooks/useErrorHandler';
+import { useSuccessHandler } from '@/services/hooks/useSuccessHandler';
 
 const modelStore = useModelStore();
 
@@ -150,9 +173,25 @@ const onRemoveAllMeasurement = () => {
 
 const searchValue = ref<string>();
 
-const onTestExport = () => {
-  let data = Potree.saveProject(window.potreeViewer);
-  console.log('data', data);
+const { mutate } = useSaveMeasurements();
+const route = useRoute();
+const { onError } = useErrorHandler();
+const { handleSuccess } = useSuccessHandler();
+
+const onSave = () => {
+  const data = Potree.saveProject(window.potreeViewer) as { measurements: string };
+  mutate(
+    {
+      scanId: Number(route.query.id),
+      measurements: JSON.stringify(data.measurements),
+    },
+    {
+      onSuccess: (data) => {
+        handleSuccess(data);
+      },
+      onError,
+    },
+  );
 };
 </script>
 <style>

@@ -283,13 +283,6 @@ const onRollback = () => {
   visibleHistory.value = false;
 };
 
-watch(
-  () => modelStore.poles,
-  () => {
-    console.log('modelStore.poles', modelStore.poles);
-  },
-);
-
 const onClosePole = () => {
   modelStore.selectedPole = undefined;
 };

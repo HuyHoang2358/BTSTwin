@@ -8,6 +8,8 @@ import {
   fetchScanImages,
   fetchReport,
   fetchStations,
+  saveMeasurements,
+  getMeasurementHistoryByScanId,
 } from '@/services/apis/station';
 import type { ComputedRef } from 'vue';
 
@@ -16,6 +18,7 @@ export const STATION_SCAN_IMAGE_QUERY_KEY = 'STATION_SCAN_IMAGE_QUERY_KEY';
 export const STATION_SCAN_QUERY_KEY = 'STATION_SCAN_QUERY_KEY';
 export const HISTORY_POLE_LIST_QUERY_KEY = 'HISTORY_POLE_LIST_QUERY_KEY';
 export const HISTORY_DEVICE_LIST_QUERY_KEY = 'HISTORY_DEVICE_LIST_QUERY_KEY';
+export const HISTORY_MEASUREMENT_QUERY_KEY = 'HISTORY_MEASUREMENT_QUERY_KEY';
 
 export const useStations = () =>
   useQuery({
@@ -74,4 +77,15 @@ export const useDeviceHistory = (
     retry: 1,
   });
 
+export const useMeasurementHistoryByScanId = (
+  id: ComputedRef<string>,
+  enabled: ComputedRef<boolean>,
+) =>
+  useQuery({
+    queryKey: [HISTORY_MEASUREMENT_QUERY_KEY, id],
+    queryFn: () => getMeasurementHistoryByScanId(id.value),
+    enabled,
+  });
+
 export const useCreateDeviceHistory = () => useMutation({ mutationFn: createDeviceHistory });
+export const useSaveMeasurements = () => useMutation({ mutationFn: saveMeasurements });

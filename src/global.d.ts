@@ -39,6 +39,22 @@ declare namespace Potree {
     clip: boolean;
   }
 
+  class Measure {
+    constructor(viewer?: any);
+    uuid: string;
+    name: string;
+    showDistances: boolean;
+    showCoordinates: boolean;
+    showArea: boolean;
+    showAngles: boolean;
+    closed: boolean;
+    showHeight: boolean;
+    showCircle: boolean;
+    showAzimuth: boolean;
+    showEdges: boolean;
+    addMarker(pos: any): void;
+  }
+
   function loadPointCloud(url: string, name: string, cb: (e: any) => void): void;
 
   function saveProject(viewer: any): object;

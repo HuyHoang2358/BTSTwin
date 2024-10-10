@@ -17,7 +17,7 @@
           />
           <a-typography-paragraph
             v-model:content="editableStr"
-            :editable="{ triggerType: !editableStr ? ['icon'] : ['text'] }"
+            :editable="{ triggerType: !editableStr ? ['icon'] : ['text'], onEnd: onEndEditing }"
             style="margin-bottom: 0; margin-left: 12px"
           >
             <template #editableTooltip>Click để sửa tên</template>
@@ -175,14 +175,14 @@ const onUpdate = (e: any) => {
     let distances = [];
     for (let i = 0; i < positions.length - 1; i++) {
       let d = positions[i].distanceTo(positions[i + 1]);
-      distances.push((d * modelStore.gpsRatio).toFixed(3));
+      distances.push((d * modelStore.gpsRatio).toFixed(3) + 'm');
     }
 
     distancesRef.value = distances;
-    totalDistance.value = (measurement.getTotalDistance() * modelStore.gpsRatio).toFixed(3);
+    totalDistance.value = (measurement.getTotalDistance() * modelStore.gpsRatio).toFixed(3) + 'm';
   } else if (measurement.showDistances && measurement.showArea && !measurement.showAngles) {
     type.value = 'area';
-    area.value = (measurement.getArea() * modelStore.gpsRatio).toFixed(3);
+    area.value = (measurement.getArea() * modelStore.gpsRatio).toFixed(3) + 'm2';
   } else if (!measurement.showDistances && !measurement.showArea && measurement.showAngles) {
     if (measurement.points.length != 3) {
       return;
@@ -241,8 +241,8 @@ const onUpdate = (e: any) => {
       return Potree.Utils.addCommas(number.toFixed(3));
     };
 
-    txtRadius.value = format(radius * modelStore.gpsRatio);
-    txtCircumference.value = format(circumference * modelStore.gpsRatio);
+    txtRadius.value = format(radius * modelStore.gpsRatio) + 'm';
+    txtCircumference.value = format(circumference * modelStore.gpsRatio) + 'm';
   }
 };
 
@@ -253,4 +253,13 @@ onMounted(() => {
 onUnmounted(() => {
   window.potreeViewer.removeEventListener('update', onUpdate);
 });
+
+const onEndEditing = () => {
+  modelStore.measurements = modelStore.measurements.map((item) => {
+    if (item.uuid === modelStore.selectedMeasurement.uuid) {
+      item.name = editableStr.value;
+      return { ...item, name: editableStr.value };
+    } else return item;
+  });
+};
 </script>

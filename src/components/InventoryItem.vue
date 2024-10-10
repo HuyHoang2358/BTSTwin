@@ -9,7 +9,7 @@
       class="flex flex-row flex-1 items-center"
       @click="onClickInventory(item)"
     >
-      <div class="w-1 h-[28px] bg-[#69f0ae] mr-7" />
+      <div :class="['w-1 h-[28px] mr-7', item.isNewDevice ? 'bg-main my-0.5' : 'bg-[#69f0ae]']" />
       <a-typography-text
         class="text-white text-sm w-[190px]"
         :ellipsis="{ tooltip: `${item.device_info.name} (${item.id})` }"
