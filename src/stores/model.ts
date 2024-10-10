@@ -7,7 +7,7 @@ import { Cesium3DTileset } from 'cesium';
 import type VectorSource from 'ol/source/Vector';
 import { Mesh } from 'three';
 import { heightBasePlate, widthBasePlate } from '@/utils/constants';
-import type { Device, Image, Pole, PoleDevice, Station } from '@/services/apis/station';
+import type { Image, Pole, PoleDevice, Station } from '@/services/apis/station';
 import { ACTIVE_TOOL } from '@/utils/enums';
 
 export const useModelStore = defineStore('model', () => {
@@ -48,6 +48,8 @@ export const useModelStore = defineStore('model', () => {
   const isDrawing = ref(false);
   const fieldHover = ref<Record<string, string | number>>({});
   const basePlateChecked = ref(true);
+  const visibleAllMeasurements = ref(true);
+  const visibleAllImages = ref(true);
 
   // Hoangth33
   const stationsData = ref<Station[]>([]);
@@ -96,5 +98,7 @@ export const useModelStore = defineStore('model', () => {
     fieldHover,
     isDrawing,
     basePlateChecked,
+    visibleAllMeasurements,
+    visibleAllImages,
   };
 });

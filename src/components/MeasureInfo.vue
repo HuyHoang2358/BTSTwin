@@ -17,7 +17,7 @@
           />
           <a-typography-paragraph
             v-model:content="editableStr"
-            :editable="{ triggerType: ['text', 'icon'] }"
+            :editable="{ triggerType: !editableStr ? ['icon'] : ['text'] }"
             style="margin-bottom: 0; margin-left: 12px"
           >
             <template #editableTooltip>Click để sửa tên</template>
@@ -25,8 +25,7 @@
         </div>
         <a-button
           @click="onRemoveMeasurement"
-          ghost
-          class="p-0 m-0 border-none"
+          class="p-0 m-0 border-none bg-transparent flex items-center"
         >
           <IconRemove />
         </a-button>
@@ -185,6 +184,9 @@ const onUpdate = (e: any) => {
     type.value = 'area';
     area.value = (measurement.getArea() * modelStore.gpsRatio).toFixed(3);
   } else if (!measurement.showDistances && !measurement.showArea && measurement.showAngles) {
+    if (measurement.points.length != 3) {
+      return;
+    }
     type.value = 'angle';
     let angles = [];
     for (let i = 0; i < measurement.points.length; i++) {

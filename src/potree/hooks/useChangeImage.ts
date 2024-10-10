@@ -6,7 +6,6 @@ export const useChangeImage = () => {
   const modelStore = useModelStore();
 
   const onChangeImage = (data: Image) => {
-    console.log('changeImage', data);
     modelStore.selectedImage = data;
     if (!data) return;
 

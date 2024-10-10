@@ -71,26 +71,26 @@
         />
       </a-form-item>
       <a-form-item
-        label="Chiều cao (mm)"
-        class="mb-2"
-      >
-        <a-input-number
-          :min="0"
-          class="w-full"
-          v-model:value="formState.height"
-          placeholder="Nhập chiều cao"
-          readonly
-        />
-      </a-form-item>
-      <a-form-item
         label="Chiều dài (mm)"
         class="mb-2"
       >
         <a-input-number
           :min="0"
           class="w-full"
-          v-model:value="formState.depth"
+          v-model:value="formState.height"
           placeholder="Nhập chiều dài"
+          readonly
+        />
+      </a-form-item>
+      <a-form-item
+        label="Chiều sâu (mm)"
+        class="mb-2"
+      >
+        <a-input-number
+          :min="0"
+          class="w-full"
+          v-model:value="formState.depth"
+          placeholder="Nhập chiều sâu"
           readonly
         />
       </a-form-item>
@@ -106,7 +106,7 @@ import { useDevices } from '@/services/hooks/useDevice';
 import { imageFallback, maxPageSize } from '@/utils/constants';
 import { compareString } from '@/utils/helpers';
 import { generateUUID } from 'three/src/math/MathUtils';
-import type { Device } from '@/services/apis/station';
+import type { PoleDevice } from '@/services/apis/station';
 
 export type FormStateData = {
   template: string;
@@ -202,21 +202,18 @@ const onSubmit = () => {
     dataDevice.length ? dataDevice.length / 1000 / modelStore.gpsRatio : 1,
   );
 
-  const newInventory: Device = {
+  const newInventory: PoleDevice = {
     visibleMesh: true,
     visible: true,
     clip: false,
-    pivot: {
-      id: generateUUID(),
-    },
-    model: dataDevice.category.name,
+    id: generateUUID(),
     isNewDevice: true,
-    name: dataDevice.name,
     newDevice,
+    device_info: dataDevice,
   };
 
   modelStore.poles = modelStore.poles.map((item) =>
-    item.pivot.id === modelStore.activePole
+    item.id === modelStore.activePole
       ? {
           ...item,
           deviceCategories: item.deviceCategories.map((category) =>
@@ -233,11 +230,15 @@ const onSubmit = () => {
 
   modelStore.selectedInventory = newInventory;
   modelStore.activeSubTool = 'add-inventory';
+  modelStore.hoverInformation =
+    'Nhấp chuột vào thiết bị để điều chỉnh vị trí, bấm vào xem thông tin để quay lại';
 
   newDevice.addEventListener('volume_select_changed', () => {
     const modelStore = useModelStore();
     modelStore.activeSubTool = 'add-inventory';
+    modelStore.hoverInformation = 'Đang ở chế độ thêm thiết bị, bấm vào xem thông tin để quay lại';
     modelStore.selectedImage = undefined;
+    modelStore.selectedMeasurement = undefined;
     modelStore.selectedInventory = newInventory;
   });
   newDevice.addEventListener('volume_deselect_changed', () => {

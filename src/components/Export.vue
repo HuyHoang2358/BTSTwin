@@ -25,7 +25,7 @@
 
 <script setup lang="ts">
 import { useModelStore } from '@/stores/model';
-import { useBTSDetail, useStationReport } from '@/services/hooks/useStation';
+import { useStationReport, useStationScan } from '@/services/hooks/useStation';
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { useErrorHandler } from '@/services/hooks/useErrorHandler';
@@ -35,7 +35,7 @@ import { ACTIVE_TOOL } from '@/utils/enums';
 const modelStore = useModelStore();
 const route = useRoute();
 
-const { data: btsDetail } = useBTSDetail(
+const { data: btsDetail } = useStationScan(
   computed(() => route.query.id as string),
   computed(() => !!route.query.id),
 );
@@ -44,11 +44,10 @@ const { mutate: exportReport, isPending: isPendingDownload } = useStationReport(
 const { onError } = useErrorHandler();
 
 const onDownload = () => {
-  console.log(btsDetail.value?.data?.id.toString());
-  exportReport(btsDetail.value?.data?.id.toString(), {
+  if (!btsDetail.value?.data?.id) return;
+  exportReport(btsDetail.value?.data?.id?.toString(), {
     onError,
     onSuccess(data) {
-      console.log('data', data?.data?.file);
       const link = document.createElement('a');
       link.href = data?.data?.file;
       link.setAttribute('download', 'Station_report');

@@ -79,30 +79,18 @@
       <ItemDescription
         label="Chiều rộng (mm)"
         :value="modelStore.selectedInventory?.ai_device_width"
-        submit-key="width"
-        :on-submit="onSubmitEditing"
-        editable
       />
       <ItemDescription
         label="Chiều dài (mm)"
         :value="modelStore.selectedInventory?.ai_device_height"
-        submit-key="length"
-        :on-submit="onSubmitEditing"
-        editable
       />
       <ItemDescription
         label="Chiều sâu (mm)"
         :value="modelStore.selectedInventory?.ai_device_depth"
-        submit-key="depth"
-        :on-submit="onSubmitEditing"
-        editable
       />
       <ItemDescription
         label="Trọng lượng (kg)"
         :value="modelStore.selectedInventory?.device_info?.weight"
-        submit-key="weight"
-        :on-submit="onSubmitEditing"
-        editable
       />
       <ItemDescription
         :label="item.key"
@@ -121,21 +109,21 @@
     <div class="border border-solid border-[#4B4B4B] rounded-[5px] px-3 py-1">
       <ItemDescription
         label="Góc tilt (°)"
-        :value="modelStore.selectedInventory?.pole_param?.tilt_angle"
+        :value="modelStore.selectedInventory?.tilt"
         submit-key="tilt"
         :on-submit="onSubmitEditing"
         editable
       />
       <ItemDescription
         label="Góc Azimuth (°)"
-        :value="modelStore.selectedInventory?.pole_param?.azimuth_angle"
+        :value="modelStore.selectedInventory?.azimuth"
         submit-key="azimuth"
         :on-submit="onSubmitEditing"
         editable
       />
       <ItemDescription
         label="Độ cao so với mặt đất (m)"
-        :value="modelStore.selectedInventory?.pole_param?.height"
+        :value="modelStore.selectedInventory?.height"
         submit-key="height"
         :on-submit="onSubmitEditing"
         editable
@@ -192,7 +180,7 @@ const route = useRoute();
 const { data: dataHistory } = useDeviceHistory(
   {
     id: computed(() => route.query.id as string),
-    deviceId: computed(() => modelStore.selectedInventory?.pivot?.id || 0),
+    deviceId: computed(() => modelStore.selectedInventory?.id || 0),
   },
   computed(() => !!route.query.id),
 );
@@ -200,7 +188,7 @@ const { mutate: createDeviceHistory } = useCreateDeviceHistory();
 const queryClient = useQueryClient();
 
 const handleSetForm = () => {
-  formState.description = modelStore.selectedInventory?.pivot.description;
+  formState.description = modelStore.selectedInventory?.description;
 };
 
 watch(() => modelStore.selectedInventory, handleSetForm);
@@ -215,10 +203,7 @@ const onRollback = () => {
         if (device.id === modelStore.selectedInventory?.id) {
           return {
             ...device,
-            pivot: {
-              ...device,
-              ...modelStore.fieldHover,
-            },
+            ...modelStore.fieldHover,
           };
         }
 
@@ -226,7 +211,6 @@ const onRollback = () => {
       }),
     })),
   }));
-
   modelStore.poles.forEach((pole) => {
     pole.deviceCategories.forEach((category) => {
       category.devices.forEach((device) => {
@@ -234,10 +218,7 @@ const onRollback = () => {
           modelStore.selectedInventory = device;
           return {
             ...device,
-            pivot: {
-              ...device,
-              ...modelStore.fieldHover,
-            },
+            ...modelStore.fieldHover,
           };
         }
         return device;
@@ -248,10 +229,39 @@ const onRollback = () => {
 };
 
 const onSubmitEditing = (key: string, value: string) => {
+  modelStore.poles = modelStore.poles.map((pole) => ({
+    ...pole,
+    deviceCategories: pole.deviceCategories.map((category) => ({
+      ...category,
+      devices: category.devices.map((device) => {
+        if (device.id === modelStore.selectedInventory?.id) {
+          return {
+            ...device,
+            [key]: value,
+          };
+        }
+        return device;
+      }),
+    })),
+  }));
+  modelStore.poles.forEach((pole) => {
+    pole.deviceCategories.forEach((category) => {
+      category.devices.forEach((device) => {
+        if (device.id === modelStore.selectedInventory?.id) {
+          modelStore.selectedInventory = device;
+          return {
+            ...device,
+            [key]: value,
+          };
+        }
+        return device;
+      });
+    });
+  });
   createDeviceHistory(
     {
       scanId: Number(route.query.id),
-      deviceId: Number(modelStore.selectedInventory?.pivot?.id),
+      deviceId: Number(modelStore.selectedInventory?.id),
       field: {
         [key]: value,
       },

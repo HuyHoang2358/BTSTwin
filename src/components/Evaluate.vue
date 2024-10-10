@@ -80,6 +80,9 @@ import * as XLSX from 'xlsx';
 import { generateUUID } from 'three/src/math/MathUtils';
 import HeaderMenu from '@/components/HeaderMenu.vue';
 import { ACTIVE_TOOL } from '@/utils/enums';
+import type { PoleDevice } from '@/services/apis/station';
+import { useDevices } from '@/services/hooks/useDevice';
+import { maxPageSize } from '@/utils/constants';
 
 const modelStore = useModelStore();
 
@@ -139,6 +142,11 @@ const onAddBox = () => {
   modelStore.isSelectedBasePlate = false;
 };
 
+const { data: dataDevices } = useDevices({
+  perPage: ref(maxPageSize),
+  page: ref(1),
+});
+
 watch(jsonData, () => {
   console.log('jsonData', jsonData);
   const mappingByModel: Record<string, any[]> = {};
@@ -158,23 +166,25 @@ watch(jsonData, () => {
 
     window.potreeViewer.scene.addVolume(newDevice);
 
-    const newInventory: Device = {
+    const dataDevice = dataDevices.value?.data?.data?.find((item) => item.name === device.name);
+
+    const newInventory: PoleDevice = {
       visibleMesh: true,
       visible: true,
       clip: false,
-      pivot: {
-        id: generateUUID(),
-      },
-      model: device.model,
+      id: generateUUID(),
       isNewDevice: true,
-      name: device.name,
+      device_info: dataDevice,
       newDevice,
     };
 
     newDevice.addEventListener('volume_select_changed', () => {
       const modelStore = useModelStore();
       modelStore.activeSubTool = 'add-inventory';
+      modelStore.hoverInformation =
+        'Đang ở chế độ thêm thiết bị, bấm vào xem thông tin để quay lại';
       modelStore.selectedImage = undefined;
+      modelStore.selectedMeasurement = undefined;
       modelStore.selectedInventory = newInventory;
     });
     newDevice.addEventListener('volume_deselect_changed', () => {
@@ -188,7 +198,7 @@ watch(jsonData, () => {
   });
 
   modelStore.poles = modelStore.poles.map((item) =>
-    item.pivot.id === modelStore.activePole
+    item.id === modelStore.activePole
       ? {
           ...item,
           deviceCategories: item.deviceCategories.map((category) =>

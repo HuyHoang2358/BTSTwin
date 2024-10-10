@@ -9,6 +9,7 @@ import type {
 } from '@/services/services.types';
 import type { DeviceCategory } from '@/services/apis/devicecategory';
 import type { Vendor } from '@/services/apis/vendor';
+import type { DeviceInfo } from '@/services/apis/station';
 
 export type DeviceParam = {
   id?: number;
@@ -53,7 +54,7 @@ export interface DeviceCode {
 
 export const fetchDevices = (
   params: IndexRequestParams & PaginateRequestParams,
-): WrapperResponse<PaginateResType<Device>> =>
+): WrapperResponse<PaginateResType<DeviceInfo>> =>
   client.get(API_DEVICE, {
     params,
   });

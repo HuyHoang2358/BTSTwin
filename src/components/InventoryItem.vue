@@ -128,10 +128,10 @@ const onToggleRemoveInventory = (object: PoleDevice) => {
       devices: category.devices.map((poleDevice) =>
         poleDevice.id === object.id
           ? {
-              ...device,
+              ...poleDevice,
               clip: nextState,
             }
-          : device,
+          : poleDevice,
       ),
     })),
   }));

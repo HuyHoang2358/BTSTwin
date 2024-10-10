@@ -66,13 +66,16 @@ const onSelectedScanStation = async (scanItemID: number) => {
 const ontoggleExpanded = async () => {
   if (!modelStore.is2DMode) {
     const assetId = Number(
-      props.item.scans[0].models.find((i) => i.type == 'las')?.file_path || '',
+      props.item.scans[0].models?.find((i) => i.type == 'las')?.file_path || '',
     );
     if (modelStore.mappingStationWithTileset[assetId])
       await window.cesiumViewer.zoomTo(modelStore.mappingStationWithTileset[assetId]);
   }
 
-  modelStore.isShowBTSInfo = !modelStore.isShowBTSInfo;
+  if (!modelStore.isShowBTSInfo) {
+    modelStore.isShowBTSInfo = true;
+  }
+
   modelStore.selectedBTS = modelStore.stationsData.find((i) => i.code === props.item.code);
   modelStore.stationsData = modelStore.stationsData.map((i) =>
     i.code === props.item.code ? { ...i, expanded: !i.expanded } : { ...i, expanded: false },

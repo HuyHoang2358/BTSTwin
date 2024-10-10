@@ -15,7 +15,7 @@ declare namespace Potree {
     useHQ: boolean;
     compass: { setVisible(visible: boolean): void };
     scene: {
-      addEventListener(event: string, callback: Function): void;
+      addEventListener(event: string, callback: any): void;
     };
   }
 
@@ -40,6 +40,8 @@ declare namespace Potree {
   }
 
   function loadPointCloud(url: string, name: string, cb: (e: any) => void): void;
+
+  function saveProject(viewer: any): object;
 
   namespace PointSizeType {
     const ADAPTIVE: any;

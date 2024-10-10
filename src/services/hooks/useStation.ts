@@ -1,9 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/vue-query';
-
 import {
   createDeviceHistory,
   createPoleHistory,
-  fetchBTSById,
   fetchDeviceHistory,
   fetchPoleHistory,
   fetchScanDetail,
@@ -14,7 +12,6 @@ import {
 import type { ComputedRef } from 'vue';
 
 export const STATION_QUERY_KEY = 'STATION_QUERY_KEY';
-export const BTS_DETAIL_QUERY_KEY = 'BTS_DETAIL_QUERY_KEY';
 export const STATION_SCAN_IMAGE_QUERY_KEY = 'STATION_SCAN_IMAGE_QUERY_KEY';
 export const STATION_SCAN_QUERY_KEY = 'STATION_SCAN_QUERY_KEY';
 export const HISTORY_POLE_LIST_QUERY_KEY = 'HISTORY_POLE_LIST_QUERY_KEY';
@@ -40,13 +37,6 @@ export const useStationScanImages = (
   useQuery({
     queryKey: [STATION_SCAN_IMAGE_QUERY_KEY, idComputed],
     queryFn: () => fetchScanImages(idComputed.value),
-    enabled,
-  });
-
-export const useBTSDetail = (idComputed: ComputedRef<string>, enabled: ComputedRef<boolean>) =>
-  useQuery({
-    queryKey: [BTS_DETAIL_QUERY_KEY, idComputed],
-    queryFn: () => fetchBTSById(idComputed.value),
     enabled,
   });
 

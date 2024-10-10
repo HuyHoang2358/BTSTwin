@@ -3,8 +3,20 @@
     v-if="modelStore.activeTool === ACTIVE_TOOL.IMAGE"
     class="flex flex-col bg-[#303030] w-[260px]"
   >
-    <HeaderMenu title="Ảnh 2D" />
-
+    <HeaderMenu title="Ảnh 2D">
+      <!--      <a-tooltip-->
+      <!--        title="Ẩn/Hiện tất cả"-->
+      <!--        placement="top"-->
+      <!--      >-->
+      <!--        <a-button-->
+      <!--          @click="onToggleAllImages"-->
+      <!--          class="p-0 m-0 border-none bg-transparent flex items-center"-->
+      <!--        >-->
+      <!--          <IconVisible v-if="modelStore.visibleAllImages" />-->
+      <!--          <IconInvisible v-else />-->
+      <!--        </a-button>-->
+      <!--      </a-tooltip>-->
+    </HeaderMenu>
     <div class="px-3 flex flex-row items-center gap-1">
       <a-input
         :placeholder="$t('search')"
@@ -17,7 +29,6 @@
         </template>
       </a-input>
     </div>
-
     <div class="flex flex-col flex-1 overflow-auto mt-4">
       <div
         v-for="(item, index) in filteredImages"
@@ -28,32 +39,9 @@
         ]"
         @click="onChangeImage(item)"
       >
-        <a-typography-text class="text-white text-sm ml-3">
+        <a-typography-text class="text-white text-sm ml-3 py-2">
           {{ item.filename }}
         </a-typography-text>
-        <a-button
-          @click="null"
-          ghost
-          class="p-0 m-0 border-none"
-        >
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            xmlns="http://www.w3.org/2000/svg"
-            preserveAspectRatio="xMidYMid meet"
-            focusable="false"
-          >
-            <path
-              fill="#888888"
-              d="M8 3a8 8 0 0 0-7 5 8 8 0 0 0 7 5 8 8 0 0 0 7-5 8 8 0 0 0-7-5Zm0 8a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"
-            ></path>
-            <path
-              fill="#888888"
-              d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"
-            ></path>
-          </svg>
-        </a-button>
       </div>
     </div>
   </div>
@@ -63,16 +51,27 @@
 import { computed, ref } from 'vue';
 import { useModelStore } from '@/stores/model';
 import { useChangeImage } from '@/potree/hooks/useChangeImage';
-import IconFilter from '@/components/icons/home/IconFilter.vue';
 import IconSearchInput from '@/components/icons/home/IconSearchInput.vue';
 import { ACTIVE_TOOL } from '@/utils/enums';
 import HeaderMenu from '@/components/HeaderMenu.vue';
+import { compareString } from '@/utils/helpers';
+import IconVisible from '@/components/icons/IconVisible.vue';
+import IconInvisible from '@/components/icons/IconInvisible.vue';
 
 const { onChangeImage } = useChangeImage();
 const searchValue = ref<string>('');
 const modelStore = useModelStore();
 
 const filteredImages = computed(() =>
-  modelStore.images.filter((image) => image.filename.includes(searchValue.value)),
+  modelStore.images.filter((image) => compareString(image.filename, searchValue.value)),
 );
+
+const onToggleAllImages = () => {
+  // const nextState = !modelStore.visibleAllImages;
+  // modelStore.visibleAllImages = nextState;
+  // if (!nextState) {
+  //
+  // } else {
+  // }
+};
 </script>

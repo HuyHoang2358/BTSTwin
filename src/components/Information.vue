@@ -77,6 +77,7 @@ watch(
     if (modelStore.isSelectedBasePlate) {
       modelStore.selectedInventory = undefined;
       modelStore.selectedPole = undefined;
+      modelStore.selectedMeasurement = undefined;
     }
   },
 );
