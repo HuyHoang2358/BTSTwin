@@ -15,7 +15,7 @@
         >
           <template #content>
             <CustomAEmpty
-              v-if="!dataHistory || dataHistory.length === 0"
+              v-if="!deviceParamHistories || deviceParamHistories.length === 0"
               class="h-[100px]"
             />
             <div
@@ -24,18 +24,18 @@
             >
               <div
                 class="flex flex-row gap-2 items-center cursor-pointer group mb-2"
-                v-for="item in dataHistory"
+                v-for="item in deviceParamHistories"
                 :key="item.id"
-                @mouseenter="modelStore.fieldHover = item.field"
+                @mouseenter="modelStore.fieldHover = item"
                 @mouseleave="modelStore.fieldHover = {}"
               >
                 <a-typography-text class="group-hover:text-main">
-                  {{ item.createdAt }}
+                  {{ item.date_time }}
                 </a-typography-text>
                 <a-button
                   type="primary"
                   class="w-8 h-8 flex justify-center items-center"
-                  @click="onRollback"
+                  @click="onRollback(item.id)"
                 >
                   <RollbackOutlined class="text-white h-4 w-4" />
                 </a-button>
@@ -78,15 +78,15 @@
     <div class="border border-solid border-[#4B4B4B] rounded-[5px] px-3 py-1">
       <ItemDescription
         label="Chiều rộng (mm)"
-        :value="modelStore.selectedInventory?.ai_device_width"
+        :value="modelStore.selectedInventory?.device_info?.width"
       />
       <ItemDescription
         label="Chiều dài (mm)"
-        :value="modelStore.selectedInventory?.ai_device_height"
+        :value="modelStore.selectedInventory?.device_info?.depth"
       />
       <ItemDescription
         label="Chiều sâu (mm)"
-        :value="modelStore.selectedInventory?.ai_device_depth"
+        :value="modelStore.selectedInventory?.device_info?.length"
       />
       <ItemDescription
         label="Trọng lượng (kg)"
@@ -159,8 +159,9 @@ import CustomAEmpty from '@/components/CustomAEmpty.vue';
 import { useRoute } from 'vue-router';
 import {
   HISTORY_DEVICE_LIST_QUERY_KEY,
-  useCreateDeviceHistory,
   useDeviceHistory,
+  useRollbackPoleDeviceParam,
+  useUpdateDeviceParam,
 } from '@/services/hooks/useStation';
 import ItemDescription from '@/components/ItemDescription.vue';
 import { useQueryClient } from '@tanstack/vue-query';
@@ -177,14 +178,18 @@ const formState: UnwrapRef<FormState> = reactive({});
 
 const route = useRoute();
 
-const { data: dataHistory } = useDeviceHistory(
+const { data: DeviceHistoryResponse } = useDeviceHistory(
   {
     id: computed(() => route.query.id as string),
-    deviceId: computed(() => modelStore.selectedInventory?.id || 0),
+    poleId: computed(() => modelStore.selectedInventory?.pole_id || 0),
+    index: computed(() => modelStore.selectedInventory?.index || 0),
   },
   computed(() => !!route.query.id),
 );
-const { mutate: createDeviceHistory } = useCreateDeviceHistory();
+const deviceParamHistories = computed(() => DeviceHistoryResponse?.value?.data || []);
+
+const { mutate: updateDeviceParam } = useUpdateDeviceParam();
+const { mutate: rollbackPoleDeviceParam } = useRollbackPoleDeviceParam();
 const queryClient = useQueryClient();
 
 const handleSetForm = () => {
@@ -194,7 +199,7 @@ const handleSetForm = () => {
 watch(() => modelStore.selectedInventory, handleSetForm);
 onMounted(handleSetForm);
 
-const onRollback = () => {
+const onRollback = (pole_device_id: number) => {
   modelStore.poles = modelStore.poles.map((pole) => ({
     ...pole,
     deviceCategories: pole.deviceCategories.map((category) => ({
@@ -226,6 +231,20 @@ const onRollback = () => {
     });
   });
   visibleHistory.value = false;
+
+  rollbackPoleDeviceParam(
+    {
+      scanId: Number(route.query.id),
+      index: Number(modelStore.selectedInventory?.index),
+      poleId: Number(modelStore.selectedInventory?.pole_id),
+      poleDeviceId: pole_device_id,
+    },
+    {
+      onSuccess() {
+        queryClient.invalidateQueries({ queryKey: [HISTORY_DEVICE_LIST_QUERY_KEY] });
+      },
+    },
+  );
 };
 
 const onSubmitEditing = (key: string, value: string) => {
@@ -258,10 +277,11 @@ const onSubmitEditing = (key: string, value: string) => {
       });
     });
   });
-  createDeviceHistory(
+  updateDeviceParam(
     {
       scanId: Number(route.query.id),
-      deviceId: Number(modelStore.selectedInventory?.id),
+      index: Number(modelStore.selectedInventory?.index),
+      poleId: Number(modelStore.selectedInventory?.pole_id),
       field: {
         [key]: value,
       },

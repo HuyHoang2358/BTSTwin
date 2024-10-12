@@ -31,7 +31,9 @@
           />
         </div>
         <div class="mt-2">
-          <a-typography-text class="text-white">Màu nền:</a-typography-text>
+          <a-typography-text class="text-white">
+            Màu nền:
+          </a-typography-text>
           <a-segmented
             v-model:value="background"
             :options="backgroundData"
@@ -41,7 +43,9 @@
           />
         </div>
         <div class="mt-2">
-          <a-typography-text class="text-white">Chất lượng:</a-typography-text>
+          <a-typography-text class="text-white">
+            Chất lượng:
+          </a-typography-text>
           <a-segmented
             v-model:value="splat"
             :options="splatData"
@@ -51,7 +55,9 @@
           />
         </div>
         <div class="mt-2">
-          <a-typography-text class="text-white">Đơn vị đo:</a-typography-text>
+          <a-typography-text class="text-white">
+            Đơn vị đo:
+          </a-typography-text>
           <a-segmented
             v-model:value="unit"
             :options="unitData"

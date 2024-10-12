@@ -12,7 +12,7 @@
     "coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
     "type-check": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false",
-    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
+    "lint": "eslint .  --fix",
     "format": "prettier --write src/",
     "postinstall": "patch-package"
   },

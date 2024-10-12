@@ -25,11 +25,15 @@
             :src="domain + modelStore.selectedBTS?.pole_category?.icon"
             alt="icon"
             class="w-full h-full"
-          />
+          >
         </div>
-        <h3 class="text-white m-0">Trạm {{ modelStore.selectedBTS?.name }}</h3>
+        <h3 class="text-white m-0">
+          Trạm {{ modelStore.selectedBTS?.name }}
+        </h3>
       </div>
-      <h5 class="text-white font-semibold mt-4">Thông tin chi tiết</h5>
+      <h5 class="text-white font-semibold mt-4">
+        Thông tin chi tiết
+      </h5>
       <a-descriptions
         layout="horizontal"
         :column="1"
@@ -38,22 +42,22 @@
       >
         <a-descriptions-item
           label="Tên trạm"
-          :labelStyle="descriptionStyle"
-          :contentStyle="descriptionStyle"
+          :label-style="descriptionStyle"
+          :content-style="descriptionStyle"
         >
           {{ modelStore.selectedBTS?.name }}
         </a-descriptions-item>
         <a-descriptions-item
           label="Địa chỉ"
-          :labelStyle="descriptionStyle"
-          :contentStyle="descriptionStyle"
+          :label-style="descriptionStyle"
+          :content-style="descriptionStyle"
         >
           {{ modelStore.selectedBTS?.address?.address_detail }}
         </a-descriptions-item>
         <a-descriptions-item
           label="Tọa độ"
-          :labelStyle="descriptionStyle"
-          :contentStyle="descriptionStyle"
+          :label-style="descriptionStyle"
+          :content-style="descriptionStyle"
         >
           {{ convertToDMS(Number(modelStore.selectedBTS?.location?.longitude)) }}
           {{ `, ` }}
@@ -61,25 +65,25 @@
         </a-descriptions-item>
         <a-descriptions-item
           label="Đơn vị vận hành"
-          :labelStyle="descriptionStyle"
-          :contentStyle="descriptionStyle"
+          :label-style="descriptionStyle"
+          :content-style="descriptionStyle"
         >
           {{ 'VTNET' }}
         </a-descriptions-item>
         <a-descriptions-item
           label="Dự án"
-          :labelStyle="descriptionStyle"
-          :contentStyle="descriptionStyle"
-        ></a-descriptions-item>
+          :label-style="descriptionStyle"
+          :content-style="descriptionStyle"
+        />
         <a-descriptions-item
           label="Nguời quản lý trạm"
-          :labelStyle="descriptionStyle"
-          :contentStyle="descriptionStyle"
-        ></a-descriptions-item>
+          :label-style="descriptionStyle"
+          :content-style="descriptionStyle"
+        />
         <a-descriptions-item
           label="Ngày chụp gần nhất"
-          :labelStyle="descriptionStyle"
-          :contentStyle="descriptionStyle"
+          :label-style="descriptionStyle"
+          :content-style="descriptionStyle"
         >
           {{ modelStore.selectedBTS?.scans?.[0]?.date }}
         </a-descriptions-item>

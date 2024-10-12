@@ -19,11 +19,11 @@
         class="ol-popup"
       >
         <a
-          href="#"
           id="popup-closer"
+          href="#"
           class="ol-popup-closer"
-        ></a>
-        <div id="popup-content"></div>
+        />
+        <div id="popup-content" />
       </div>
 
       <Search />

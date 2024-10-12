@@ -17,8 +17,8 @@
         <main style="height: calc(100vh - 64px); overflow: auto">
           <RouterView v-if="route.path === ADMIN_UPDATE_PROFILE" />
           <a-layout-content
-            class="m-5"
             v-else
+            class="m-5"
           >
             <div class="bg-white wrapper-content">
               <RouterView />

@@ -11,11 +11,7 @@ import {
   pointSizeValue,
   widthBasePlate,
 } from '@/utils/constants';
-import {
-  useMeasurementHistoryByScanId,
-  useStationScan,
-  useStationScanImages,
-} from '@/services/hooks/useStation';
+import { useMeasurements, useStationScan, useStationScanImages } from '@/services/hooks/useStation';
 import type { Image, PoleDevice } from '@/services/apis/station';
 import { ACTIVE_TOOL } from '@/utils/enums';
 
@@ -43,12 +39,12 @@ export const useInitial = () => {
     computed(() => route.query.id as string),
     computed(() => !!route.query.id),
   );
-  const { data: dataMeasurementHistory } = useMeasurementHistoryByScanId(
+  const { data: measurementsResponse } = useMeasurements(
     computed(() => route.query.id as string),
     computed(() => !!route.query.id),
   );
   const scanInfo = computed(() => scanInfoResponse?.value?.data);
-
+  const measurements = computed(() => measurementsResponse?.value?.data || []);
   // Fetch images of scan
   const { data: imagesInfoResponse } = useStationScanImages(
     computed(() => route.query.id as string),
@@ -357,35 +353,36 @@ export const useInitial = () => {
   };
 
   const loadMeasure = () => {
-    if (!dataMeasurementHistory.value?.data?.measurements) return;
-    const measurements = JSON.parse(dataMeasurementHistory.value?.data?.measurements);
+    measurements.value.forEach((measurement: any) => {
+      const mm = JSON.parse(measurement?.measurements);
 
-    measurements.forEach((data: any) => {
-      const measure = new Potree.Measure(window.potreeViewer);
+      mm.forEach((data: any) => {
+        const measure = new Potree.Measure(window.potreeViewer);
 
-      measure.uuid = data.uuid;
-      measure.name = data.name;
-      measure.showDistances = data.showDistances;
-      measure.showCoordinates = data.showCoordinates;
-      measure.showArea = data.showArea;
-      measure.closed = data.closed;
-      measure.showAngles = data.showAngles;
-      measure.showHeight = data.showHeight;
-      measure.showCircle = data.showCircle;
-      measure.showAzimuth = data.showAzimuth;
-      measure.showEdges = data.showEdges;
+        measure.uuid = data.uuid;
+        measure.name = data.name;
+        measure.showDistances = data.showDistances;
+        measure.showCoordinates = data.showCoordinates;
+        measure.showArea = data.showArea;
+        measure.closed = data.closed;
+        measure.showAngles = data.showAngles;
+        measure.showHeight = data.showHeight;
+        measure.showCircle = data.showCircle;
+        measure.showAzimuth = data.showAzimuth;
+        measure.showEdges = data.showEdges;
 
-      for (const point of data.points) {
-        const pos = new THREE.Vector3(...point);
-        measure.addMarker(pos);
-      }
+        for (const point of data.points) {
+          const pos = new THREE.Vector3(...point);
+          measure.addMarker(pos);
+        }
 
-      window.potreeViewer.scene.addMeasurement(measure);
+        window.potreeViewer.scene.addMeasurement(measure);
+      });
     });
   };
 
   watch([scanInfo], () => {
-    if (scanInfo.value && dataMeasurementHistory.value && !loaded) {
+    if (scanInfo.value && measurements.value && !loaded) {
       loaded = true;
       const poles = scanInfo.value?.poles || [];
       if (poles[0]?.gps_ratio) {
@@ -395,15 +392,15 @@ export const useInitial = () => {
       }
       loadPointCloud();
       loadInventory();
-      loadBasePlate();
-      loadMeasure();
+      //loadBasePlate();
+      //loadMeasure();
     }
   });
 
   watch([imageData], () => {
     if (imageData.value && !loadedImage) {
       loadedImage = true;
-      loadImages();
+      //loadImages();
     }
   });
 };

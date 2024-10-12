@@ -7,7 +7,7 @@
       title="Góc nhìn bên trái"
       alt="Left view"
       @click="onLeftView"
-    />
+    >
     <img
       src="/potree/build/potree/resources/icons/right.svg"
       style="width: 32px; height: 32px"
@@ -15,7 +15,7 @@
       title="Góc nhìn bên phải"
       alt="Right view"
       @click="onRightView"
-    />
+    >
     <img
       src="/potree/build/potree/resources/icons/front.svg"
       style="width: 32px; height: 32px"
@@ -23,7 +23,7 @@
       title="Góc nhìn chính diện"
       alt="Front view"
       @click="onFrontView"
-    />
+    >
     <img
       src="/potree/build/potree/resources/icons/back.svg"
       style="width: 32px; height: 32px"
@@ -31,7 +31,7 @@
       title="Góc nhìn đằng sau"
       alt="Back view"
       @click="onBackView"
-    />
+    >
     <img
       src="/potree/build/potree/resources/icons/top.svg"
       style="width: 32px; height: 32px"
@@ -39,7 +39,7 @@
       title="Góc nhìn từ trên xuống"
       alt="Top view"
       @click="onTopView"
-    />
+    >
     <img
       src="/potree/build/potree/resources/icons/bottom.svg"
       style="width: 32px; height: 32px"
@@ -47,7 +47,7 @@
       title="Góc nhìn từ dưới lên"
       alt="Bottom view"
       @click="onBottomView"
-    />
+    >
   </div>
 
   <div class="absolute flex flex-row bottom-4 left-[220px] z-10 bg-[#212121] rounded-full">
@@ -72,7 +72,7 @@
         <path
           fill="white"
           d="M14 9H2V7h12v2Z"
-        ></path>
+        />
       </svg>
     </a-button>
     <a-button
@@ -90,7 +90,7 @@
         <path
           fill="white"
           d="M14 9H9v5H7V9H2V7h5V2h2v5h5v2Z"
-        ></path>
+        />
       </svg>
     </a-button>
   </div>

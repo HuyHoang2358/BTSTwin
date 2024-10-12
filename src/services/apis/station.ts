@@ -1,5 +1,14 @@
 import client from '@/services/client';
-import { API_STATION, API_STATION_SCAN, API_STATION_SCAN_IMAGE } from '@/services/apiPath';
+import {
+  API_STATION,
+  API_STATION_SCAN,
+  API_STATION_SCAN_IMAGE,
+  API_STATION_SCAN_MEASUREMENT,
+  API_STATION_SCAN_POLE_DEVICE_HISTORY,
+  API_STATION_SCAN_POLE_DEVICE_PARAMS,
+  API_STATION_SCAN_POLE_HISTORY,
+  API_STATION_SCAN_POLE_PARAMS,
+} from '@/services/apiPath';
 
 import * as THREE from 'three';
 import type { Vendor } from '@/services/apis/vendor';
@@ -129,6 +138,7 @@ export interface PoleDeviceCategory {
 }
 export interface PoleDevice {
   id: number;
+  index: number;
   pole_id: number;
   device_id: number;
   geometry_box_id: number;
@@ -152,6 +162,8 @@ export interface PoleDevice {
   clip: boolean;
   isNewDevice: boolean;
   newDevice?: any;
+  height: number;
+  description: string;
 }
 
 export interface GeometryBox {
@@ -202,6 +214,18 @@ export interface PoleHistory {
   scanId: number;
   poleId: number;
 }
+export type DataRollBackPoleParam = {
+  scanId: number;
+  poleId: number;
+  poleParamId: number;
+};
+
+export type DataRollBackPoleDeviceParam = {
+  scanId: number;
+  poleId: number;
+  index: number;
+  poleDeviceId: number;
+};
 
 export type DataCreatePole = {
   scanId: number;
@@ -217,13 +241,21 @@ export interface DeviceHistory {
   deviceId: number;
 }
 
-export type DataCreateDevice = {
+export type DataCreateDeviceParam = {
   scanId: number;
-  deviceId: number;
+  poleId: number;
+  index: number;
   field: Record<string, string | number>;
 };
 
-export type DataSaveMeasurements = {
+export type Measurement = {
+  scanId: number;
+  measurements: string;
+  user_id: number;
+  is_active: number;
+};
+
+export type DataMeasurement = {
   scanId: number;
   measurements: string;
 };
@@ -267,33 +299,70 @@ export const fetchReport = (id: string) =>
     },
   });
 
-//
+export const fetchMeasurements = (scanId: string): WrapperResponse<Measurement> =>
+  client.get(API_STATION_SCAN_MEASUREMENT.replace(':id', scanId));
+
+export const saveMeasurements = (data: DataMeasurement) =>
+  client.post(API_STATION_SCAN_MEASUREMENT.replace(':id', data.scanId.toString()), data);
+
+// TODO: Pole Params Update
 export const fetchPoleHistory = (params: {
   scanId: string;
   poleId: number;
 }): Promise<PoleHistory[]> =>
-  client.get('https://66ff6db12b9aac9c997f3c22.mockapi.io/history-pole', {
-    params,
-  });
+  client.get(
+    API_STATION_SCAN_POLE_HISTORY.replace(':pole_id', params.poleId.toString()).replace(
+      ':id',
+      params.scanId.toString(),
+    ),
+  );
 
-export const createPoleHistory = (data: DataCreatePole) =>
-  client.post(`https://66ff6db12b9aac9c997f3c22.mockapi.io/history-pole`, data);
+export const updatePoleParam = (data: DataCreatePole) =>
+  client.patch(
+    API_STATION_SCAN_POLE_PARAMS.replace(':pole_id', data.poleId.toString()).replace(
+      ':id',
+      data.scanId.toString(),
+    ),
+    data.field,
+  );
 
+export const rollbackPoleParam = (data: DataRollBackPoleParam) =>
+  client.post(
+    API_STATION_SCAN_POLE_HISTORY.replace(':pole_id', data.poleId.toString()).replace(
+      ':id',
+      data.scanId.toString(),
+    ) + '/rollback',
+    {
+      pole_param_id: data.poleParamId,
+    },
+  );
+
+// TODO: Device Params Update
 export const fetchDeviceHistory = (params: {
   scanId: string;
-  deviceId: number;
+  poleId: number;
+  index: number;
 }): Promise<DeviceHistory[]> =>
-  client.get('https://66ff6db12b9aac9c997f3c22.mockapi.io/history-device', {
-    params,
-  });
+  client.get(
+    API_STATION_SCAN_POLE_DEVICE_HISTORY.replace(':pole_id', params.poleId.toString())
+      .replace(':id', params.scanId.toString())
+      .replace(':index', params.index.toString()),
+  );
 
-export const createDeviceHistory = (data: DataCreateDevice) =>
-  client.post(`https://66ff6db12b9aac9c997f3c22.mockapi.io/history-device`, data);
+export const updateDeviceParam = (data: DataCreateDeviceParam) =>
+  client.patch(
+    API_STATION_SCAN_POLE_DEVICE_PARAMS.replace(':pole_id', data.poleId.toString())
+      .replace(':id', data.scanId.toString())
+      .replace(':index', data.index.toString()),
+    data.field,
+  );
 
-export const getMeasurementHistoryByScanId = (
-  scanId: string,
-): WrapperResponse<DataSaveMeasurements> =>
-  client.get(`http://localhost:8899/api/bts/get-measurement-history-by-scan-id/${scanId}`);
-
-export const saveMeasurements = (data: DataSaveMeasurements) =>
-  client.post('http://localhost:8899/api/bts/save-measurement-history', data);
+export const rollbackPoleDeviceParam = (data: DataRollBackPoleDeviceParam) =>
+  client.post(
+    API_STATION_SCAN_POLE_DEVICE_HISTORY.replace(':pole_id', data.poleId.toString())
+      .replace(':id', data.scanId.toString())
+      .replace(':index', data.index.toString()) + '/rollback',
+    {
+      pole_device_id: data.poleDeviceId,
+    },
+  );

@@ -48,5 +48,13 @@ export const API_DEVICE = '/devices';
 export const API_STATION = '/stations';
 export const API_STATION_SCAN = '/scans';
 export const API_STATION_SCAN_IMAGE = '/scans/:id/images';
+export const API_STATION_SCAN_MEASUREMENT = '/scans/:id/measurements';
+export const API_STATION_SCAN_POLE_PARAMS = '/scans/:id/poles/:pole_id/params';
+export const API_STATION_SCAN_POLE_HISTORY = '/scans/:id/poles/:pole_id/histories';
+export const API_STATION_SCAN_POLE_DEVICE_HISTORY =
+  '/scans/:id/poles/:pole_id/devices/:index/histories';
+export const API_STATION_SCAN_POLE_DEVICE_PARAMS =
+  '/scans/:id/poles/:pole_id/devices/:index/params';
+
 export const API_PROCESS = '/processing-data-processes';
 export const API_POLE = '/poles';

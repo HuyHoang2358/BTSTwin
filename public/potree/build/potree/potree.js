@@ -14983,10 +14983,10 @@
 
 		}
 
-		/* eslint-disable no-undef */
+		 
 		const isWebGL2 = ( typeof WebGL2RenderingContext !== 'undefined' && gl instanceof WebGL2RenderingContext ) ||
 			( typeof WebGL2ComputeRenderingContext !== 'undefined' && gl instanceof WebGL2ComputeRenderingContext );
-		/* eslint-enable no-undef */
+		 
 
 		let precision = parameters.precision !== undefined ? parameters.precision : 'highp';
 		const maxPrecision = getMaxPrecision( precision );
@@ -22516,7 +22516,7 @@
 					framebufferScaleFactor: framebufferScaleFactor
 				};
 
-				// eslint-disable-next-line no-undef
+				 
 				const baseLayer = new XRWebGLLayer( session, gl, layerInit );
 
 				session.updateRenderState( { baseLayer: baseLayer } );
@@ -25453,7 +25453,7 @@
 
 		if ( typeof __THREE_DEVTOOLS__ !== 'undefined' ) {
 
-			__THREE_DEVTOOLS__.dispatchEvent( new CustomEvent( 'observe', { detail: this } ) ); // eslint-disable-line no-undef
+			__THREE_DEVTOOLS__.dispatchEvent( new CustomEvent( 'observe', { detail: this } ) );  
 
 		}
 
@@ -25558,7 +25558,7 @@
 
 			if ( typeof __THREE_DEVTOOLS__ !== 'undefined' ) {
 
-				__THREE_DEVTOOLS__.dispatchEvent( new CustomEvent( 'observe', { detail: this } ) ); // eslint-disable-line no-undef
+				__THREE_DEVTOOLS__.dispatchEvent( new CustomEvent( 'observe', { detail: this } ) );  
 
 			}
 
@@ -51635,11 +51635,11 @@
 
 	if ( typeof __THREE_DEVTOOLS__ !== 'undefined' ) {
 
-		/* eslint-disable no-undef */
+		 
 		__THREE_DEVTOOLS__.dispatchEvent( new CustomEvent( 'register', { detail: {
 			revision: REVISION,
 		} } ) );
-		/* eslint-enable no-undef */
+		 
 
 	}
 

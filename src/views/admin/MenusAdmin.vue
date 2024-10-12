@@ -15,18 +15,18 @@
           src="/icons/ViettelAI-2023.svg"
           alt="logo-viettel"
           class="logo"
-        />
+        >
       </a>
     </div>
 
     <a-divider class="h-px bg-[#373737] m-0 p-0" />
 
     <a-menu
-      v-model:selectedKeys="configStore.selectedMenuKeys"
+      v-model:selected-keys="configStore.selectedMenuKeys"
+      v-model:open-keys="openKeys"
       theme="dark"
       mode="inline"
       class="mt-20"
-      v-model:openKeys="openKeys"
     >
       <!-- Quản trị hệ thống -->
       <!--      <a-sub-menu key="system">

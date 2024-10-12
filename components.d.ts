@@ -119,7 +119,6 @@ declare module 'vue' {
     IconImage: typeof import('./src/components/icon/IconImage.vue')['default']
     IconInfoAccount: typeof import('./src/components/icons/home/IconInfoAccount.vue')['default']
     IconInvisible: typeof import('./src/components/icons/IconInvisible.vue')['default']
-    IconInVisible: typeof import('./src/components/icons/IconInVisible.vue')['default']
     IconLogOutAccount: typeof import('./src/components/icons/home/IconLogOutAccount.vue')['default']
     IconMap: typeof import('./src/components/icons/admin/IconMap.vue')['default']
     IconMeasurement: typeof import('./src/components/icon/IconMeasurement.vue')['default']

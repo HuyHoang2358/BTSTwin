@@ -7150,7 +7150,7 @@ module.exports = function xor (a, b) {
  * @author   Feross Aboukhadijeh <feross@feross.org> <http://feross.org>
  * @license  MIT
  */
-/* eslint-disable no-proto */
+ 
 
 'use strict'
 
@@ -7424,7 +7424,7 @@ function checked (length) {
 }
 
 function SlowBuffer (length) {
-  if (+length != length) { // eslint-disable-line eqeqeq
+  if (+length != length) {  
     length = 0
   }
   return Buffer.alloc(+length)
@@ -8856,7 +8856,7 @@ function isArrayBufferView (obj) {
 }
 
 function numberIsNaN (obj) {
-  return obj !== obj // eslint-disable-line no-self-compare
+  return obj !== obj  
 }
 
 },{"base64-js":24,"ieee754":106}],55:[function(require,module,exports){
