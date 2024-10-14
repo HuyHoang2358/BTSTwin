@@ -25,8 +25,7 @@
 
 <script setup lang="ts">
 import { useModelStore } from '@/stores/model';
-import { useStationReport, useStationScan } from '@/services/hooks/useStation';
-import { computed } from 'vue';
+import { useStationReport } from '@/services/hooks/useStation';
 import { useRoute } from 'vue-router';
 import { useErrorHandler } from '@/services/hooks/useErrorHandler';
 import HeaderMenu from '@/components/HeaderMenu.vue';
@@ -35,17 +34,12 @@ import { ACTIVE_TOOL } from '@/utils/enums';
 const modelStore = useModelStore();
 const route = useRoute();
 
-const { data: btsDetail } = useStationScan(
-  computed(() => route.query.id as string),
-  computed(() => !!route.query.id),
-);
-
 const { mutate: exportReport, isPending: isPendingDownload } = useStationReport();
 const { onError } = useErrorHandler();
 
 const onDownload = () => {
-  if (!btsDetail.value?.data?.id) return;
-  exportReport(btsDetail.value?.data?.id?.toString(), {
+  if (!route.query.id) return;
+  exportReport([route.query.id.toString()], {
     onError,
     onSuccess(data) {
       const link = document.createElement('a');

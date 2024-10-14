@@ -137,9 +137,10 @@ export const useInitial = () => {
         const boxSize = box.getSize(new THREE.Vector3());
         const boxGeometry = new THREE.BoxGeometry(boxSize.x, boxSize.y, boxSize.z);
         const boxMaterial = new THREE.MeshBasicMaterial({
-          color: 0x83bb95,
-          opacity: 0,
-          transparent: true,
+          color: 0x00ff00,
+          //opacity: 0.6,
+          //transparent: true,
+          wireframe: true,
           depthWrite: false,
           side: THREE.DoubleSide,
         });
@@ -156,7 +157,7 @@ export const useInitial = () => {
         const volume = new Potree.BoxVolume();
         volume.position.set(boxCenter.x, boxCenter.y, boxCenter.z);
         volume.scale.set(boxSize.x, boxSize.y, boxSize.z);
-        volume.visible = false;
+        volume.visible = true;
         window.potreeViewer.scene.addVolume(volume);
 
         return {
@@ -236,6 +237,7 @@ export const useInitial = () => {
     Potree.loadPointCloud(url, name, (e: any) => {
       const scene = window.potreeViewer.scene;
       const pointCloud = e.pointcloud;
+      modelStore.pointCloud = pointCloud;
 
       // Thêm pointCloud vào cảnh
       scene.addPointCloud(pointCloud);
@@ -275,10 +277,19 @@ export const useInitial = () => {
     plane.userData = {
       type: 'basePlate',
     };
-
     window.potreeViewer.scene.scene.add(plane);
+    // Add north direction
+    const northDirection = new THREE.ArrowHelper(
+      new THREE.Vector3(0, 1, zPlane),
+      new THREE.Vector3(0, 0, zPlane),
+      Math.max(widthBasePlate, heightBasePlate) + 5,
+      0xff0000,
+    );
+    window.potreeViewer.scene.scene.add(northDirection);
+    // hidden north direction
 
     modelStore.basePlate = plane;
+    modelStore.northDirection = northDirection;
     modelStore.zPlaneHistory = zPlane;
   };
 

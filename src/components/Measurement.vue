@@ -21,19 +21,21 @@
         :placeholder="$t('search')"
         v-model:value="searchValue"
         allow-clear
-        class="bg-[#424242] text-white focus:outline-0"
+        class="bg-[#424242] text-white focus:outline-0 rounded"
       >
         <template #prefix>
           <IconSearchInput />
         </template>
       </a-input>
     </div>
+
     <div class="flex flex-row justify-between items-start px-3 mt-2">
       <div>
         <span class="text-white text-sm">Danh sách đo lường</span>
         <br />
-        <span class="text-[#8C8C8C] text-xs">({{ modelStore.measurements.length }} items)</span>
+        <span class="text-[#8C8C8C] text-xs">({{ modelStore.measurements.length }} phần tử)</span>
       </div>
+
       <div
         class="flex"
         v-if="modelStore.measurements.length > 0"
@@ -67,15 +69,19 @@
       class="flex flex-1 items-center"
       v-if="modelStore.measurements.length === 0"
     >
-      <CustomAEmpty empty-text="Chưa có dữ liệu, chọn công cụ để thêm" />
+      <CustomAEmpty empty-text="Chưa có dữ liệu, chọn công cụ để đo lường" />
     </div>
+
     <div
       v-for="(item, index) in modelStore.measurements"
       :key="index"
       :class="[
         'flex flex-row items-center justify-between cursor-pointer pr-3 mt-2',
-        item.id === modelStore.selectedMeasurement?.id && 'bg-[#38536d]',
+        item.id === modelStore.selectedMeasurement?.id && 'bg-[#3D3D3D]',
       ]"
+      :style="
+        item.id === modelStore.selectedMeasurement?.id ? 'border-left: 2px solid #EE0033' : ''
+      "
     >
       <div
         class="flex flex-row flex-1 items-center"
@@ -98,12 +104,12 @@
           <IconVisible v-if="item.visible" />
           <IconInvisible v-else />
         </a-button>
-        <a-button
+        <!--        <a-button
           @click="onRemoveMeasurement(item)"
           class="p-0 m-0 border-none bg-transparent ml-2 flex items-center"
         >
           <IconRemove />
-        </a-button>
+        </a-button>-->
       </div>
     </div>
     <!--    <a-button @click="onTestExport">Export</a-button>-->
@@ -116,7 +122,7 @@ import * as THREE from 'three';
 import IconSearchInput from '@/components/icons/home/IconSearchInput.vue';
 import { ref, toRaw } from 'vue';
 import HeaderMenu from '@/components/HeaderMenu.vue';
-import { ACTIVE_TOOL, LOCAL_STORAGE_KEY } from '@/utils/enums';
+import { ACTIVE_TOOL } from '@/utils/enums';
 import CustomAEmpty from '@/components/CustomAEmpty.vue';
 import IconRemove from '@/components/icon/IconRemove.vue';
 import IconInvisible from '@/components/icons/IconInvisible.vue';
@@ -152,7 +158,8 @@ const onRemoveMeasurement = (object: any) => {
 };
 
 const onToggleMeasurement = (object: any) => {
-  object.visible = !object.visible;
+  let object_raw = window.potreeViewer.scene.measurements.find((m) => m.uuid === object.uuid);
+  if (object_raw) object_raw.visible = !object_raw.visible;
 };
 
 const onToggleAllMeasurement = () => {
@@ -161,13 +168,19 @@ const onToggleAllMeasurement = () => {
   modelStore.measurements.forEach((object: any) => {
     object.visible = nextState;
   });
+
+  window.potreeViewer.scene.measurements.forEach((object: any) => {
+    object.visible = nextState;
+  });
 };
 
 const onRemoveAllMeasurement = () => {
   modelStore.selectedMeasurement = undefined;
-  modelStore.measurements.forEach((object: any) => {
+
+  window.potreeViewer.scene.measurements.forEach((object: any) => {
     window.potreeViewer.scene.removeMeasurement(toRaw(object));
   });
+
   modelStore.measurements = [];
 };
 

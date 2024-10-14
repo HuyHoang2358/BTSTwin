@@ -26,11 +26,12 @@
 </template>
 <script lang="ts" setup>
 import { reactive, watch } from 'vue';
+import { useModelStore } from '@/stores/model';
 import { debounce } from 'lodash-es';
 import { GeoJSON } from 'ol/format';
-import { useModelStore } from '@/stores/model';
-let lastFetchId = 0;
+import { Fill, Stroke, Style } from 'ol/style';
 
+let lastFetchId = 0;
 const modelStore = useModelStore();
 
 const state = reactive({
@@ -53,7 +54,7 @@ const fetchUser = debounce((value) => {
         // for fetch callback order
         return;
       }
-      const data = body.map((item) => ({
+      const data = body.map((item: any) => ({
         label: item.display_name,
         value: item.osm_id?.toString(),
         ...item,
@@ -91,11 +92,23 @@ const handleChange = (value: any, option: any) => {
         name: option.label,
       },
     };
+    const redBorderStyle = new Style({
+      stroke: new Stroke({
+        color: 'red', // Red border
+        width: 3, // Border width
+      }),
+      fill: new Fill({
+        color: 'rgba(255, 0, 0, 0.1)', // Optional: Semi-transparent red fill for polygons
+      }),
+    });
+
+    const feature = new GeoJSON().readFeatures(geoJsonFeature, {
+      featureProjection: 'EPSG:3857',
+    })[0];
+    feature.setStyle(redBorderStyle);
 
     // Thêm feature mới vào vectorSource
-    modelStore.vectorSource.addFeature(
-      new GeoJSON().readFeatures(geoJsonFeature, { featureProjection: 'EPSG:3857' })[0],
-    );
+    modelStore.vectorSource.addFeature(feature);
 
     // Fit map view to the new feature
     const extent = modelStore.vectorSource.getExtent();

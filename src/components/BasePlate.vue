@@ -38,6 +38,14 @@
           :step="0.01"
         />
       </div>
+
+      <a-checkbox
+        v-model:checked="modelStore.isShowNorthDirection"
+        class="text-white mt-2"
+      >
+        Hiển thị hướng Bắc
+      </a-checkbox>
+
       <a-button
         type="primary"
         class="mt-4"
@@ -50,6 +58,7 @@
 </template>
 
 <script lang="ts" setup>
+import * as THREE from 'three';
 import { onMounted, watch } from 'vue';
 import { useModelStore } from '@/stores/model';
 import { heightBasePlate, widthBasePlate } from '@/utils/constants';
@@ -66,8 +75,10 @@ onMounted(() => {
 watch(
   () => modelStore.widthBasePlateValue,
   (newValue) => {
-    if (modelStore.basePlate && newValue) {
+    if (modelStore.basePlate && newValue && modelStore.northDirection) {
       modelStore.basePlate.scale.x = newValue / widthBasePlate; // Cập nhật tỉ lệ chiều rộng
+      // update length of north direction
+      modelStore.northDirection.scale.x = newValue / widthBasePlate;
     }
   },
 );
@@ -75,8 +86,10 @@ watch(
 watch(
   () => modelStore.heightBasePlateValue,
   (newValue) => {
-    if (modelStore.basePlate && newValue) {
+    if (modelStore.basePlate && newValue && modelStore.northDirection) {
       modelStore.basePlate.scale.y = newValue / heightBasePlate; // Cập nhật tỉ lệ chiều dài
+      // update length of north direction
+      modelStore.northDirection.scale.y = newValue / heightBasePlate;
     }
   },
 );
@@ -84,8 +97,19 @@ watch(
 watch(
   () => modelStore.positionValue,
   (newValue) => {
-    if (modelStore.basePlate && newValue) {
+    if (modelStore.basePlate && newValue && modelStore.northDirection) {
       modelStore.basePlate.position.z = newValue; // Cập nhật vị trí z
+      modelStore.northDirection.setDirection(new THREE.Vector3(0, 1, newValue));
+      modelStore.northDirection.position.set(0, 0, newValue);
+    }
+  },
+);
+
+watch(
+  () => modelStore.isShowNorthDirection,
+  (newValue) => {
+    if (modelStore.northDirection) {
+      modelStore.northDirection.visible = newValue;
     }
   },
 );
@@ -94,5 +118,6 @@ const onReset = () => {
   modelStore.positionValue = modelStore.zPlaneHistory;
   modelStore.heightBasePlateValue = heightBasePlate;
   modelStore.widthBasePlateValue = widthBasePlate;
+  modelStore.isShowNorthDirection = true;
 };
 </script>

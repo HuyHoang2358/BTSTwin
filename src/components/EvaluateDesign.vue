@@ -15,6 +15,8 @@
         class="my-3 mx-3"
         block
       />
+
+      <!-- Thêm thiết bị thủ công -->
       <div
         class="flex justify-between items-center px-3 pt-3"
         v-if="splat === splatData[1]"
@@ -27,6 +29,8 @@
           Thêm thiết bị cho cột
         </a-button>
       </div>
+
+      <!-- Upload file excel -->
       <div
         class="mx-3"
         v-else
@@ -134,6 +138,7 @@ const handleChange = (info: UploadChangeParam<any>) => {
   });
 };
 
+// Thêm thiết bị thủ công
 const onAddBox = () => {
   modelStore.openModalAddInventory = true;
   modelStore.selectedImage = undefined;

@@ -26,12 +26,13 @@
         <div id="popup-content" />
       </div>
 
-      <Search />
+      <SearchForm />
 
       <BTSList />
 
       <BTSInfo />
 
+      <!-- Left bottom corner -->
       <div class="flex flex-row items-center absolute z-10 bottom-3 left-4">
         <a-button
           class="w-[54px] h-[54px] bg-transparent m-0 p-0 border-none rounded-full"
@@ -39,9 +40,10 @@
         >
           <a-image
             :src="layer_icon"
-            class="object-contain rounded-full border-2 border-white w-full h-full"
+            class="object-contain rounded-full border-2 w-full h-full"
             :preview="false"
             alt="layer"
+            style="border: 2px solid white"
           />
         </a-button>
         <div class="ml-2">
@@ -68,68 +70,106 @@
         </div>
       </div>
 
-      <div class="flex flex-row items-center gap-x-1 absolute z-10 bottom-3 right-4">
-        <div
-          v-if="modelStore.windyLayerVisible"
-          class="flex flex-row gap-1"
-        >
+      <!-- Right bottom corner -->
+      <div class="absolute z-10 bottom-3 right-4">
+        <div class="flex flex-row justify-end items-center gap-x-1">
           <div
-            v-for="item in dataWindy?.data?.data || []"
-            :key="item.id"
-            :style="{ background: item.color }"
-            class="flex w-6 h-6 rounded-full text-center items-center justify-center"
+            v-if="modelStore.windyLayerVisible"
+            class="bg-[#303030] text-white text-sm"
           >
-            {{ item.name }}
+            <div class="flex justify-between items-center px-2 py-1 gap-2">
+              <div class="flex justify-start items-center gap-0.5">
+                <div class="w-6 h-6 p-1">
+                  <IconWindy class="w-full h-full" />
+                </div>
+                <p class="m-0 text-sm">Bản đồ vùng gió</p>
+              </div>
+              <a-button
+                type="ghost"
+                @click="toggleWindRegionLayer"
+                class="w-6 h-6 p-1 bg-none"
+              >
+                <IconClose class="w-full h-full" />
+              </a-button>
+            </div>
+            <a-divider class="mt-1 mb-0 border-[#404040]" />
+            <div class="py-2 px-4">
+              <div
+                class="flex justify-start items-center gap-3 py-0.5"
+                v-for="item in dataWindy?.data?.data || []"
+                :key="item.id"
+              >
+                <div
+                  class="w-4 h-4 rounded"
+                  :style="{ background: item.color }"
+                ></div>
+                <p class="m-0">Vùng gió {{ item.name }}</p>
+              </div>
+            </div>
+          </div>
+          <a-tooltip
+            title="Bản đồ vùng gió"
+            placement="top"
+            color="#212121"
+            v-if="!modelStore.windyLayerVisible"
+          >
+            <a-button
+              class="p-2 w-10 h-10 bg-[#303030] m-0 text-white border-none"
+              @click="toggleWindRegionLayer"
+            >
+              <IconWindy class="w-full h-full" />
+            </a-button>
+          </a-tooltip>
+        </div>
+
+        <div class="flex justify-end items-center mt-1 gap-1 text-white">
+          <div class="bg-[#303030] text-left h-6 rounded text-sm flex flex-col justify-center">
+            <p
+              class="m-0 px-2"
+              id="lat-lng-info"
+            ></p>
+          </div>
+          <div class="w-6 h-6 bg-[#303030] p-1 rounded">
+            <IconInformation class="w-full h-full" />
           </div>
         </div>
-        <a-tooltip
-          title="Bản đồ vùng gió"
-          placement="top"
-          color="#212121"
-        >
-          <a-button
-            class="w-[54px] h-[54px] bg-transparent m-0 p-0 border-none"
-            @click="toggleWindRegionLayer"
-          >
-            <a-image
-              :width="54"
-              :height="54"
-              src="/images/icons/windy.jpg"
-              class="object-contain rounded-full"
-              :preview="false"
-              alt="layer"
-            />
-          </a-button>
-        </a-tooltip>
       </div>
+
+      <!-- Hover box Station Info -->
+      <div
+        id="station-info"
+        style="display: none"
+        class="rounded bg-white p-4 text-xs absolute w-[250px]"
+      ></div>
     </div>
   </a-config-provider>
 </template>
 
 <script setup lang="ts">
 import { ref, shallowRef, watch } from 'vue';
-import HeaderHome from '@/components/HeaderHome.vue';
-import Search from '@/components/Search.vue';
-import BTSList from '@/components/BTSList.vue';
 import { useModelStore } from '@/stores/model';
+import { useWindyAreas } from '@/services/hooks/useWindyArea';
+
+import { theme } from 'ant-design-vue';
+import { maxPageSize } from '@/utils/constants';
+import viVN from 'ant-design-vue/es/locale/vi_VN';
+
 import Map2D from '@/components/Map2D.vue';
 import Map3D from '@/components/Map3D.vue';
-import viVN from 'ant-design-vue/es/locale/vi_VN';
-import { theme } from 'ant-design-vue';
+import BTSList from '@/components/BTSList.vue';
 import BTSInfo from '@/components/BTSInfo.vue';
-import { useWindyAreas } from '@/services/hooks/useWindyArea';
-import { maxPageSize } from '@/utils/constants';
+import SearchForm from '@/components/SearchForm.vue';
+import HeaderHome from '@/components/HeaderHome.vue';
+import IconClose from '@/components/icon/IconClose.vue';
+import IconWindy from '@/components/icon/IconWindy.vue';
+import IconInformation from '@/components/icon/IconInformation.vue';
 
+// TODO: Define global variables
 const current = shallowRef(Map2D);
 const isViettelLayer = ref(true);
-
 const modelStore = useModelStore();
 
-const { data: dataWindy } = useWindyAreas({
-  perPage: ref(maxPageSize),
-});
-
-let layer_icon = ref<string>('/images/home/layer-viettel.png');
+// TODO: Change map mode 2D - 3D
 watch(
   () => modelStore.is2DMode,
   () => {
@@ -145,6 +185,8 @@ watch(
   },
 );
 
+// TODO: Change Base Layer
+let layer_icon = ref<string>('/images/home/layer-viettel.png');
 const onToggleBaseLayer = () => {
   const map = modelStore.mapOl;
   if (!map) return;
@@ -164,6 +206,11 @@ const onToggleBaseLayer = () => {
   isViettelLayer.value = !isViettelLayer.value;
 };
 
+// TODO: Fetch windy areas
+const { data: dataWindy } = useWindyAreas({
+  perPage: ref(maxPageSize),
+});
+// TODO: Toggle Wind Region Layer
 const toggleWindRegionLayer = () => {
   const map = modelStore.mapOl;
 
@@ -218,5 +265,25 @@ const toggleWindRegionLayer = () => {
 }
 .ol-popup-closer:after {
   content: '✖';
+}
+.ol-control {
+  background-color: transparent;
+}
+.ol-control button {
+  background-color: #2f2f2f;
+  color: white;
+  border: none;
+  margin: 0;
+}
+.ol-control button:hover {
+  background-color: #2f2f2f;
+  border: none;
+  color: red;
+}
+.ol-control .ol-zoom-in {
+  border-radius: 50px 50px 0 0;
+}
+.ol-control .ol-zoom-out {
+  border-radius: 0 0 50px 50px;
 }
 </style>

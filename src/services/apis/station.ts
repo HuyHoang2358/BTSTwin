@@ -34,7 +34,7 @@ export interface Station {
   description: string;
   scans: Scan[];
   location: Location;
-  address: Address;
+  address?: Address;
   expanded?: boolean;
   stress_value?: number;
   pole_category?: PoleCategory;
@@ -49,6 +49,7 @@ export interface Scan {
   station_id: number;
   models?: Model3D[];
   poles?: Pole[];
+  station?: Station;
 }
 
 export interface Model3D {
@@ -292,10 +293,10 @@ export const fetchScanDetail = (id: string): WrapperResponse<Scan> =>
 export const fetchScanImages = (id: string): WrapperResponse<Image[]> =>
   client.get(API_STATION_SCAN_IMAGE.replace(':id', id));
 
-export const fetchReport = (id: string) =>
+export const fetchReport = (ids: string[]) =>
   client.get(`${API_STATION}/excel/export`, {
     params: {
-      stations: [id],
+      scans: ids,
     },
   });
 
