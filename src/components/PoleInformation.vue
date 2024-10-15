@@ -52,7 +52,7 @@
                   <a-button
                     type="primary"
                     class="w-8 h-8 flex justify-center items-center"
-                    @click="onRollback(item.id)"
+                    @click="onRollback(Number(item.id))"
                   >
                     <RollbackOutlined class="text-white h-4 w-4" />
                   </a-button>
@@ -181,6 +181,7 @@
             placeholder="Nhập mô tả cột"
             :allow-clear="true"
             :rows="3"
+            @blur="submitComment"
           />
         </a-form-item>
         <a-form-item
@@ -213,6 +214,7 @@ import HeaderInformation from '@/components/HeaderInformation.vue';
 import ItemDescription from '@/components/ItemDescription.vue';
 import { useQueryClient } from '@tanstack/vue-query';
 import CustomAEmpty from '@/components/CustomAEmpty.vue';
+import { COMMENT_QUERY_KEY, useComments, useStoreComment } from '@/services/hooks/useComment';
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 const domain = baseUrl.slice(0, baseUrl.length - 5);
@@ -220,6 +222,7 @@ const domain = baseUrl.slice(0, baseUrl.length - 5);
 const modelStore = useModelStore();
 const { mutate: updatePoleParam } = useUpdatePoleParam();
 const { mutate: rollbackPoleParam } = useRollbackPoleParam();
+const { mutate: storeComment } = useStoreComment();
 
 interface FormState {
   description?: string;
@@ -244,6 +247,38 @@ const { data: poleParamHistoryResponse } = usePoleHistory(
 );
 const poleParamHistories = computed(() => poleParamHistoryResponse?.value?.data || []);
 
+// Fetch comments
+const { data: comments, refetch } = useComments(
+  'pole',
+  computed(() => modelStore.selectedPole?.id || 0),
+);
+watch(
+  () => modelStore.selectedPole,
+  () => {
+    refetch();
+  },
+);
+
+watch([comments], () => {
+  formState.description = comments?.value?.data?.content || '';
+});
+
+const submitComment = () => {
+  if (formState.description === comments?.value?.data?.content) return;
+  if (!formState.description) return;
+  storeComment(
+    {
+      model: 'pole',
+      model_id: Number(modelStore.selectedPole?.id),
+      content: formState.description,
+    },
+    {
+      onSuccess() {
+        queryClient.invalidateQueries({ queryKey: [COMMENT_QUERY_KEY] });
+      },
+    },
+  );
+};
 const formRef = ref();
 const formState: UnwrapRef<FormState> = reactive({});
 const queryClient = useQueryClient();
@@ -256,17 +291,10 @@ const onSubmitEditing = (key: string, value: string) => {
     return pole;
   });
 
-  console.log('onSubmitEditing', modelStore.poles);
+  //console.log('onSubmitEditing', modelStore.poles);
   const currentPole = modelStore.poles.find((pole) => pole.id === modelStore.selectedPole?.id);
   if (!currentPole) return;
   modelStore.selectedPole = currentPole;
-  const data = {
-    scanId: Number(route.query.id),
-    poleId: Number(modelStore.selectedPole?.id),
-    field: {
-      [key]: value,
-    },
-  };
   updatePoleParam(
     {
       scanId: Number(route.query.id),

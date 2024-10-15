@@ -58,3 +58,4 @@ export const API_STATION_SCAN_POLE_DEVICE_PARAMS =
 
 export const API_PROCESS = '/processing-data-processes';
 export const API_POLE = '/poles';
+export const API_COMMENT = '/comments/:model/:model_id';

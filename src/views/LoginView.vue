@@ -24,12 +24,14 @@
               alt="logo-viettel"
             />
             <div>
-              <a-typography-text class="text-[#F4F4F4] font-medium text-[49px]">
-                Xin chào
+              <a-typography-text class="text-[#F4F4F4] font-bold text-[49px]">
+                WELCOME
               </a-typography-text>
               <br />
-              <a-typography-text class="text-[#F4F4F4] text-[25px] font-medium">
-                Công cụ Khảo sát hạ tầng & Đánh giá thiết kế vô tuyến cho cột viễn thông
+              <a-typography-text class="text-[#F4F4F4] text-[30px] font-semibold uppercase">
+                Công cụ khảo sát hạ tầng &
+                <br />
+                Đánh giá thiết kế vô tuyến cho cột viễn thông
               </a-typography-text>
             </div>
             <div class="logo" />
@@ -179,5 +181,9 @@ const warning = () => {
 .left-container {
   padding-left: 87px;
   padding-top: 54px;
+}
+.ant-input-affix-wrapper {
+  background-color: #424242 !important;
+  border: none;
 }
 </style>

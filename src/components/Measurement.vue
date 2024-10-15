@@ -10,9 +10,13 @@
       >
         <a-button
           @click="onSave"
+          :loading="isPending"
           class="p-0 m-0 border-none bg-transparent flex items-center h-[20px]"
         >
-          <SaveOutlined class="text-[20px]" />
+          <SaveOutlined
+            class="text-[20px]"
+            v-if="!isPending"
+          />
         </a-button>
       </a-tooltip>
     </HeaderMenu>
@@ -186,7 +190,7 @@ const onRemoveAllMeasurement = () => {
 
 const searchValue = ref<string>();
 
-const { mutate } = useSaveMeasurements();
+const { mutate, isPending } = useSaveMeasurements();
 const route = useRoute();
 const { onError } = useErrorHandler();
 const { handleSuccess } = useSuccessHandler();

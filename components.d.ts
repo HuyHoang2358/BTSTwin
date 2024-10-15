@@ -169,6 +169,7 @@ declare module 'vue' {
     ModalHandleWindyArea: typeof import('./src/components/admin/category/ModalHandleWindyArea.vue')['default']
     NewDevice: typeof import('./src/components/NewDevice.vue')['default']
     Pole: typeof import('./src/components/Pole.vue')['default']
+    PoleInformation: typeof import('./src/components/PoleInformation.vue')['default']
     PoleItem: typeof import('./src/components/PoleItem.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

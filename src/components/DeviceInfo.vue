@@ -145,6 +145,7 @@
           placeholder="Nhập mô tả thiết bị"
           :allow-clear="true"
           :rows="3"
+          @blur="submitComment"
         />
       </a-form-item>
     </a-form>
@@ -165,6 +166,7 @@ import {
 } from '@/services/hooks/useStation';
 import ItemDescription from '@/components/ItemDescription.vue';
 import { useQueryClient } from '@tanstack/vue-query';
+import { COMMENT_QUERY_KEY, useComments, useStoreComment } from '@/services/hooks/useComment';
 
 interface FormState {
   description?: string;
@@ -289,6 +291,40 @@ const onSubmitEditing = (key: string, value: string) => {
     {
       onSuccess() {
         queryClient.invalidateQueries({ queryKey: [HISTORY_DEVICE_LIST_QUERY_KEY] });
+      },
+    },
+  );
+};
+
+// Fetch comments
+const { data: comments, refetch } = useComments(
+  'pole-device',
+  computed(() => modelStore.selectedInventory?.id || 0),
+);
+watch(
+  () => modelStore.selectedInventory,
+  () => {
+    refetch();
+  },
+);
+
+watch([comments], () => {
+  formState.description = comments?.value?.data?.content || '';
+});
+const { mutate: storeComment } = useStoreComment();
+
+const submitComment = () => {
+  if (formState.description === comments?.value?.data?.content) return;
+  if (!formState.description) return;
+  storeComment(
+    {
+      model: 'pole-device',
+      model_id: Number(modelStore.selectedInventory?.id),
+      content: formState.description,
+    },
+    {
+      onSuccess() {
+        queryClient.invalidateQueries({ queryKey: [COMMENT_QUERY_KEY] });
       },
     },
   );

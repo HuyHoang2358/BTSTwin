@@ -17,7 +17,6 @@ import type { PoleCategory } from '@/services/apis/polecategory';
 import type { WrapperResponse } from '@/services/services.types';
 import type { DeviceCategory } from '@/services/apis/devicecategory';
 import Measurement from '@/components/Measurement.vue';
-import { data } from 'autoprefixer';
 
 // TODO: Define types
 export interface Location {

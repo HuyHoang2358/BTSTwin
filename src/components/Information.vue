@@ -40,7 +40,7 @@
 import { useModelStore } from '@/stores/model';
 import NewDevice from '@/components/NewDevice.vue';
 import BasePlate from '@/components/BasePlate.vue';
-import Pole from '@/components/Pole.vue';
+import Pole from '@/components/PoleInformation.vue';
 import DeviceInfo from '@/components/DeviceInfo.vue';
 import HeaderInformation from '@/components/HeaderInformation.vue';
 import MeasureInfo from '@/components/MeasureInfo.vue';

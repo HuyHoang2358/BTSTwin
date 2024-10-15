@@ -233,6 +233,8 @@ const onCalculate = () => {
     }
   });
 
+  console.log('devices', inventories);
+
   mutate(
     {
       pole_id: pole?.id,
