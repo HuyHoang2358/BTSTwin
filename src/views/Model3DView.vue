@@ -11,7 +11,7 @@
     <div class="flex flex-col h-screen w-screen overflow-hidden">
       <HeaderHome />
 
-      <!-- breadcrumb -->
+      <!-- Breadcrumb -->
       <div
         class="bg-[#212121] flex items-center pb-2 mt-[-2px]"
         style="border-bottom: 1px solid #353535"
@@ -24,11 +24,28 @@
         </a-button>
         <a-typography-text
           style="color: #f6f6f6; font-size: 14px; margin-bottom: 0"
-          class="ml-4"
+          class="ml-4 font-semibold"
           v-if="scanInfo?.data?.name"
         >
-          Trạm {{ scanInfo?.data?.name }}
+          Trạm {{ scanInfo?.data?.station?.code }}
         </a-typography-text>
+
+        <div class="w-2 h-2 bg-white rounded-full mx-2"></div>
+
+        <a-typography-text
+          style="color: #f6f6f6; font-size: 14px; margin-bottom: 0"
+          class="font-semibold"
+        >
+          {{ scanInfo?.data?.station?.address?.province?.name }}
+        </a-typography-text>
+
+        <a-typography-text
+          style="color: #f6f6f6; font-size: 14px; margin-bottom: 0"
+          class="font-semibold ml-6"
+        >
+          {{ scanInfo?.data?.date }}
+        </a-typography-text>
+
         <IconTickGreen
           class="ml-1"
           v-if="scanInfo?.data?.name"
@@ -149,6 +166,7 @@ const { data: scanInfo } = useStationScan(
   computed(() => route.query.id as string),
   computed(() => !!route.query.id),
 );
+console.log('scanInfo', scanInfo);
 
 // TODO: Init 3D environment
 useInitial();

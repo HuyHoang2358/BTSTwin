@@ -111,12 +111,16 @@ onMounted(() => {
         if (!content) return;
 
         const properties = res.features[0].properties;
-
-        content.innerHTML = `<div>
-                                   <p class="font-medium">Thông tin vùng gió</p>
-                                   <p class="text-sm">${properties.tenxa || ''}, ${properties.tenhuyen}, ${properties.tentinh}</p>
-                                   <p class="text-sm">Vùng gió: ${properties.vunggio}</p>
-                                </div>`;
+        console.log('properties', properties);
+        console.log('coordinate', coordinate);
+        content.innerHTML = `
+                <div class="bg-white p-0 rounded flex justify-start gap-2 text-sm">
+                 <!-- <div class="w-12 h-12 bg-red-100"></div>-->
+                  <div>
+                    <p class="m-0 font-semibold text-base">Vùng gió ${properties.vunggio}</p>
+                    <p class="m-0">Vị trí: ${properties.tenxa || ''}, ${properties.tenhuyen}, ${properties.tentinh}</p>
+                  </div>
+                </div>`;
         overlay.setPosition(coordinate);
       });
   });

@@ -5,7 +5,7 @@ import type { StationItems } from '@/services/apis/bts';
 import type { InventoryDetail } from '@/potree/hooks/useInitial';
 import { Cesium3DTileset } from 'cesium';
 import type VectorSource from 'ol/source/Vector';
-import { Mesh } from 'three';
+import { ArrowHelper, Mesh } from 'three';
 import { heightBasePlate, widthBasePlate } from '@/utils/constants';
 import type { Image, Pole, PoleDevice, Station } from '@/services/apis/station';
 import { ACTIVE_TOOL } from '@/utils/enums';
@@ -34,6 +34,8 @@ export const useModelStore = defineStore('model', () => {
   const isShowBTSInfo = ref(false);
   const vectorSource = ref<VectorSource>();
   const basePlate = ref<Mesh>();
+  const northDirection = ref<ArrowHelper>();
+  const isShowNorthDirection = ref(true);
   const isSelectedBasePlate = ref(false);
   const selectedBTS = ref<Station>();
   const mappingStationWithTileset = ref<Record<number, Cesium3DTileset>>({});
@@ -51,12 +53,11 @@ export const useModelStore = defineStore('model', () => {
   const visibleAllMeasurements = ref(true);
   const visibleAllImages = ref(true);
 
-  // Hoangth33
   const stationsData = ref<Station[]>([]);
-
   const objectGroupArray = computed(() =>
     objectGroup.value ? Object.keys(objectGroup.value) : [],
   );
+  const pointCloud = ref<PointCloudOctree>();
 
   return {
     objectGroup,
@@ -85,6 +86,8 @@ export const useModelStore = defineStore('model', () => {
     vectorSource,
     selectedPole,
     basePlate,
+    northDirection,
+    isShowNorthDirection,
     isSelectedBasePlate,
     positionValue,
     widthBasePlateValue,
@@ -100,5 +103,6 @@ export const useModelStore = defineStore('model', () => {
     basePlateChecked,
     visibleAllMeasurements,
     visibleAllImages,
+    pointCloud,
   };
 });

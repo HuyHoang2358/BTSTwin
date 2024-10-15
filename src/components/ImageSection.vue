@@ -19,8 +19,8 @@
     </HeaderMenu>
     <div class="px-3 flex flex-row items-center gap-1">
       <a-input
-        :placeholder="$t('search')"
         v-model:value="searchValue"
+        :placeholder="$t('search')"
         allow-clear
         style="background: #424242; border-radius: 2px; border-width: 0; height: 26px"
       >

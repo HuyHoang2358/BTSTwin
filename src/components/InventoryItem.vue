@@ -59,6 +59,17 @@
         </svg>
       </a-button>
     </div>
+    <div
+      class="pr-2"
+      v-else
+    >
+      <a-button
+        @click="onRemoveInventory(item)"
+        class="p-0 m-0 border-none bg-transparent ml-2 flex items-center"
+      >
+        <IconRemove />
+      </a-button>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
@@ -66,6 +77,8 @@ import { useModelStore } from '@/stores/model';
 import { useChangeImage } from '@/potree/hooks/useChangeImage';
 import * as THREE from 'three';
 import type { PoleDevice } from '@/services/apis/station';
+import IconRemove from '@/components/icon/IconRemove.vue';
+import { toRaw } from 'vue';
 
 defineProps<{ item: PoleDevice; index: number }>();
 
@@ -136,5 +149,26 @@ const onToggleRemoveInventory = (object: PoleDevice) => {
     })),
   }));
   object.volume.clip = nextState;
+};
+
+const onRemoveInventory = (object) => {
+  console.log('Remove', object);
+  // Remove volume
+  window.potreeViewer.scene.removeVolume(toRaw(object.newDevice));
+  // Remove from store
+  console.log('poles', modelStore.poles);
+  modelStore.poles = modelStore.poles.map((item) => ({
+    ...item,
+    deviceCategories: item.deviceCategories.map((category) => ({
+      ...category,
+      devices: category.devices.filter((poleDevice) => poleDevice.id !== object.id),
+    })),
+  }));
+  console.log('poles', modelStore.poles);
+  // remove category not have any device
+  modelStore.poles = modelStore.poles.map((item) => ({
+    ...item,
+    deviceCategories: item.deviceCategories.filter((category) => category.devices.length > 0),
+  }));
 };
 </script>

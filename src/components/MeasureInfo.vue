@@ -9,7 +9,7 @@
     />
     <div class="p-3 flex flex-col">
       <div class="flex row items-center justify-between">
-        <div class="flex flex-row items-center">
+        <div class="flex flex-row items-center gap-2">
           <img
             :src="modelStore.selectedMeasurement.icon"
             class="w-6 h-6"
@@ -19,6 +19,7 @@
             v-model:content="editableStr"
             :editable="{ triggerType: !editableStr ? ['icon'] : ['text'], onEnd: onEndEditing }"
             style="margin-bottom: 0; margin-left: 12px"
+            class="text-base"
           >
             <template #editableTooltip>Click để sửa tên</template>
           </a-typography-paragraph>
@@ -34,7 +35,7 @@
       <div v-if="type === 'distance'">
         <div class="flex flex-row mt-2">
           <div class="w-1/3">
-            <a-typography>Khoảng cách</a-typography>
+            <a-typography>Khoảng cách:</a-typography>
           </div>
           <div class="w-2/3">
             <a-typography
@@ -46,7 +47,7 @@
           </div>
         </div>
         <MeasurementDetail
-          label="Tổng"
+          label="Tổng độ dài:"
           :value="totalDistance"
         />
       </div>
@@ -116,12 +117,12 @@
 </template>
 
 <script lang="ts" setup>
-import { useModelStore } from '@/stores/model';
-import HeaderInformation from '@/components/HeaderInformation.vue';
 import { onMounted, onUnmounted, reactive, ref, toRaw, type UnwrapRef, watch } from 'vue';
-import IconRemove from '@/components/icon/IconRemove.vue';
-import MeasurementDetail from '@/components/MeasurementDetail.vue';
+import { useModelStore } from '@/stores/model';
 import { radToDeg } from 'three/src/math/MathUtils';
+import IconRemove from '@/components/icon/IconRemove.vue';
+import HeaderInformation from '@/components/HeaderInformation.vue';
+import MeasurementDetail from '@/components/MeasurementDetail.vue';
 
 interface FormState {
   description?: string;
@@ -153,9 +154,13 @@ watch(
 );
 
 const onRemoveMeasurement = () => {
-  window.potreeViewer.scene.removeMeasurement(toRaw(modelStore.selectedMeasurement));
+  const potreeSelectedMeasurement = window.potreeViewer.scene.measurements.find(
+    (item: any) => item.uuid === modelStore.selectedMeasurement.uuid,
+  );
+  window.potreeViewer.scene.removeMeasurement(toRaw(potreeSelectedMeasurement));
+
   modelStore.measurements = modelStore.measurements.filter(
-    (item) => item.id !== modelStore.selectedMeasurement.id,
+    (item) => item.uuid !== modelStore.selectedMeasurement.uuid,
   );
   modelStore.selectedMeasurement = undefined;
 };
@@ -257,9 +262,11 @@ onUnmounted(() => {
 const onEndEditing = () => {
   modelStore.measurements = modelStore.measurements.map((item) => {
     if (item.uuid === modelStore.selectedMeasurement.uuid) {
+      console.log('have item', item);
       item.name = editableStr.value;
       return { ...item, name: editableStr.value };
     } else return item;
   });
+  console.log('measurements', window.potreeViewer.scene.measurements);
 };
 </script>

@@ -11,11 +11,7 @@ import {
   pointSizeValue,
   widthBasePlate,
 } from '@/utils/constants';
-import {
-  useMeasurementHistoryByScanId,
-  useStationScan,
-  useStationScanImages,
-} from '@/services/hooks/useStation';
+import { useMeasurements, useStationScan, useStationScanImages } from '@/services/hooks/useStation';
 import type { Image, PoleDevice } from '@/services/apis/station';
 import { ACTIVE_TOOL } from '@/utils/enums';
 
@@ -43,12 +39,12 @@ export const useInitial = () => {
     computed(() => route.query.id as string),
     computed(() => !!route.query.id),
   );
-  const { data: dataMeasurementHistory } = useMeasurementHistoryByScanId(
+  const { data: measurementsResponse } = useMeasurements(
     computed(() => route.query.id as string),
     computed(() => !!route.query.id),
   );
   const scanInfo = computed(() => scanInfoResponse?.value?.data);
-
+  const measurements = computed(() => measurementsResponse?.value?.data || []);
   // Fetch images of scan
   const { data: imagesInfoResponse } = useStationScanImages(
     computed(() => route.query.id as string),
@@ -121,6 +117,153 @@ export const useInitial = () => {
     modelStore.measurements.push(e.measurement);
   };
 
+  const drawOxOyOz = (vertices) => {
+    // calculate center of vertices
+    const center = vertices
+      .reduce(
+        (acc, item) => {
+          return [acc[0] + item[0], acc[1] + item[1], acc[2] + item[2]];
+        },
+        [0, 0, 0],
+      )
+      .map((item) => item / vertices.length);
+
+    // draw Ox
+    const ox = new THREE.ArrowHelper(
+      new THREE.Vector3(1, 0, 0),
+      new THREE.Vector3(0, 0, 0),
+      1,
+      0xff0000, // red color
+    );
+    ox.position.set(center[0], center[1], center[2]);
+    window.potreeViewer.scene.scene.add(ox);
+    // draw Oy
+    const oy = new THREE.ArrowHelper(
+      new THREE.Vector3(0, 1, 0),
+      new THREE.Vector3(0, 0, 0),
+      1,
+      0x00ff00, // green color
+    );
+    oy.position.set(center[0], center[1], center[2]);
+    window.potreeViewer.scene.scene.add(oy);
+    // draw Oz
+    const oz = new THREE.ArrowHelper(
+      new THREE.Vector3(0, 0, 1),
+      new THREE.Vector3(0, 0, 0),
+      1,
+      0x0000ff, // blue color
+    );
+    oz.position.set(center[0], center[1], center[2]);
+    window.potreeViewer.scene.scene.add(oz);
+    return center;
+  };
+
+  const draw_points = (points, material) => {
+    const flatArray: number[] = [];
+
+    points.forEach((p: number[]) => {
+      flatArray.push(p[0], p[1], p[2]);
+    });
+    const pointsFloat32Array = new Float32Array(flatArray);
+    const pointsGeometry = new THREE.BufferGeometry();
+    pointsGeometry.setAttribute('position', new THREE.BufferAttribute(pointsFloat32Array, 3));
+    const entities = new THREE.Points(pointsGeometry, material);
+    window.potreeViewer.scene.scene.add(entities);
+  };
+  const greenPointMaterial = new THREE.PointsMaterial({
+    color: 0x00ff00, // green color
+    size: 0.03, // Size of the points
+  });
+  const redPointMaterial = new THREE.PointsMaterial({
+    color: 0xff0000, // red color
+    size: 0.03, // Size of the points
+  });
+
+  const drawDepth = (top_points, bottom_points, center_point) => {
+    // GS: goc  = top_points[0]
+    // Chọn gốc là điểm thuộc top_points  sao cho oo[1] < center[1] oo[0] < center[0]
+    const oos = top_points.filter((p) => p[0] <= center_point[0] || p[1] <= center_point[1]);
+    const oo = oos[0];
+    // find point in bottom_points distace to oo min
+    let ooz = bottom_points[0];
+    let min_distance = Math.sqrt(
+      Math.pow(oo[0] - ooz[0], 2) + Math.pow(oo[1] - ooz[1], 2) + Math.pow(oo[2] - ooz[2], 2),
+    );
+    bottom_points.forEach((point) => {
+      const distance = Math.sqrt(
+        Math.pow(oo[0] - point[0], 2) +
+          Math.pow(oo[1] - point[1], 2) +
+          Math.pow(oo[2] - point[2], 2),
+      );
+      if (distance < min_distance) {
+        min_distance = distance;
+        ooz = point;
+      }
+    });
+    // draw line from oo to ooz
+    const geometry = new THREE.BufferGeometry();
+    geometry.setFromPoints([
+      new THREE.Vector3(oo[0], oo[1], oo[2]),
+      new THREE.Vector3(ooz[0], ooz[1], ooz[2]),
+    ]);
+
+    const line = new THREE.Line(geometry, new THREE.LineBasicMaterial({ color: 0x0000ff }));
+    window.potreeViewer.scene.scene.add(line);
+  };
+
+  const drawWidth = (top_points, center_point) => {
+    // width follow x
+    const oos = top_points.filter((p) => p[0] <= center_point[0] || p[1] <= center_point[1]);
+    const oo = oos[0];
+    let max_dis = -1;
+    let index = -1;
+    top_points = top_points.filter((p) => p[0] != oo[0] && p[1] != oo[1] && p[2] != oo[2]);
+
+    for (let i = 0; i < top_points.length; i++) {
+      const p = top_points[i];
+      const dis = Math.sqrt(
+        Math.pow(p[0] - oo[0], 2) + Math.pow(p[1] - oo[1], 2) + Math.pow(p[2] - oo[2], 2),
+      );
+      if (dis > max_dis) {
+        max_dis = dis;
+        index = i;
+      }
+    }
+
+    // remove element i in top_points
+    top_points = top_points.filter(
+      (p) =>
+        p[0] != top_points[index][0] &&
+        p[1] != top_points[index][1] &&
+        p[2] != top_points[index][2],
+    );
+    console.log('top_points', top_points);
+
+    //const ox = [1, 0, 0];
+    // find projection of oo to 0xy
+    const oox = top_points[0];
+    const ooy = top_points[1];
+    const ox = [oo[0] + 1, oo[1], oo[2]];
+    const oy = [oo[0], oo[1] + 1, oo[2]];
+
+    // determine the width follow x
+  };
+
+  const drawDeviceFromVertices = (vertices: number[][]) => {
+    //const center = drawOxOyOz(vertices);
+    // draw cone from vertices
+    vertices.sort((a, b) => b[2] - a[2]); //  sort vertices by z
+    console.log('vertices', vertices);
+
+    const top_points = vertices.slice(0, 4);
+    const bottom_points = vertices.slice(4, 8);
+    draw_points(top_points, greenPointMaterial);
+    draw_points(bottom_points, redPointMaterial);
+    const center = drawOxOyOz(top_points);
+    //drawDepth(top_points, bottom_points, center);
+    drawWidth(top_points, center);
+  };
+
   const loadInventory = () => {
     const poles = scanInfo.value?.poles || [];
     let allDevices: PoleDevice[] = [];
@@ -129,10 +272,12 @@ export const useInitial = () => {
       allDevices = allDevices.concat(pole.pole_devices || []);
     });
 
+    //allDevices = [allDevices[0]];
     const boxMeshArray =
       allDevices.map((poleDevice: PoleDevice) => {
         const vertices = JSON.parse(poleDevice.vertices);
 
+        // drawDeviceFromVertices(vertices);
         const poleDeviceVertices = vertices.map(
           (item: number[]) => new THREE.Vector3(item[0], item[1], item[2]),
         );
@@ -141,9 +286,10 @@ export const useInitial = () => {
         const boxSize = box.getSize(new THREE.Vector3());
         const boxGeometry = new THREE.BoxGeometry(boxSize.x, boxSize.y, boxSize.z);
         const boxMaterial = new THREE.MeshBasicMaterial({
-          color: 0x83bb95,
-          opacity: 0,
+          color: 0x00ff00,
+          opacity: 0.5,
           transparent: true,
+          //wireframe: true,
           depthWrite: false,
           side: THREE.DoubleSide,
         });
@@ -159,8 +305,9 @@ export const useInitial = () => {
 
         const volume = new Potree.BoxVolume();
         volume.position.set(boxCenter.x, boxCenter.y, boxCenter.z);
-        volume.scale.set(boxSize.x, boxSize.y, boxSize.z);
+        volume.scale.set(boxSize.x, boxSize.y, boxSize.z); // expand
         volume.visible = false;
+        volume.clip = false; // add more to remove point
         window.potreeViewer.scene.addVolume(volume);
 
         return {
@@ -240,6 +387,7 @@ export const useInitial = () => {
     Potree.loadPointCloud(url, name, (e: any) => {
       const scene = window.potreeViewer.scene;
       const pointCloud = e.pointcloud;
+      modelStore.pointCloud = pointCloud;
 
       // Thêm pointCloud vào cảnh
       scene.addPointCloud(pointCloud);
@@ -279,10 +427,19 @@ export const useInitial = () => {
     plane.userData = {
       type: 'basePlate',
     };
-
     window.potreeViewer.scene.scene.add(plane);
+    // Add north direction
+    const northDirection = new THREE.ArrowHelper(
+      new THREE.Vector3(0, 1, zPlane),
+      new THREE.Vector3(0, 0, zPlane),
+      Math.max(widthBasePlate, heightBasePlate) + 5,
+      0xff0000,
+    );
+    window.potreeViewer.scene.scene.add(northDirection);
+    // hidden north direction
 
     modelStore.basePlate = plane;
+    modelStore.northDirection = northDirection;
     modelStore.zPlaneHistory = zPlane;
   };
 
@@ -357,35 +514,36 @@ export const useInitial = () => {
   };
 
   const loadMeasure = () => {
-    if (!dataMeasurementHistory.value?.data?.measurements) return;
-    const measurements = JSON.parse(dataMeasurementHistory.value?.data?.measurements);
+    measurements.value.forEach((measurement: any) => {
+      const mm = JSON.parse(measurement?.measurements);
 
-    measurements.forEach((data: any) => {
-      const measure = new Potree.Measure(window.potreeViewer);
+      mm.forEach((data: any) => {
+        const measure = new Potree.Measure(window.potreeViewer);
 
-      measure.uuid = data.uuid;
-      measure.name = data.name;
-      measure.showDistances = data.showDistances;
-      measure.showCoordinates = data.showCoordinates;
-      measure.showArea = data.showArea;
-      measure.closed = data.closed;
-      measure.showAngles = data.showAngles;
-      measure.showHeight = data.showHeight;
-      measure.showCircle = data.showCircle;
-      measure.showAzimuth = data.showAzimuth;
-      measure.showEdges = data.showEdges;
+        measure.uuid = data.uuid;
+        measure.name = data.name;
+        measure.showDistances = data.showDistances;
+        measure.showCoordinates = data.showCoordinates;
+        measure.showArea = data.showArea;
+        measure.closed = data.closed;
+        measure.showAngles = data.showAngles;
+        measure.showHeight = data.showHeight;
+        measure.showCircle = data.showCircle;
+        measure.showAzimuth = data.showAzimuth;
+        measure.showEdges = data.showEdges;
 
-      for (const point of data.points) {
-        const pos = new THREE.Vector3(...point);
-        measure.addMarker(pos);
-      }
+        for (const point of data.points) {
+          const pos = new THREE.Vector3(...point);
+          measure.addMarker(pos);
+        }
 
-      window.potreeViewer.scene.addMeasurement(measure);
+        window.potreeViewer.scene.addMeasurement(measure);
+      });
     });
   };
 
   watch([scanInfo], () => {
-    if (scanInfo.value && dataMeasurementHistory.value && !loaded) {
+    if (scanInfo.value && measurements.value && !loaded) {
       loaded = true;
       const poles = scanInfo.value?.poles || [];
       if (poles[0]?.gps_ratio) {

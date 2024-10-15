@@ -1,11 +1,11 @@
 <template>
   <div
     v-if="modelStore.isShowBTSInfo"
-    class="flex flex-col search-bts z-10 absolute top-[68px] rounded-sm right-3.5 w-[274px] bg-[#303030] max-h-[55%]"
+    class="flex flex-col search-bts z-10 absolute top-[68px] rounded-sm right-3.5 w-[274px] bg-[#303030] max-h-[70%]"
   >
     <div class="flex justify-between items-center px-3.5 pt-3.5 pb-1">
       <a-typography-text class="text-base font-medium text-white">
-        Thông tin trạm BTS
+        Thông tin chi tiết
       </a-typography-text>
       <div>
         <a-button
@@ -33,27 +33,27 @@
       <a-descriptions
         layout="horizontal"
         :column="1"
-        class="mt-4 p-2 rounded-lg"
+        class="mt-2 p-2 rounded-lg"
         style="border: 1px solid #404040"
       >
         <a-descriptions-item
           label="Tên trạm"
-          :labelStyle="descriptionStyle"
-          :contentStyle="descriptionStyle"
+          :label-style="descriptionStyle"
+          :content-style="descriptionStyle"
         >
           {{ modelStore.selectedBTS?.name }}
         </a-descriptions-item>
         <a-descriptions-item
           label="Địa chỉ"
-          :labelStyle="descriptionStyle"
-          :contentStyle="descriptionStyle"
+          :label-style="descriptionStyle"
+          :content-style="descriptionStyle"
         >
           {{ modelStore.selectedBTS?.address?.address_detail }}
         </a-descriptions-item>
         <a-descriptions-item
           label="Tọa độ"
-          :labelStyle="descriptionStyle"
-          :contentStyle="descriptionStyle"
+          :label-style="descriptionStyle"
+          :content-style="descriptionStyle"
         >
           {{ convertToDMS(Number(modelStore.selectedBTS?.location?.longitude)) }}
           {{ `, ` }}
@@ -61,29 +61,39 @@
         </a-descriptions-item>
         <a-descriptions-item
           label="Đơn vị vận hành"
-          :labelStyle="descriptionStyle"
-          :contentStyle="descriptionStyle"
+          :label-style="descriptionStyle"
+          :content-style="descriptionStyle"
         >
           {{ 'VTNET' }}
         </a-descriptions-item>
         <a-descriptions-item
           label="Dự án"
-          :labelStyle="descriptionStyle"
-          :contentStyle="descriptionStyle"
-        ></a-descriptions-item>
+          :label-style="descriptionStyle"
+          :content-style="descriptionStyle"
+        />
         <a-descriptions-item
           label="Nguời quản lý trạm"
-          :labelStyle="descriptionStyle"
-          :contentStyle="descriptionStyle"
-        ></a-descriptions-item>
-        <a-descriptions-item
-          label="Ngày chụp gần nhất"
-          :labelStyle="descriptionStyle"
-          :contentStyle="descriptionStyle"
-        >
-          {{ modelStore.selectedBTS?.scans?.[0]?.date }}
-        </a-descriptions-item>
+          :label-style="descriptionStyle"
+          :content-style="descriptionStyle"
+        />
       </a-descriptions>
+
+      <h5 class="text-white font-semibold mt-4">Lịch sử quét</h5>
+      <div
+        class="mt-2 p-2 rounded-lg text-white text-sm"
+        style="border: 1px solid #404040"
+      >
+        <div
+          class="flex justify-between items-center"
+          v-for="scan in modelStore.selectedBTS?.scans"
+          :key="scan.id"
+        >
+          <p class="m-0 text-xs">{{ scan.date }}</p>
+          <div class="w-3 h-3 flex justify-center">
+            <IconActive class="w-full h-full" />
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -92,6 +102,7 @@ import { useModelStore } from '@/stores/model';
 import { computed } from 'vue';
 import { convertToDMS } from '@/utils/helpers';
 import IconClose from '@/components/icon/IconClose.vue';
+import IconActive from '@/components/icon/IconActive.vue';
 
 const modelStore = useModelStore();
 const baseUrl = import.meta.env.VITE_BASE_URL;

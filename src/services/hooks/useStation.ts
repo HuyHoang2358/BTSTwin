@@ -1,7 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/vue-query';
 import {
-  createDeviceHistory,
-  createPoleHistory,
   fetchDeviceHistory,
   fetchPoleHistory,
   fetchScanDetail,
@@ -9,7 +7,11 @@ import {
   fetchReport,
   fetchStations,
   saveMeasurements,
-  getMeasurementHistoryByScanId,
+  fetchMeasurements,
+  rollbackPoleParam,
+  updatePoleParam,
+  updateDeviceParam,
+  rollbackPoleDeviceParam,
 } from '@/services/apis/station';
 import type { ComputedRef } from 'vue';
 
@@ -18,7 +20,7 @@ export const STATION_SCAN_IMAGE_QUERY_KEY = 'STATION_SCAN_IMAGE_QUERY_KEY';
 export const STATION_SCAN_QUERY_KEY = 'STATION_SCAN_QUERY_KEY';
 export const HISTORY_POLE_LIST_QUERY_KEY = 'HISTORY_POLE_LIST_QUERY_KEY';
 export const HISTORY_DEVICE_LIST_QUERY_KEY = 'HISTORY_DEVICE_LIST_QUERY_KEY';
-export const HISTORY_MEASUREMENT_QUERY_KEY = 'HISTORY_MEASUREMENT_QUERY_KEY';
+export const STATION_SCAN_MEASUREMENT_QUERY_KEY = 'STATION_SCAN_MEASUREMENT_QUERY_KEY';
 
 export const useStations = () =>
   useQuery({
@@ -60,10 +62,15 @@ export const usePoleHistory = (
     retry: 1,
   });
 
-export const useCreatePoleHistory = () => useMutation({ mutationFn: createPoleHistory });
+export const useUpdatePoleParam = () => useMutation({ mutationFn: updatePoleParam });
+export const useRollbackPoleParam = () => useMutation({ mutationFn: rollbackPoleParam });
 
 export const useDeviceHistory = (
-  paramsComputed: { id: ComputedRef<string>; deviceId: ComputedRef<number> },
+  paramsComputed: {
+    id: ComputedRef<string>;
+    poleId: ComputedRef<number>;
+    index: ComputedRef<number>;
+  },
   enabled: ComputedRef<boolean>,
 ) =>
   useQuery({
@@ -71,21 +78,22 @@ export const useDeviceHistory = (
     queryFn: () =>
       fetchDeviceHistory({
         scanId: paramsComputed.id.value,
-        deviceId: paramsComputed.deviceId.value,
+        poleId: paramsComputed.poleId.value,
+        index: paramsComputed.index.value,
       }),
     enabled,
     retry: 1,
   });
 
-export const useMeasurementHistoryByScanId = (
-  id: ComputedRef<string>,
-  enabled: ComputedRef<boolean>,
-) =>
+export const useMeasurements = (id: ComputedRef<string>, enabled: ComputedRef<boolean>) =>
   useQuery({
-    queryKey: [HISTORY_MEASUREMENT_QUERY_KEY, id],
-    queryFn: () => getMeasurementHistoryByScanId(id.value),
+    queryKey: [STATION_SCAN_MEASUREMENT_QUERY_KEY, id],
+    queryFn: () => fetchMeasurements(id.value),
     enabled,
   });
 
-export const useCreateDeviceHistory = () => useMutation({ mutationFn: createDeviceHistory });
+export const useUpdateDeviceParam = () => useMutation({ mutationFn: updateDeviceParam });
+export const useRollbackPoleDeviceParam = () =>
+  useMutation({ mutationFn: rollbackPoleDeviceParam });
+
 export const useSaveMeasurements = () => useMutation({ mutationFn: saveMeasurements });

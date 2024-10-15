@@ -11,8 +11,8 @@
     <div class="flex flex-col overflow-auto">
       <PoleItem
         v-for="pole in modelStore.poles"
-        :pole="pole"
         :key="pole.id"
+        :pole="pole"
       />
     </div>
   </div>
