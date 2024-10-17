@@ -5,7 +5,7 @@
   >
     <HeaderInformation
       title="Base plate"
-      :on-close="() => (modelStore.isSelectedBasePlate = false)"
+      :on-close="onClose"
     />
 
     <div class="p-3 flex flex-col">
@@ -119,5 +119,10 @@ const onReset = () => {
   modelStore.heightBasePlateValue = heightBasePlate;
   modelStore.widthBasePlateValue = widthBasePlate;
   modelStore.isShowNorthDirection = true;
+};
+
+const onClose = () => {
+  modelStore.isSelectedBasePlate = false;
+  modelStore.basePlate?.material.color.setHex(0x095888);
 };
 </script>

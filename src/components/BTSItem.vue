@@ -91,27 +91,30 @@ const ontoggleExpanded = async () => {
   }
 
   // Handle for 2D mode
-  if (!modelStore.isShowBTSInfo) {
-    modelStore.isShowBTSInfo = true;
-    // Move camera to the location of the marker
-    const point = new Point(
-      fromLonLat([Number(props.item.location.longitude), Number(props.item.location.latitude)]),
-    );
+  if (modelStore.isShowBTSInfo) {
+    // check if the station is already expanded
+    if (modelStore.selectedBTS?.code === props.item.code) {
+      modelStore.isShowBTSInfo = false;
+      //
+      const view = new View({
+        center: fromLonLat([107.48411048389792, 16.26963973530945]),
+        zoom: 6,
+      });
 
-    modelStore.mapOl?.getView().fit(point, {
-      duration: 1000,
-      minResolution: 5,
-    });
-  } else {
-    modelStore.isShowBTSInfo = false;
-    //
-    const view = new View({
-      center: fromLonLat([107.48411048389792, 16.26963973530945]),
-      zoom: 6,
-    });
-
-    modelStore.mapOl?.setView(view);
+      modelStore.mapOl?.setView(view);
+      return;
+    }
   }
+  modelStore.isShowBTSInfo = true;
+  // Move camera to the location of the marker
+  const point = new Point(
+    fromLonLat([Number(props.item.location.longitude), Number(props.item.location.latitude)]),
+  );
+
+  modelStore.mapOl?.getView().fit(point, {
+    duration: 1000,
+    minResolution: 5,
+  });
 
   // Save state to store
   modelStore.selectedBTS = modelStore.stationsData.find((i) => i.code === props.item.code);

@@ -92,7 +92,7 @@ onMounted(() => {
     if (!viewResolution) return;
     const url = wmsSource.getFeatureInfoUrl(evt.coordinate, viewResolution, 'EPSG:3857', {
       INFO_FORMAT: 'application/json',
-      QUERY_LAYERS: 'vspace:shapefile_gio_v1',
+      QUERY_LAYERS: 'vspace:shapefile_vung_gio_v2_20241015_013415',
     });
 
     if (!url) return;
@@ -114,11 +114,11 @@ onMounted(() => {
         console.log('properties', properties);
         console.log('coordinate', coordinate);
         content.innerHTML = `
-                <div class="bg-white p-0 rounded flex justify-start gap-2 text-sm">
-                 <!-- <div class="w-12 h-12 bg-red-100"></div>-->
+                <div class="bg-white p-0 rounded flex justify-start items-center gap-2 text-sm">
+                  <div class="w-10 h-10 bg-red-100" style="background-color: ${properties.maHexa}"></div>
                   <div>
-                    <p class="m-0 font-semibold text-base">Vùng gió ${properties.vunggio}</p>
-                    <p class="m-0">Vị trí: ${properties.tenxa || ''}, ${properties.tenhuyen}, ${properties.tentinh}</p>
+                    <p class="m-0 font-semibold text-base">Vùng gió ${properties.vungGio}</p>
+                    <p class="m-0">Vị trí: ${properties.tenXa || ''}, ${properties.tenHuyen}, ${properties.tenTinh}</p>
                   </div>
                 </div>`;
         overlay.setPosition(coordinate);

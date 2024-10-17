@@ -37,7 +37,7 @@
       <div>
         <span class="text-white text-sm">Danh sách đo lường</span>
         <br />
-        <span class="text-[#8C8C8C] text-xs">({{ modelStore.measurements.length }} phần tử)</span>
+        <span class="text-[#8C8C8C] text-xs">({{ modelStore.measurements.length }} phép đo)</span>
       </div>
 
       <div
@@ -164,6 +164,8 @@ const onRemoveMeasurement = (object: any) => {
 const onToggleMeasurement = (object: any) => {
   let object_raw = window.potreeViewer.scene.measurements.find((m) => m.uuid === object.uuid);
   if (object_raw) object_raw.visible = !object_raw.visible;
+  modelStore.measurements.find((m) => m.uuid === object.uuid).visible = object_raw.visible;
+  console.log('visible', object_raw.visible, object.visible);
 };
 
 const onToggleAllMeasurement = () => {
