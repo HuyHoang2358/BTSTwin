@@ -107,6 +107,7 @@
         type="primary"
         @click="onCalculate"
         :loading="isPending"
+        v-if="isChanged"
       >
         Tính ứng suất
       </a-button>
@@ -135,20 +136,23 @@
   </div>
 </template>
 <script setup lang="ts">
+import { notification } from 'ant-design-vue';
+import { computed, type ComputedRef, onMounted, ref } from 'vue';
+
 import { compareString } from '@/utils/helpers';
 import { CaretRightOutlined } from '@ant-design/icons-vue';
-import InventoryItem from '@/components/InventoryItem.vue';
-import { computed, onMounted, ref } from 'vue';
-import type { Pole } from '@/services/apis/station';
 import { useModelStore } from '@/stores/model';
-import type { Device } from '@/services/apis/bts';
-import { notification } from 'ant-design-vue';
 import { useErrorHandler } from '@/services/hooks/useErrorHandler';
 import { useStationScan } from '@/services/hooks/useStation';
 import { useRoute } from 'vue-router';
 import { useCalculate } from '@/services/hooks/useBTS';
+
+import InventoryItem from '@/components/InventoryItem.vue';
 import IconSearchInput from '@/components/icons/home/IconSearchInput.vue';
 import IconFilter from '@/components/icons/home/IconFilter.vue';
+
+import type { Pole, PoleDevice } from '@/services/apis/station';
+import type { Device } from '@/services/apis/bts';
 import { ACTIVE_TOOL } from '@/utils/enums';
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
@@ -171,7 +175,10 @@ const { data: dataBTS } = useStationScan(
   computed(() => !!route.query.id),
 );
 
-const stressValue = computed(() => data?.value?.data?.pole_stress || props.pole.stress_value || 0);
+const stressValue = computed(() => {
+  if (isChanged.value) return '';
+  return data?.value?.data?.pole_stress || props.pole.stress_value || 0;
+});
 
 const activeKey = ref<string[]>([]);
 
@@ -265,4 +272,19 @@ const onToggleExpand = () => {
       : item,
   );
 };
+
+const isChanged: ComputedRef<boolean> = computed(() => {
+  const poleDeviceCategories = modelStore.poles.find(
+    (pole) => pole.id === props.pole.id,
+  )?.deviceCategories;
+  let ok = false;
+  poleDeviceCategories?.forEach((category) => {
+    category.devices.forEach((device: PoleDevice) => {
+      if (device.isNewDevice || device.clip) {
+        ok = true;
+      }
+    });
+  });
+  return ok;
+});
 </script>

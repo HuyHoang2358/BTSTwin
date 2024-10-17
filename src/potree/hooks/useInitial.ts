@@ -287,7 +287,7 @@ export const useInitial = () => {
         const boxGeometry = new THREE.BoxGeometry(boxSize.x, boxSize.y, boxSize.z);
         const boxMaterial = new THREE.MeshBasicMaterial({
           color: 0x00ff00,
-          opacity: 0.5,
+          opacity: 0,
           transparent: true,
           //wireframe: true,
           depthWrite: false,

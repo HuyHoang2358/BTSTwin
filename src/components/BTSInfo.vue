@@ -10,7 +10,7 @@
       <div>
         <a-button
           type="ghost"
-          @click="modelStore.isShowBTSInfo = !modelStore.isShowBTSInfo"
+          @click="closeShowBTSInfo"
         >
           <IconClose />
         </a-button>
@@ -37,7 +37,7 @@
         style="border: 1px solid #404040"
       >
         <a-descriptions-item
-          label="Tên trạm"
+          label="Mã trạm"
           :label-style="descriptionStyle"
           :content-style="descriptionStyle"
         >
@@ -109,4 +109,13 @@ const baseUrl = import.meta.env.VITE_BASE_URL;
 const domain = baseUrl.slice(0, baseUrl.length - 5);
 
 const descriptionStyle = computed(() => ({ color: 'white', fontSize: '12px' }));
+const closeShowBTSInfo = () => {
+  modelStore.isShowBTSInfo = false;
+  modelStore.stationsData = modelStore.stationsData.map((i) =>
+    i.code === modelStore.selectedBTS?.code
+      ? { ...i, expanded: !i.expanded }
+      : { ...i, expanded: false },
+  );
+  modelStore.selectedBTS = undefined;
+};
 </script>

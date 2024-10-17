@@ -82,6 +82,16 @@ watch(
 
     if (!modelStore.basePlate) return;
     modelStore.basePlate.visible = newValue;
+    if (modelStore.northDirection) {
+      modelStore.northDirection.visible = newValue;
+    }
+
+    modelStore.isShowNorthDirection = newValue;
+    if (newValue) {
+      modelStore.basePlate?.material.color.setHex(0xbf0606);
+    } else {
+      modelStore.basePlate?.material.color.setHex(0x095888);
+    }
   },
 );
 </script>

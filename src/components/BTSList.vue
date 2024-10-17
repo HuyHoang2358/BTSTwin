@@ -172,7 +172,7 @@ watch([() => modelStore.mapOl, () => modelStore.stationsData], () => {
           if (infoBox && btsInfo) {
             infoBox.innerHTML = `
             <div class="flex justify-start gap-4">
-              <div class="w-12 h-12 rounded bg-[#F2F2F2] flex justify-center items-center p-1">
+              <div class="w-12 h-12 rounded bg-[#000000] flex justify-center items-center p-1">
                 <img
                   src="${domain}${btsInfo?.pole_category?.icon}"
                   alt="icon"
@@ -186,7 +186,7 @@ watch([() => modelStore.mapOl, () => modelStore.stationsData], () => {
             </div>
             <div class="grid grid-cols-5 mt-4">
               <div class="col-span-2">
-                <span>Mã cột:</span>
+                <span>Mã Trạm:</span>
               </div>
               <div class="col-span-3">
                 <span class="font-semibold">${btsInfo.code}</span>
@@ -198,7 +198,7 @@ watch([() => modelStore.mapOl, () => modelStore.stationsData], () => {
                 <span class="font-semibold">${btsInfo.location.latitude}, ${btsInfo.location.longitude}</span>
               </div>
               <div class="col-span-2">
-                <span>Vị trí xây dựng:</span>
+                <span>Địa chỉ:</span>
               </div>
               <div class="col-span-3">
                 <span class="font-semibold">${btsInfo.address.address_detail}</span>

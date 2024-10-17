@@ -247,12 +247,15 @@ const onPointerClick = (evt: MouseEvent) => {
       modelStore.selectedInventory = selectedInventory;
     } else if (targetObject.userData.type === 'basePlate') {
       modelStore.isSelectedBasePlate = true;
+      // change color of material base plate
+      modelStore.basePlate?.material.color.setHex(0xbf0606);
     }
   } else {
     modelStore.selectedImage = undefined;
     modelStore.selectedMeasurement = undefined;
     modelStore.selectedInventory = undefined;
     modelStore.isSelectedBasePlate = false;
+    modelStore.basePlate?.material.color.setHex(0x095888);
   }
 };
 
